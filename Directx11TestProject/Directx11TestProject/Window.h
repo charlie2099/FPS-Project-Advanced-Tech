@@ -1,5 +1,5 @@
 #pragma once
-#include "WindowsHeader.h"
+//#include "WindowsHeader.h"
 #include "Renderer.h"
 #include <memory>
 #include <optional>
@@ -25,7 +25,6 @@ private:
 	std::unique_ptr<Renderer> renderer;
 
 private:
-	// singleton manages registration/cleanup of window class
 	class WindowClass
 	{
 	public:
