@@ -12,11 +12,11 @@ public:
 	~Renderer() = default;
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	void DrawTestTriangle(float angle, float x, float y);
+	void DrawCube(float angle, float x, float y);
 private:
-	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTarget;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
+	Microsoft::WRL::ComPtr<ID3D11Device> device;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> swap_chain;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> device_context;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target_view;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depth_stencil_view;
 };

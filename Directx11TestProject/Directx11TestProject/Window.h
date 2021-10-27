@@ -1,5 +1,4 @@
 #pragma once
-//#include "WindowsHeader.h"
 #include "Renderer.h"
 #include <memory>
 #include <optional>

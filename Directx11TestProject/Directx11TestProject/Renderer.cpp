@@ -37,16 +37,16 @@ Renderer::Renderer(HWND hWnd)
 		0,
 		D3D11_SDK_VERSION,
 		&sd,
-		&pSwap,
-		&pDevice,
+		&swap_chain,
+		&device,
 		nullptr,
-		&pContext
+		&device_context
 	);
 
 	// gain access to texture subresource in swap chain (back buffer)
 	wrl::ComPtr<ID3D11Resource> pBackBuffer;
-	pSwap->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer);
-	pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pTarget);
+	swap_chain->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer);
+	device->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &render_target_view);
 
 	// create depth stensil state
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
@@ -54,10 +54,10 @@ Renderer::Renderer(HWND hWnd)
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
-	pDevice->CreateDepthStencilState(&dsDesc, &pDSState);
+	device->CreateDepthStencilState(&dsDesc, &pDSState);
 
 	// bind depth state
-	pContext->OMSetDepthStencilState(pDSState.Get(), 1u);
+	device_context->OMSetDepthStencilState(pDSState.Get(), 1u);
 
 	// create depth stencil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
@@ -71,32 +71,32 @@ Renderer::Renderer(HWND hWnd)
 	descDepth.SampleDesc.Quality = 0u;
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
+	device->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
 
 	// create view of depth stencil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0u;
-	pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, &pDSV);
+	device->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, &depth_stencil_view);
 
 	// bind depth stencil view to OM
-	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());
+	device_context->OMSetRenderTargets(1u, render_target_view.GetAddressOf(), depth_stencil_view.Get());
 }
 
 void Renderer::EndFrame()
 {
-	pSwap->Present(1u, 0u);
+	swap_chain->Present(1u, 0u);
 }
 
 void Renderer::ClearBuffer(float red, float green, float blue) noexcept
 {
 	const float color[] = { red, green, blue, 1.0f };
-	pContext->ClearRenderTargetView(pTarget.Get(), color);
-	pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	device_context->ClearRenderTargetView(render_target_view.Get(), color);
+	device_context->ClearDepthStencilView(depth_stencil_view.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void Renderer::DrawTestTriangle(float angle, float x, float z)
+void Renderer::DrawCube(float angle, float x, float z)
 {
 	//namespace wrl = Microsoft::WRL;
 	//HRESULT hr;
@@ -142,12 +142,12 @@ void Renderer::DrawTestTriangle(float angle, float x, float z)
 	bd.StructureByteStride = sizeof(Vertex);
 	D3D11_SUBRESOURCE_DATA sd = {};
 	sd.pSysMem = vertices;
-	pDevice->CreateBuffer(&bd, &sd, &pVertexBuffer);
+	device->CreateBuffer(&bd, &sd, &pVertexBuffer);
 
 	// Bind vertex buffer to pipeline
 	const UINT stride = sizeof(Vertex);
 	const UINT offset = 0u;
-	pContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
+	device_context->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 
 	// index buffer
 	const unsigned short indices[] =
@@ -174,10 +174,10 @@ void Renderer::DrawTestTriangle(float angle, float x, float z)
 	ibd.StructureByteStride = sizeof(unsigned short);
 	D3D11_SUBRESOURCE_DATA isd = {};
 	isd.pSysMem = indices;
-	pDevice->CreateBuffer(&ibd, &isd, &pIndexBuffer);
+	device->CreateBuffer(&ibd, &isd, &pIndexBuffer);
 
 	// bind index buffer
-	pContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+	device_context->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 
 	// constant buffer for transformation matrix
 	struct ConstantBuffer
@@ -206,10 +206,10 @@ void Renderer::DrawTestTriangle(float angle, float x, float z)
 	cbd.StructureByteStride = 0u;
 	D3D11_SUBRESOURCE_DATA csd = {};
 	csd.pSysMem = &const_buffer;
-	pDevice->CreateBuffer(&cbd, &csd, &pConstantBuffer);
+	device->CreateBuffer(&cbd, &csd, &pConstantBuffer);
 
 	// bind constant buffer to vertex shader
-	pContext->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
+	device_context->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
 
 	struct ConstantBuffer2
 	{
@@ -224,12 +224,26 @@ void Renderer::DrawTestTriangle(float angle, float x, float z)
 	struct ConstantBuffer2 cb2 =
 	{
 		{
-			{1.0f, 0.0f, 1.0f},
-		    {1.0f, 0.0f, 0.0f},
-			{0.0f, 1.0f, 0.0f},
-			{0.0f, 0.0f, 1.0f},
-			{1.0f, 1.0f, 0.0f},
-			{0.0f, 1.0f, 1.0f},
+			//{1.0f, 0.0f, 1.0f}, //pink
+			//{0.0f, 1.0f, 0.0f}, //red
+			//{0.0f, 1.0f, 0.0f}, //green
+			//{0.0f, 0.0f, 1.0f}, //blue
+			//{1.0f, 1.0f, 0.0f}, // yellow
+			//{0.0f, 1.0f, 1.0f}, //light-blue
+
+		    /*{0.0f, 0.0f, 0.0f},
+		    {1.0f, 1.0f, 1.0f},
+		    {0.0f, 0.0f, 0.0f},
+		    {1.0f, 1.0f, 1.0f},
+		    {0.0f, 0.0f, 0.0f},
+		    {1.0f, 1.0f, 1.0f},*/
+
+			{0.0f, 0.5f, 1.0f},
+			{0.2f, 0.2f, 0.7f},
+			{0.1f, 0.8f, 0.5f},
+			{0.5f, 1.0f, 0.2f},
+			{0.4f, 0.3f, 0.8f},
+			{0.8f, 0.9f, 0.3f},
 		}
 	};
 	wrl::ComPtr<ID3D11Buffer> pConstantBuffer2;
@@ -242,27 +256,27 @@ void Renderer::DrawTestTriangle(float angle, float x, float z)
 	cbd2.StructureByteStride = 0u;
 	D3D11_SUBRESOURCE_DATA csd2 = {};
 	csd2.pSysMem = &cb2;
-	pDevice->CreateBuffer(&cbd2, &csd2, &pConstantBuffer2);
+	device->CreateBuffer(&cbd2, &csd2, &pConstantBuffer2);
 
 	// bind constant buffer to pixel shader
-	pContext->PSSetConstantBuffers(0u, 1u, pConstantBuffer2.GetAddressOf());
+	device_context->PSSetConstantBuffers(0u, 1u, pConstantBuffer2.GetAddressOf());
 
 
 	// create pixel shader
 	wrl::ComPtr<ID3D11PixelShader> pPixelShader;
 	wrl::ComPtr<ID3DBlob> pBlob;
 	D3DReadFileToBlob(L"PixelShader.cso", &pBlob);
-	pDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
+	device->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
 	// bind pixel shader
-	pContext->PSSetShader(pPixelShader.Get(), nullptr, 0u);
+	device_context->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 
 
 	// create vertex shader
 	wrl::ComPtr<ID3D11VertexShader> pVertexShader;
 	D3DReadFileToBlob(L"VertexShader.cso", &pBlob);
-	pDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pVertexShader);
+	device->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pVertexShader);
 	// bind vertex shader
-	pContext->VSSetShader(pVertexShader.Get(), nullptr, 0u);
+	device_context->VSSetShader(pVertexShader.Get(), nullptr, 0u);
 
 
 	// input (vertex) layout (2d position only)
@@ -271,18 +285,17 @@ void Renderer::DrawTestTriangle(float angle, float x, float z)
 	{
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	pDevice->CreateInputLayout(
+	device->CreateInputLayout(
 		ied, (UINT)std::size(ied),
 		pBlob->GetBufferPointer(),
 		pBlob->GetBufferSize(),
 		&pInputLayout
 	);
 	// bind vertex layout
-	pContext->IASetInputLayout(pInputLayout.Get());
+	device_context->IASetInputLayout(pInputLayout.Get());
 
 	// Set primitive topology to triangle list (groups of 3 vertices)
-	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// configure viewport
 	D3D11_VIEWPORT vp;
@@ -292,7 +305,7 @@ void Renderer::DrawTestTriangle(float angle, float x, float z)
 	vp.MaxDepth = 1;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
-	pContext->RSSetViewports(1u, &vp);
+	device_context->RSSetViewports(1u, &vp);
 
-	pContext->DrawIndexed((UINT)std::size(indices), 0u, 0u);
+	device_context->DrawIndexed((UINT)std::size(indices), 0u, 0u);
 }

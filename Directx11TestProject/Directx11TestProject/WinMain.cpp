@@ -1,4 +1,3 @@
-//#include "WindowsHeader.h"
 #include "Window.h"
 #include <iostream>
 #include <d3d11.h>
