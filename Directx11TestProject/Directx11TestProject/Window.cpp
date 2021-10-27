@@ -108,7 +108,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 			PostQuitMessage(0);
 			return 0;
 		}
+	case WM_MOUSEMOVE:
+		{
+			POINTS pt = MAKEPOINTS(lParam);
+			mouse.OnMouseMove(pt.x, pt.y);
+		}
 	}
+	
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

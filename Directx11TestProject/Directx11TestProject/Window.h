@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include <memory>
 #include <optional>
+#include "Mouse.h"
 
 class Window
 {
@@ -13,6 +14,7 @@ public:
 	Window& operator=(const Window&) = delete;
 	static std::optional<int> ProcessMessages();
 	Renderer& Gfx();
+	Mouse mouse;
 
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lParam);
