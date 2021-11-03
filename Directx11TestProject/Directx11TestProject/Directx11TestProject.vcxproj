@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Mouse.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Mouse.h" />
