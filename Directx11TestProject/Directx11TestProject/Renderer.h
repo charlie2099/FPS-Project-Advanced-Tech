@@ -1,5 +1,6 @@
 #pragma once
 #include "WindowsHeader.h"
+#include "VertexBuffer.h"
 #include <d3d11.h>
 #include <wrl.h>
 
@@ -12,8 +13,10 @@ public:
 	~Renderer() = default;
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	void DrawCube(float angle, float x, float y);
+	void DrawCube(float angle, float x, float y, float z);
 private:
+	//VertexBuffer v_buffer;
+
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swap_chain;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> device_context;

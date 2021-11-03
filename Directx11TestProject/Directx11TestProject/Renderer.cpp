@@ -96,10 +96,13 @@ void Renderer::ClearBuffer(float red, float green, float blue) noexcept
 	device_context->ClearDepthStencilView(depth_stencil_view.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void Renderer::DrawCube(float angle, float x, float z)
+void Renderer::DrawCube(float angle, float x, float y, float z)
 {
 	//namespace wrl = Microsoft::WRL;
 	//HRESULT hr;
+
+	//v_buffer.createVBuffer(device.Get(), vertices , 0u );
+	//v_buffer.bindVBuffer(device_context.Get(), 0, 1);
 
 	struct Vertex
 	{
@@ -149,6 +152,10 @@ void Renderer::DrawCube(float angle, float x, float z)
 	const UINT offset = 0u;
 	device_context->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 
+
+
+
+
 	// index buffer
 	const unsigned short indices[] =
 	{
@@ -191,7 +198,7 @@ void Renderer::DrawCube(float angle, float x, float z)
 			dx::XMMatrixTranspose(
 				dx::XMMatrixRotationZ(angle) *
 				dx::XMMatrixRotationX(angle) *
-				dx::XMMatrixTranslation(x, 0.0f, z + 4.0f) *
+				dx::XMMatrixTranslation(x, y, z + 4.0f) *
 				dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
 			) 
 		}
