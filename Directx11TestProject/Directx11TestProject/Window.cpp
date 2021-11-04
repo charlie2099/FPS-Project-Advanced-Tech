@@ -65,7 +65,7 @@ Window::~Window()
 	DestroyWindow(window_handle);
 }
 
-Renderer& Window::Gfx()
+Renderer& Window::getRenderer()
 {
 	return *renderer;
 }

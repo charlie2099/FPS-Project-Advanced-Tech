@@ -12,7 +12,7 @@ public:
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 	static std::optional<int> ProcessMessages();
-	Renderer& Gfx();
+	Renderer& getRenderer();
 	Mouse mouse;
 
 private:

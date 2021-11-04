@@ -45,6 +45,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsHeader.h">
@@ -74,6 +77,9 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
@@ -84,8 +90,11 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Level.txt">
-      <Filter>Header Files</Filter>
+    <Text Include="LevelMap2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="LevelMap1.txt">
+      <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
 </Project>

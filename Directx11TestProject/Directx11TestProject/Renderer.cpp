@@ -199,7 +199,7 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 				dx::XMMatrixRotationZ(angle) *
 				dx::XMMatrixRotationX(angle) *
 				dx::XMMatrixTranslation(x, y, z + 4.0f) *
-				dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
+				dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 60.0f) // 10
 			) 
 		}
 	};
