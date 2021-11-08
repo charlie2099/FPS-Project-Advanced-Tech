@@ -29,6 +29,4 @@ private:
 
 	UINT offset_ = 0u;
 	UINT stride_ = 0u;
-
-	
 };

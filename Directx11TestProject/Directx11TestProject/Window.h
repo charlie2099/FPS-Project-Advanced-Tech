@@ -9,8 +9,8 @@ class Window
 public:
 	Window(int width, int height, const char* name) noexcept;
     ~Window();
-	Window(const Window&) = delete;
-	Window& operator=(const Window&) = delete;
+	//Window(const Window&) = delete;
+	//Window& operator=(const Window&) = delete;
 	static std::optional<int> ProcessMessages();
 	Renderer& getRenderer();
 	Mouse mouse;
@@ -20,9 +20,9 @@ private:
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lParam);
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 
-	int width;
-	int height;
-	HWND window_handle;
+	UINT		width;
+	UINT		height;
+	HWND		window_handle;
 	std::unique_ptr<Renderer> renderer;
 
 private:

@@ -116,7 +116,7 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 
 	// vertex buffer 
 	/// clockwise
-	Vertex vertices[] =
+	const /*std::vector<*/Vertex/*>*/ vertices[] =
 	{
 		{-1.0, -1.0f, -1.0f },
 		{1.0f, -1.0f, -1.0f},
@@ -141,10 +141,10 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.CPUAccessFlags = 0u;
 	bd.MiscFlags = 0u;
-	bd.ByteWidth = sizeof(vertices);
-	bd.StructureByteStride = sizeof(Vertex);
+	bd.ByteWidth = /*vertices.size() **/  sizeof(vertices);
+	bd.StructureByteStride = sizeof(Vertex);  
 	D3D11_SUBRESOURCE_DATA sd = {};
-	sd.pSysMem = vertices;
+	sd.pSysMem = vertices/*.data()*/;
 	device->CreateBuffer(&bd, &sd, &pVertexBuffer);
 
 	// Bind vertex buffer to pipeline
@@ -155,9 +155,8 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 
 
 
-
-	// index buffer
-	const unsigned short indices[] =
+	/*DWORD indices[] =*/
+	const std::vector<unsigned short> indices =
 	{
 		0,2,1, 2,3,1,
 		1,3,5, 3,7,5,
@@ -171,20 +170,36 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 		0,4,1,
 		2,1,5,*/
 	};
-	wrl::ComPtr<ID3D11Buffer> pIndexBuffer;
-	D3D11_BUFFER_DESC ibd = {};
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.Usage = D3D11_USAGE_DEFAULT;
-	ibd.CPUAccessFlags = 0u;
-	ibd.MiscFlags = 0u;
-	ibd.ByteWidth = sizeof(indices);
-	ibd.StructureByteStride = sizeof(unsigned short);
-	D3D11_SUBRESOURCE_DATA isd = {};
-	isd.pSysMem = indices;
-	device->CreateBuffer(&ibd, &isd, &pIndexBuffer);
 
-	// bind index buffer
-	device_context->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+	index_buffer.Init(device.Get(), indices);
+	index_buffer.Bind(device_context.Get(), 0u);
+
+	//index_buffer.Init(device.Get(), indices, ARRAYSIZE(indices));
+	//index_buffer.Bind(device_context.Get(), 0u);
+
+
+	// index buffer
+	//wrl::ComPtr<ID3D11Buffer> pIndexBuffer;
+	//D3D11_BUFFER_DESC idx_buffer_desc = {};
+	//idx_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	//idx_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+	//idx_buffer_desc.CPUAccessFlags = 0u;
+	//idx_buffer_desc.MiscFlags = 0u;
+	//idx_buffer_desc.ByteWidth = /*indices.size() **/ sizeof(indices);
+	//idx_buffer_desc.StructureByteStride = sizeof(unsigned short);
+
+	//D3D11_SUBRESOURCE_DATA idx_subr_data = {};
+	//idx_subr_data.pSysMem = indices/*.data()*/;
+
+	//device->CreateBuffer(&idx_buffer_desc, &idx_subr_data, &pIndexBuffer);
+
+	//// bind index buffer
+	//device_context->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+
+
+
+	 
+
 
 	// constant buffer for transformation matrix
 	struct ConstantBuffer

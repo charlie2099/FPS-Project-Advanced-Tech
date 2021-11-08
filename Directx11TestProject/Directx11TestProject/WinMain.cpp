@@ -11,5 +11,5 @@ int CALLBACK WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
-    return Game{}.Go();
+    return Game{}.Run();
 }

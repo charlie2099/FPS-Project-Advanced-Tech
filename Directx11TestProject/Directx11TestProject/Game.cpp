@@ -7,7 +7,7 @@ Game::Game()
     //camera.init();
 }
 
-int Game::Go()
+int Game::Run()
 {
     // Message loop
     while (true)
@@ -30,10 +30,6 @@ void Game::Update()
 
     //level.loadMap(Level::Map::ONE, wnd);
 
-    /// <CREDIT>
-    /// Struggled with parsing a text file to to construct the level map from cubes. 
-    /// Andrei helped me configure it properly.
-    /// </CREDIT>
     std::fstream level_file;
     level_file.open("LevelMap1.txt");
     char wall = '#';
@@ -67,7 +63,7 @@ void Game::Update()
     }
     level_file.close();
 
-    //wnd.Gfx().DrawCube(-timer.Peek(), -5.0f, 5.0f); // def: (0,0),(0,0)
-    //wnd.Gfx().DrawCube(timer.Peek(), wnd.mouse.GetPosX() / 400.0f - 1.0f, -wnd.mouse.GetPosY() / 300.0f + 1.0f);
+    //wnd.getRenderer().DrawCube(-timer.Peek(), -5.0f, 5.0f, 5.0f); // def: (0,0),(0,0)
+    //wnd.getRenderer().DrawCube(timer.Peek(), wnd.mouse.GetPosX() / 400.0f - 1.0f, -wnd.mouse.GetPosY() / 300.0f + 1.0f, 5.0f);
     wnd.getRenderer().EndFrame();
 }

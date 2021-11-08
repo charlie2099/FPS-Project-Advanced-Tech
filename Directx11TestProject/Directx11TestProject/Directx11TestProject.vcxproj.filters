@@ -16,6 +16,12 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{1c97140d-0b88-46b7-8192-b2ce185dd216}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Buffers">
+      <UniqueIdentifier>{07d4962e-1bc5-43cd-84cc-0ecb5cb48f00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Buffers">
+      <UniqueIdentifier>{c68e925b-99b4-461e-8315-2e74f2ec8267}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">

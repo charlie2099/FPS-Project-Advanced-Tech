@@ -40,17 +40,18 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 Window::Window(int width, int height, const char* name) noexcept
 {
 	// calculate window size based on desired client region size
-	RECT wr;
-	wr.left = 100;
-	wr.right = width + wr.left;
-	wr.top = 100;
-	wr.bottom = height + wr.top;
-	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+	RECT rect;
+	rect.left = 100;
+	rect.right = width + rect.left;
+	rect.top = 100;
+	rect.bottom = height + rect.top;
+	AdjustWindowRect(&rect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+
 	// create window & get hWnd
 	window_handle = CreateWindow(
 		WindowClass::GetName(), name,
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
+		CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top,
 		nullptr, nullptr, WindowClass::GetInstance(), this
 	);
 	// newly created windows start off as hidden
@@ -121,13 +122,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 
 std::optional<int> Window::ProcessMessages()
 {
-	MSG msg;
+	MSG msg = {0};
 
-	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	while (PeekMessage(&msg, nullptr, NULL, NULL, PM_REMOVE))
 	{
 		if (msg.message == WM_QUIT)
 		{
-			return msg.wParam;
+			return msg.wParam;    
 		}
 
 		TranslateMessage(&msg);

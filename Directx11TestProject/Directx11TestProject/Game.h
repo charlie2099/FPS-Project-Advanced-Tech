@@ -9,11 +9,11 @@ class Game
 {
 public:
 	Game();
-	
-	int Go();
+	int Run();
+
 private:
 	void Update();
-private:
+
 	Window wnd;
 	Camera camera;
 	//Level level;
