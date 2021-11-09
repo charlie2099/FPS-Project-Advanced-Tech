@@ -1,10 +1,13 @@
 #include "Game.h"
 
+namespace dx = DirectX;
+
 Game::Game()
     :
     wnd(800, 600, "FPS Window")
 {
     //camera.init();
+    wnd.getRenderer().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
 }
 
 int Game::Run()
@@ -23,13 +26,52 @@ int Game::Run()
 
 void Game::Update()
 {
+    const auto dt = timer.Mark() * speed_factor;
     //camera.update();
 
     const float c = sin(timer.Peek()) / 2.0f + 0.5f;
     wnd.getRenderer().ClearBuffer(0, 0, 0); 
 
-    //level.loadMap(Level::Map::ONE, wnd);
+    wnd.getRenderer().SetCamera(camera.GetMatrix());
 
+    while (const auto e = wnd.kbd.ReadKey())
+    {
+        if (!e->IsPress())
+        {
+            continue;
+        }
+    }
+
+    if (wnd.kbd.KeyIsPressed('W'))
+    {
+        camera.Translate({ 0.0f,0.0f,dt });
+    }
+    if (wnd.kbd.KeyIsPressed('A'))
+    {
+        camera.Translate({ -dt,0.0f,0.0f });
+    }
+    if (wnd.kbd.KeyIsPressed('S'))
+    {
+        camera.Translate({ 0.0f,0.0f,-dt });
+    }
+    if (wnd.kbd.KeyIsPressed('D'))
+    {
+        camera.Translate({ dt,0.0f,0.0f });
+    }
+    if (wnd.kbd.KeyIsPressed('R'))
+    {
+        camera.Translate({ 0.0f,dt,0.0f });
+    }
+    if (wnd.kbd.KeyIsPressed('F'))
+    {
+        camera.Translate({ 0.0f,-dt,0.0f });
+    }
+
+
+
+
+
+    //level.loadMap(Level::Map::ONE, wnd);
     std::fstream level_file;
     level_file.open("LevelMap1.txt");
     char wall = '#';

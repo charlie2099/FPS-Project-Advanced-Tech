@@ -115,8 +115,9 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 	};
 
 	// vertex buffer 
-	/// clockwise
-	const /*std::vector<*/Vertex/*>*/ vertices[] =
+	const Vertex vertices[] =
+	//const /*std::vector<*/Vertex/*>*/ vertices[] =
+	//const std::vector<Vertex> vertices =
 	{
 		{-1.0, -1.0f, -1.0f },
 		{1.0f, -1.0f, -1.0f},
@@ -135,18 +136,21 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 		//{0.0f, -1.0f, 255, 0, 0, 0}, 
 	};
 
+	//vertex_buffer.Init(device.Get(), vertices, 0u);
+	//vertex_buffer.Bind(device_context.Get(), 0u, 1u);
+
 	wrl::ComPtr<ID3D11Buffer> pVertexBuffer;
 	D3D11_BUFFER_DESC bd = {};
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.CPUAccessFlags = 0u;
 	bd.MiscFlags = 0u;
-	bd.ByteWidth = /*vertices.size() **/  sizeof(vertices);
+	bd.ByteWidth = sizeof(Vertex) * ARRAYSIZE(vertices);
 	bd.StructureByteStride = sizeof(Vertex);  
 	D3D11_SUBRESOURCE_DATA sd = {};
 	sd.pSysMem = vertices/*.data()*/;
 	device->CreateBuffer(&bd, &sd, &pVertexBuffer);
-
+	
 	// Bind vertex buffer to pipeline
 	const UINT stride = sizeof(Vertex);
 	const UINT offset = 0u;
@@ -154,8 +158,7 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 
 
 
-
-	/*DWORD indices[] =*/
+	// index buffer
 	const std::vector<unsigned short> indices =
 	{
 		0,2,1, 2,3,1,
@@ -174,31 +177,9 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 	index_buffer.Init(device.Get(), indices);
 	index_buffer.Bind(device_context.Get(), 0u);
 
-	//index_buffer.Init(device.Get(), indices, ARRAYSIZE(indices));
-	//index_buffer.Bind(device_context.Get(), 0u);
-
-
-	// index buffer
-	//wrl::ComPtr<ID3D11Buffer> pIndexBuffer;
-	//D3D11_BUFFER_DESC idx_buffer_desc = {};
-	//idx_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	//idx_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	//idx_buffer_desc.CPUAccessFlags = 0u;
-	//idx_buffer_desc.MiscFlags = 0u;
-	//idx_buffer_desc.ByteWidth = /*indices.size() **/ sizeof(indices);
-	//idx_buffer_desc.StructureByteStride = sizeof(unsigned short);
-
-	//D3D11_SUBRESOURCE_DATA idx_subr_data = {};
-	//idx_subr_data.pSysMem = indices/*.data()*/;
-
-	//device->CreateBuffer(&idx_buffer_desc, &idx_subr_data, &pIndexBuffer);
-
-	//// bind index buffer
-	//device_context->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 
 
 
-	 
 
 
 	// constant buffer for transformation matrix
@@ -330,4 +311,24 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 	device_context->RSSetViewports(1u, &vp);
 
 	device_context->DrawIndexed((UINT)std::size(indices), 0u, 0u);
+}
+
+void Renderer::SetProjection(DirectX::FXMMATRIX proj) noexcept
+{
+	projection = proj;
+}
+
+DirectX::XMMATRIX Renderer::GetProjection() const noexcept
+{
+	return projection;
+}
+
+void Renderer::SetCamera(DirectX::FXMMATRIX cam) noexcept
+{
+	camera = cam;
+}
+
+DirectX::XMMATRIX Renderer::GetCamera() const noexcept
+{
+	return camera;
 }

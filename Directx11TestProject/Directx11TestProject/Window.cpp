@@ -114,6 +114,28 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 			POINTS pt = MAKEPOINTS(lParam);
 			mouse.OnMouseMove(pt.x, pt.y);
 		}
+
+
+	case WM_KILLFOCUS:
+		{
+			kbd.ClearState();
+			break;
+		}
+	case WM_KEYDOWN:
+		{
+			kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
+			break;
+		}
+		case WM_KEYUP:
+		{
+			kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
+			break;
+		}
+		case WM_CHAR:
+		{
+			kbd.OnChar(static_cast<unsigned char>(wParam));
+			break;
+		}
 	}
 	
 

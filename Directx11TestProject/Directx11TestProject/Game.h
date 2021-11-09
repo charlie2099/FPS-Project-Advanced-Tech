@@ -18,4 +18,6 @@ private:
 	Camera camera;
 	//Level level;
 	Timer timer;
+
+	float speed_factor = 1.0f;
 };

@@ -1,8 +1,9 @@
 #pragma once
 #include "Renderer.h"
+#include "Mouse.h"
+#include "Keyboard.h"
 #include <memory>
 #include <optional>
-#include "Mouse.h"
 
 class Window
 {
@@ -13,6 +14,7 @@ public:
 	//Window& operator=(const Window&) = delete;
 	static std::optional<int> ProcessMessages();
 	Renderer& getRenderer();
+	Keyboard kbd;
 	Mouse mouse;
 
 private:
