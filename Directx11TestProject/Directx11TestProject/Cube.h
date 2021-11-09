@@ -1,8 +1,8 @@
 #pragma once
-#include "Drawable.h"
+#include "DrawableBase.h"
 #include <random>
 
-class Cube : public Drawable
+class Cube : public DrawableBase<Cube>
 {
 public:
 	Cube(Renderer& renderer, std::mt19937& rng,
