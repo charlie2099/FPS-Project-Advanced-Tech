@@ -7,7 +7,7 @@ Game::Game()
     wnd(800, 600, "FPS Window")
 {
     //camera.init();
-    wnd.getRenderer().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
+    wnd.getRenderer().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f)); // 1.0f, 3.0f / 4.0f, 0.5f, 60.0f
 }
 
 int Game::Run()
@@ -27,11 +27,10 @@ int Game::Run()
 void Game::Update()
 {
     const auto dt = timer.Mark() * speed_factor;
-    //camera.update();
-
     const float c = sin(timer.Peek()) / 2.0f + 0.5f;
     wnd.getRenderer().ClearBuffer(0, 0, 0); 
 
+    //wnd.getRenderer().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
     wnd.getRenderer().SetCamera(camera.GetMatrix());
 
     while (const auto e = wnd.kbd.ReadKey())

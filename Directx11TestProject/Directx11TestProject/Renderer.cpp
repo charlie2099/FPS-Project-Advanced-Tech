@@ -207,6 +207,7 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 	cbd.MiscFlags = 0u;
 	cbd.ByteWidth = sizeof(const_buffer);
 	cbd.StructureByteStride = 0u;
+
 	D3D11_SUBRESOURCE_DATA csd = {};
 	csd.pSysMem = &const_buffer;
 	device->CreateBuffer(&cbd, &csd, &pConstantBuffer);
