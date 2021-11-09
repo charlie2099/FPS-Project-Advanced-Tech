@@ -82,6 +82,16 @@ Renderer::Renderer(HWND hWnd)
 
 	// bind depth stencil view to OM
 	device_context->OMSetRenderTargets(1u, render_target_view.GetAddressOf(), depth_stencil_view.Get());
+
+	// configure viewport
+	D3D11_VIEWPORT vp;
+	vp.Width = 800;
+	vp.Height = 600;
+	vp.MinDepth = 0;
+	vp.MaxDepth = 1;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	device_context->RSSetViewports(1u, &vp);
 }
 
 void Renderer::EndFrame()
@@ -96,223 +106,228 @@ void Renderer::ClearBuffer(float red, float green, float blue) noexcept
 	device_context->ClearDepthStencilView(depth_stencil_view.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void Renderer::DrawCube(float angle, float x, float y, float z)
+void Renderer::DrawIndexed(UINT count) noexcept
 {
-	//namespace wrl = Microsoft::WRL;
-	//HRESULT hr;
-
-	//v_buffer.createVBuffer(device.Get(), vertices , 0u );
-	//v_buffer.bindVBuffer(device_context.Get(), 0, 1);
-
-	struct Vertex
-	{
-		struct
-		{  
-			float x;
-			float y;
-			float z;
-		} pos;
-	};
-
-	// vertex buffer 
-	const Vertex vertices[] =
-	//const /*std::vector<*/Vertex/*>*/ vertices[] =
-	//const std::vector<Vertex> vertices =
-	{
-		{-1.0, -1.0f, -1.0f },
-		{1.0f, -1.0f, -1.0f},
-		{-1.0f, 1.0f, -1.0f},
-		{1.0f, 1.0f, -1.0f},
-		{-1.0f, -1.0f, 1.0f},
-		{1.0f, -1.0f, 1.0f},
-		{-1.0f, 1.0f, 1.0f},
-		{1.0f, 1.0f, 1.0f},
-
-		//{0.0f, 0.5f, 255, 0, 0, 0}, //v1
-		//{0.5f, -0.5f, 0, 255, 0, 0}, //v2..
-		//{-0.5f, -0.5f, 0, 0, 255, 0},
-		//{-0.3f, 0.3f, 0, 255, 0, 0},
-		//{0.3f, 0.3f, 0, 0, 255, 0}, 
-		//{0.0f, -1.0f, 255, 0, 0, 0}, 
-	};
-
-	//vertex_buffer.Init(device.Get(), vertices, 0u);
-	//vertex_buffer.Bind(device_context.Get(), 0u, 1u);
-
-	wrl::ComPtr<ID3D11Buffer> pVertexBuffer;
-	D3D11_BUFFER_DESC bd = {};
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.CPUAccessFlags = 0u;
-	bd.MiscFlags = 0u;
-	bd.ByteWidth = sizeof(Vertex) * ARRAYSIZE(vertices);
-	bd.StructureByteStride = sizeof(Vertex);  
-	D3D11_SUBRESOURCE_DATA sd = {};
-	sd.pSysMem = vertices/*.data()*/;
-	device->CreateBuffer(&bd, &sd, &pVertexBuffer);
-	
-	// Bind vertex buffer to pipeline
-	const UINT stride = sizeof(Vertex);
-	const UINT offset = 0u;
-	device_context->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
-
-
-
-	// index buffer
-	const std::vector<unsigned short> indices =
-	{
-		0,2,1, 2,3,1,
-		1,3,5, 3,7,5,
-		2,6,3, 3,6,7,
-		4,5,7, 4,7,6,
-		0,4,2, 2,4,6,
-		0,1,4, 1,5,4
-
-		/*0,1,2,
-		0,2,3,
-		0,4,1,
-		2,1,5,*/
-	};
-
-	index_buffer.Init(device.Get(), indices);
-	index_buffer.Bind(device_context.Get(), 0u);
-
-
-
-
-
-
-	// constant buffer for transformation matrix
-	struct ConstantBuffer
-	{
-		dx::XMMATRIX transform;
-	};
-
-	const ConstantBuffer const_buffer =
-	{
-		{
-			dx::XMMatrixTranspose(
-				dx::XMMatrixRotationZ(angle) *
-				dx::XMMatrixRotationX(angle) *
-				dx::XMMatrixTranslation(x, y, z + 4.0f) *
-				dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 60.0f) // 10
-			) 
-		}
-	};
-	wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
-	D3D11_BUFFER_DESC cbd;
-	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbd.Usage = D3D11_USAGE_DYNAMIC;
-	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbd.MiscFlags = 0u;
-	cbd.ByteWidth = sizeof(const_buffer);
-	cbd.StructureByteStride = 0u;
-
-	D3D11_SUBRESOURCE_DATA csd = {};
-	csd.pSysMem = &const_buffer;
-	device->CreateBuffer(&cbd, &csd, &pConstantBuffer);
-
-	// bind constant buffer to vertex shader
-	device_context->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
-
-	struct ConstantBuffer2
-	{
-		struct
-		{
-			float r;
-			float g;
-			float b;
-			float a;
-		} face_colours[6];
-	};
-	struct ConstantBuffer2 cb2 =
-	{
-		{
-			//{1.0f, 0.0f, 1.0f}, //pink
-			//{0.0f, 1.0f, 0.0f}, //red
-			//{0.0f, 1.0f, 0.0f}, //green
-			//{0.0f, 0.0f, 1.0f}, //blue
-			//{1.0f, 1.0f, 0.0f}, // yellow
-			//{0.0f, 1.0f, 1.0f}, //light-blue
-
-		    /*{0.0f, 0.0f, 0.0f},
-		    {1.0f, 1.0f, 1.0f},
-		    {0.0f, 0.0f, 0.0f},
-		    {1.0f, 1.0f, 1.0f},
-		    {0.0f, 0.0f, 0.0f},
-		    {1.0f, 1.0f, 1.0f},*/
-
-			{0.0f, 0.5f, 1.0f},
-			{0.2f, 0.2f, 0.7f},
-			{0.1f, 0.8f, 0.5f},
-			{0.5f, 1.0f, 0.2f},
-			{0.4f, 0.3f, 0.8f},
-			{0.8f, 0.9f, 0.3f},
-		}
-	};
-	wrl::ComPtr<ID3D11Buffer> pConstantBuffer2;
-	D3D11_BUFFER_DESC cbd2;
-	cbd2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbd2.Usage = D3D11_USAGE_DYNAMIC;
-	cbd2.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbd2.MiscFlags = 0u;
-	cbd2.ByteWidth = sizeof(cb2);
-	cbd2.StructureByteStride = 0u;
-	D3D11_SUBRESOURCE_DATA csd2 = {};
-	csd2.pSysMem = &cb2;
-	device->CreateBuffer(&cbd2, &csd2, &pConstantBuffer2);
-
-	// bind constant buffer to pixel shader
-	device_context->PSSetConstantBuffers(0u, 1u, pConstantBuffer2.GetAddressOf());
-
-
-	// create pixel shader
-	wrl::ComPtr<ID3D11PixelShader> pPixelShader;
-	wrl::ComPtr<ID3DBlob> pBlob;
-	D3DReadFileToBlob(L"PixelShader.cso", &pBlob);
-	device->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
-	// bind pixel shader
-	device_context->PSSetShader(pPixelShader.Get(), nullptr, 0u);
-
-
-	// create vertex shader
-	wrl::ComPtr<ID3D11VertexShader> pVertexShader;
-	D3DReadFileToBlob(L"VertexShader.cso", &pBlob);
-	device->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pVertexShader);
-	// bind vertex shader
-	device_context->VSSetShader(pVertexShader.Get(), nullptr, 0u);
-
-
-	// input (vertex) layout (2d position only)
-	wrl::ComPtr<ID3D11InputLayout>pInputLayout;
-	const D3D11_INPUT_ELEMENT_DESC ied[] =
-	{
-		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-	device->CreateInputLayout(
-		ied, (UINT)std::size(ied),
-		pBlob->GetBufferPointer(),
-		pBlob->GetBufferSize(),
-		&pInputLayout
-	);
-	// bind vertex layout
-	device_context->IASetInputLayout(pInputLayout.Get());
-
-	// Set primitive topology to triangle list (groups of 3 vertices)
-	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// configure viewport
-	D3D11_VIEWPORT vp;
-	vp.Width = 800;
-	vp.Height = 600;
-	vp.MinDepth = 0;
-	vp.MaxDepth = 1;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	device_context->RSSetViewports(1u, &vp);
-
-	device_context->DrawIndexed((UINT)std::size(indices), 0u, 0u);
+	device_context->DrawIndexed(count, 0u, 0u);
 }
+
+//void Renderer::DrawCube(float angle, float x, float y, float z)
+//{
+//	//namespace wrl = Microsoft::WRL;
+//	//HRESULT hr;
+//
+//	//v_buffer.createVBuffer(device.Get(), vertices , 0u );
+//	//v_buffer.bindVBuffer(device_context.Get(), 0, 1);
+//
+//	struct Vertex
+//	{
+//		struct
+//		{  
+//			float x;
+//			float y;
+//			float z;
+//		} pos;
+//	};
+//
+//	// vertex buffer 
+//	const Vertex vertices[] =
+//	//const /*std::vector<*/Vertex/*>*/ vertices[] =
+//	//const std::vector<Vertex> vertices =
+//	{
+//		{-1.0, -1.0f, -1.0f },
+//		{1.0f, -1.0f, -1.0f},
+//		{-1.0f, 1.0f, -1.0f},
+//		{1.0f, 1.0f, -1.0f},
+//		{-1.0f, -1.0f, 1.0f},
+//		{1.0f, -1.0f, 1.0f},
+//		{-1.0f, 1.0f, 1.0f},
+//		{1.0f, 1.0f, 1.0f},
+//
+//		//{0.0f, 0.5f, 255, 0, 0, 0}, //v1
+//		//{0.5f, -0.5f, 0, 255, 0, 0}, //v2..
+//		//{-0.5f, -0.5f, 0, 0, 255, 0},
+//		//{-0.3f, 0.3f, 0, 255, 0, 0},
+//		//{0.3f, 0.3f, 0, 0, 255, 0}, 
+//		//{0.0f, -1.0f, 255, 0, 0, 0}, 
+//	};
+//
+//	//vertex_buffer.Init(device.Get(), vertices, 0u);
+//	//vertex_buffer.Bind(device_context.Get(), 0u, 1u);
+//
+//	wrl::ComPtr<ID3D11Buffer> pVertexBuffer;
+//	D3D11_BUFFER_DESC bd = {};
+//	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+//	bd.Usage = D3D11_USAGE_DEFAULT;
+//	bd.CPUAccessFlags = 0u;
+//	bd.MiscFlags = 0u;
+//	bd.ByteWidth = sizeof(Vertex) * ARRAYSIZE(vertices);
+//	bd.StructureByteStride = sizeof(Vertex);  
+//	D3D11_SUBRESOURCE_DATA sd = {};
+//	sd.pSysMem = vertices/*.data()*/;
+//	device->CreateBuffer(&bd, &sd, &pVertexBuffer);
+//	
+//	// Bind vertex buffer to pipeline
+//	const UINT stride = sizeof(Vertex);
+//	const UINT offset = 0u;
+//	device_context->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
+//
+//
+//
+//	// index buffer
+//	const std::vector<unsigned short> indices =
+//	{
+//		0,2,1, 2,3,1,
+//		1,3,5, 3,7,5,
+//		2,6,3, 3,6,7,
+//		4,5,7, 4,7,6,
+//		0,4,2, 2,4,6,
+//		0,1,4, 1,5,4
+//
+//		/*0,1,2,
+//		0,2,3,
+//		0,4,1,
+//		2,1,5,*/
+//	};
+//
+//	//index_buffer.Init(device.Get(), indices);
+//	//index_buffer.Bind(device_context.Get(), 0u);
+//
+//
+//
+//
+//
+//
+//	// constant buffer for transformation matrix
+//	struct ConstantBuffer
+//	{
+//		dx::XMMATRIX transform;
+//	};
+//
+//	const ConstantBuffer const_buffer =
+//	{
+//		{
+//			dx::XMMatrixTranspose(
+//				dx::XMMatrixRotationZ(angle) *
+//				dx::XMMatrixRotationX(angle) *
+//				dx::XMMatrixTranslation(x, y, z + 4.0f) *
+//				dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 60.0f) // 10
+//			) 
+//		}
+//	};
+//	wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
+//	D3D11_BUFFER_DESC cbd;
+//	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+//	cbd.Usage = D3D11_USAGE_DYNAMIC;
+//	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+//	cbd.MiscFlags = 0u;
+//	cbd.ByteWidth = sizeof(const_buffer);
+//	cbd.StructureByteStride = 0u;
+//
+//	D3D11_SUBRESOURCE_DATA csd = {};
+//	csd.pSysMem = &const_buffer;
+//	device->CreateBuffer(&cbd, &csd, &pConstantBuffer);
+//
+//	// bind constant buffer to vertex shader
+//	device_context->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
+//
+//	struct ConstantBuffer2
+//	{
+//		struct
+//		{
+//			float r;
+//			float g;
+//			float b;
+//			float a;
+//		} face_colours[6];
+//	};
+//	struct ConstantBuffer2 cb2 =
+//	{
+//		{
+//			//{1.0f, 0.0f, 1.0f}, //pink
+//			//{0.0f, 1.0f, 0.0f}, //red
+//			//{0.0f, 1.0f, 0.0f}, //green
+//			//{0.0f, 0.0f, 1.0f}, //blue
+//			//{1.0f, 1.0f, 0.0f}, // yellow
+//			//{0.0f, 1.0f, 1.0f}, //light-blue
+//
+//		    /*{0.0f, 0.0f, 0.0f},
+//		    {1.0f, 1.0f, 1.0f},
+//		    {0.0f, 0.0f, 0.0f},
+//		    {1.0f, 1.0f, 1.0f},
+//		    {0.0f, 0.0f, 0.0f},
+//		    {1.0f, 1.0f, 1.0f},*/
+//
+//			{0.0f, 0.5f, 1.0f},
+//			{0.2f, 0.2f, 0.7f},
+//			{0.1f, 0.8f, 0.5f},
+//			{0.5f, 1.0f, 0.2f},
+//			{0.4f, 0.3f, 0.8f},
+//			{0.8f, 0.9f, 0.3f},
+//		}
+//	};
+//	wrl::ComPtr<ID3D11Buffer> pConstantBuffer2;
+//	D3D11_BUFFER_DESC cbd2;
+//	cbd2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+//	cbd2.Usage = D3D11_USAGE_DYNAMIC;
+//	cbd2.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+//	cbd2.MiscFlags = 0u;
+//	cbd2.ByteWidth = sizeof(cb2);
+//	cbd2.StructureByteStride = 0u;
+//	D3D11_SUBRESOURCE_DATA csd2 = {};
+//	csd2.pSysMem = &cb2;
+//	device->CreateBuffer(&cbd2, &csd2, &pConstantBuffer2);
+//
+//	// bind constant buffer to pixel shader
+//	device_context->PSSetConstantBuffers(0u, 1u, pConstantBuffer2.GetAddressOf());
+//
+//
+//	// create pixel shader
+//	wrl::ComPtr<ID3D11PixelShader> pPixelShader;
+//	wrl::ComPtr<ID3DBlob> pBlob;
+//	D3DReadFileToBlob(L"PixelShader.cso", &pBlob);
+//	device->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
+//	// bind pixel shader
+//	device_context->PSSetShader(pPixelShader.Get(), nullptr, 0u);
+//
+//
+//	// create vertex shader
+//	wrl::ComPtr<ID3D11VertexShader> pVertexShader;
+//	D3DReadFileToBlob(L"VertexShader.cso", &pBlob);
+//	device->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pVertexShader);
+//	// bind vertex shader
+//	device_context->VSSetShader(pVertexShader.Get(), nullptr, 0u);
+//
+//
+//	// input (vertex) layout (2d position only)
+//	wrl::ComPtr<ID3D11InputLayout>pInputLayout;
+//	const D3D11_INPUT_ELEMENT_DESC ied[] =
+//	{
+//		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+//	};
+//	device->CreateInputLayout(
+//		ied, (UINT)std::size(ied),
+//		pBlob->GetBufferPointer(),
+//		pBlob->GetBufferSize(),
+//		&pInputLayout
+//	);
+//	// bind vertex layout
+//	device_context->IASetInputLayout(pInputLayout.Get());
+//
+//	// Set primitive topology to triangle list (groups of 3 vertices)
+//	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+//
+//	// configure viewport
+//	D3D11_VIEWPORT vp;
+//	vp.Width = 800;
+//	vp.Height = 600;
+//	vp.MinDepth = 0;
+//	vp.MaxDepth = 1;
+//	vp.TopLeftX = 0;
+//	vp.TopLeftY = 0;
+//	device_context->RSSetViewports(1u, &vp);
+//
+//	device_context->DrawIndexed((UINT)std::size(indices), 0u, 0u);
+//}
 
 void Renderer::SetProjection(DirectX::FXMMATRIX proj) noexcept
 {
@@ -324,12 +339,12 @@ DirectX::XMMATRIX Renderer::GetProjection() const noexcept
 	return projection;
 }
 
-void Renderer::SetCamera(DirectX::FXMMATRIX cam) noexcept
-{
-	camera = cam;
-}
-
-DirectX::XMMATRIX Renderer::GetCamera() const noexcept
-{
-	return camera;
-}
+//void Renderer::SetCamera(DirectX::FXMMATRIX cam) noexcept
+//{
+//	camera = cam;
+//}
+//
+//DirectX::XMMATRIX Renderer::GetCamera() const noexcept
+//{
+//	return camera;
+//}
