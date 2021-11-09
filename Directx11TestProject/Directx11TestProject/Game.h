@@ -1,6 +1,6 @@
 #pragma once
 #include "Window.h"
-//#include "Camera.h"
+#include "Camera.h"
 #include "Timer.h"
 //#include "Level.h"
 #include "Cube.h"
@@ -17,7 +17,7 @@ private:
 	void Update();
 
 	Window wnd;
-	//Camera camera;
+	Camera camera;
 	//Level level;
 	Timer timer;
 

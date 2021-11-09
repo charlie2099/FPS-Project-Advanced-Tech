@@ -339,12 +339,12 @@ DirectX::XMMATRIX Renderer::GetProjection() const noexcept
 	return projection;
 }
 
-//void Renderer::SetCamera(DirectX::FXMMATRIX cam) noexcept
-//{
-//	camera = cam;
-//}
-//
-//DirectX::XMMATRIX Renderer::GetCamera() const noexcept
-//{
-//	return camera;
-//}
+void Renderer::SetCamera(DirectX::FXMMATRIX cam) noexcept
+{
+	camera = cam;
+}
+
+DirectX::XMMATRIX Renderer::GetCamera() const noexcept
+{
+	return camera;
+}

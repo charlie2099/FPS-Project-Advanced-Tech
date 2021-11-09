@@ -23,7 +23,8 @@ Game::Game()
             ddist, odist, rdist
             ));
     }
-    wnd.getRenderer().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 60.0f));
+    //wnd.getRenderer().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 60.0f));
+    wnd.getRenderer().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
 
 int Game::Run()
@@ -45,6 +46,41 @@ void Game::Update()
     const auto dt = timer.Mark() * speed_factor;
     const float c = sin(timer.Peek()) / 2.0f + 0.5f;
     wnd.getRenderer().ClearBuffer(0, 0, 0); 
+    wnd.getRenderer().SetCamera(camera.GetMatrix());
+
+    /*while (const auto e = wnd.kbd.ReadKey())
+    {
+        if (!e->IsPress())
+        {
+            continue;
+        }
+    }*/
+    
+    if (wnd.kbd.KeyIsPressed('W'))
+    {
+        camera.Translate({ 0.0f,0.0f,dt });
+        wnd.getRenderer().ClearBuffer(1.0f, 0, 0);
+    }
+    if (wnd.kbd.KeyIsPressed('A'))
+    {
+        camera.Translate({ -dt,0.0f,0.0f });
+    }
+    if (wnd.kbd.KeyIsPressed('S'))
+    {
+        camera.Translate({ 0.0f,0.0f,-dt });
+    }
+    if (wnd.kbd.KeyIsPressed('D'))
+    {
+        camera.Translate({ dt,0.0f,0.0f });
+    }
+    if (wnd.kbd.KeyIsPressed('R'))
+    {
+        camera.Translate({ 0.0f,dt,0.0f });
+    }
+    if (wnd.kbd.KeyIsPressed('F'))
+    {
+        camera.Translate({ 0.0f,-dt,0.0f });
+    }
 
     for (auto& c : cubes)
     {
