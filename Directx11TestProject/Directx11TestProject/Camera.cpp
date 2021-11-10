@@ -28,9 +28,9 @@ DirectX::XMMATRIX Camera::GetMatrix() const noexcept
 
 void Camera::Reset() noexcept
 {
-	pos = { 0.0f,7.5f,-18.0f };
-	pitch = 0.0f;
-	yaw = 0.0f;
+	pos = { 4.0f, -14.0f, 5.0f }; // 0.0f,0.0f,-18.0f
+	pitch = -1.6f; //0.0f //-1.5
+	yaw = 0.0f; //0.0f
 }
 
 void Camera::Rotate(float dx, float dy) noexcept

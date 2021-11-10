@@ -16,8 +16,9 @@ private:
 
 	Window wnd;
 	Camera camera;
-	//Level level;
 	Timer timer;
+	//Level level;
+	//Cube cube;
 
 	float speed_factor = 1.0f;
 };

@@ -18,9 +18,12 @@ public:
 
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	void DrawCube(float angle, float x, float y, float z);
-	//void InitCube(float angle, float x, float y, float z);
+	void InitCube(float angle, float x, float y, float z);
 	//void DrawCube();
+	//void SetIndicesCount(const std::vector<unsigned short>& indices);
+	//std::vector<unsigned short>& GetIndicesCount();
+	//Microsoft::WRL::ComPtr<ID3D11Device>& GetDevice();
+	//Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetDeviceContext();
 
 	// Camera
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
@@ -31,6 +34,8 @@ public:
 private:
 	DirectX::XMMATRIX projection;
 	DirectX::XMMATRIX camera;
+
+	std::vector<unsigned short> indices_;
 
 	/// BUFFERS
 	VertexBuffer vertex_buffer;

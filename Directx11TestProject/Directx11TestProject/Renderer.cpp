@@ -96,7 +96,7 @@ void Renderer::ClearBuffer(float red, float green, float blue) noexcept
 	device_context->ClearDepthStencilView(depth_stencil_view.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void Renderer::DrawCube(float angle, float x, float y, float z)
+void Renderer::InitCube(float angle, float x, float y, float z)
 {
 	//v_buffer.createVBuffer(device.Get(), vertices , 0u );
 	//v_buffer.bindVBuffer(device_context.Get(), 0, 1);
@@ -309,8 +309,39 @@ void Renderer::DrawCube(float angle, float x, float y, float z)
 	vp.TopLeftY = 0;
 	device_context->RSSetViewports(1u, &vp);
 
+	//SetIndicesCount(indices);
 	device_context->DrawIndexed((UINT)std::size(indices), 0u, 0u);
 }
+
+/*
+void Renderer::SetIndicesCount(const std::vector<unsigned short>& indices)
+{
+	indices_ = indices;
+}
+
+std::vector<unsigned short>& Renderer::GetIndicesCount()
+{
+	return indices_;
+}
+
+void Renderer::DrawCube()
+{
+	device_context->DrawIndexed((UINT)std::size(GetIndicesCount()), 0u, 0u);
+	//device_context->DrawIndexed(GetIndicesCount(), 0u, 0u);
+}
+*/
+
+/*
+Microsoft::WRL::ComPtr<ID3D11Device>& Renderer::GetDevice()
+{
+	return device;
+}
+
+Microsoft::WRL::ComPtr<ID3D11DeviceContext>& Renderer::GetDeviceContext()
+{
+	return device_context;
+}
+*/
 
 void Renderer::SetProjection(DirectX::FXMMATRIX proj) noexcept
 {
