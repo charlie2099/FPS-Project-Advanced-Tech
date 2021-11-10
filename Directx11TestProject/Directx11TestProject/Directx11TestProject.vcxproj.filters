@@ -22,18 +22,6 @@
     <Filter Include="Header Files\Buffers">
       <UniqueIdentifier>{c68e925b-99b4-461e-8315-2e74f2ec8267}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Input">
-      <UniqueIdentifier>{5962c199-04d9-498f-956e-e750d891d33f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Input">
-      <UniqueIdentifier>{3fe0db6a-fa55-4d22-82d7-09fdc2844ff1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Shaders">
-      <UniqueIdentifier>{7cf925e5-9cdb-4a16-9c82-1b4a992f4137}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Shaders">
-      <UniqueIdentifier>{ec08830e-5b59-4842-b230-73f9ef9b93b2}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -51,47 +39,23 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Topology.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bindable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputLayout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
-      <Filter>Source Files\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="TransformCbuf.cpp">
-      <Filter>Source Files\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Source Files\Buffers</Filter>
-    </ClCompile>
     <ClCompile Include="Keyboard.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="PIxelShader.cpp">
-      <Filter>Source Files\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexShader.cpp">
-      <Filter>Source Files\Shaders</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +74,15 @@
     <ClInclude Include="Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -119,49 +92,7 @@
     <ClInclude Include="MathCode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bindable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Topology.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputLayout.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BindableBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstantBuffer.h">
-      <Filter>Header Files\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
-      <Filter>Header Files\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformCbuf.h">
-      <Filter>Header Files\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>Header Files\Buffers</Filter>
-    </ClInclude>
     <ClInclude Include="Keyboard.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShader.h">
-      <Filter>Header Files\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShader.h">
-      <Filter>Header Files\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawableBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -40,7 +40,7 @@ void Level::loadMap(Map lvl_map, Window& wnd)
         {
             for (int i = 0; i < 2; i++)
             {
-                //wnd.getRenderer().DrawCube(angle, x * SPACING_X - (row_len + 1), y * SPACING_Y - column_len, z + (SPACING_Z * i));
+                wnd.getRenderer().DrawCube(angle, x * SPACING_X - (row_len + 1), y * SPACING_Y - column_len, z + (SPACING_Z * i));
             }
         }
     }
