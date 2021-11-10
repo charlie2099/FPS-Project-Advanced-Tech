@@ -4,7 +4,7 @@ namespace dx = DirectX;
 
 Game::Game()
     :
-    wnd(800, 600, "FPS Window")
+    wnd(1280, 720, "FPS Window")
 {
     //wnd.getRenderer().initCube(angle, x * SPACING_X - (row_len + 1), y * SPACING_Y - column_len, z + (SPACING_Z * i));
     wnd.getRenderer().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f)); // 1.0f, 3.0f / 4.0f, 0.5f, 60.0f
