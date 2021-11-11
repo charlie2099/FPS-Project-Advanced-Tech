@@ -38,7 +38,7 @@ void Game::Update()
     ////////////////////////////////////
     //level.loadMap(Level::Map::ONE, wnd);
     std::fstream level_file;
-    level_file.open("LevelMap2.txt");
+    level_file.open("LevelMap1.txt");
     char wall = '#';
     int row_len = 22; 
     int column_len = 16; 
