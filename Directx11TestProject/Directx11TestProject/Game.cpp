@@ -38,19 +38,19 @@ void Game::Update()
     ////////////////////////////////////
     //level.loadMap(Level::Map::ONE, wnd);
     std::fstream level_file;
-    level_file.open("LevelMap1.txt");
+    level_file.open("LevelMap2.txt");
     char wall = '#';
-    int row_len = 22; //8
-    int column_len = 16; //6
+    int row_len = 22; 
+    int column_len = 16; 
 
     float angle = 0.0f;
     float x = 0.0f;
     float y = 15.5f; //5.5f
     float z = 0.0f; //6.0f
 
-    const float SPACING_X = 2.0f;
-    const float SPACING_Y = 2.0f;
-    const float SPACING_Z = 2.0f;
+    const float SPACING_X = 1.9f;
+    const float SPACING_Y = 1.9f;
+    const float SPACING_Z = 1.9f;
 
     while (!level_file.eof())
     {
