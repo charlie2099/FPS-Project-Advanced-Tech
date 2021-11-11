@@ -45,8 +45,8 @@ void Game::Update()
 
     float angle = 0.0f;
     float x = 0.0f;
-    float y = 15.5f; //5.5f
-    float z = 0.0f; //6.0f
+    float y = 20.0f; //5.5f
+    float z = -2.0f; //6.0f
 
     const float SPACING_X = 1.9f;
     const float SPACING_Y = 1.9f;
@@ -70,47 +70,23 @@ void Game::Update()
     level_file.close();
     
     // TRANSLATION
-    if (wnd.kbd.KeyIsPressed('W')) //FORWARDS
+    if (wnd.kbd.KeyIsPressed('W')) //FORWARDS TRANSLATION
     {
         camera.Translate({ 0.0f,0.0f,dt });
     }
-    if (wnd.kbd.KeyIsPressed('S')) //BACKWARDS
+    if (wnd.kbd.KeyIsPressed('S')) //BACKWARDS TRANSLATION
     {
         camera.Translate({ 0.0f,0.0f,-dt });
     }
-    if (wnd.kbd.KeyIsPressed('R')) //UP
-    {
-        camera.Translate({ 0.0f,dt,0.0f });
-    }
-    if (wnd.kbd.KeyIsPressed('F')) //DOWN
-    {
-        camera.Translate({ 0.0f,-dt,0.0f });
-    }
-    if (wnd.kbd.KeyIsPressed('A')) //LEFT
-    {
-        camera.Translate({ -dt,0.0f,0.0f });
-    }
-    if (wnd.kbd.KeyIsPressed('D')) //RIGHT
-    {
-        camera.Translate({ dt,0.0f,0.0f });
-    }
-
+    
     // ROTATION
-    if (wnd.kbd.KeyIsPressed('Z')) //UP
-    {
-        camera.Rotate(0.0f, -dt);
-    }
-    if (wnd.kbd.KeyIsPressed('C')) //DOWN
-    {
-        camera.Rotate(0.0f, dt);
-    }
-    if (wnd.kbd.KeyIsPressed('E')) //RIGHT
-    {
-        camera.Rotate(dt, 0.0f);
-    }
-    if (wnd.kbd.KeyIsPressed('Q')) //lEFT
+    if (wnd.kbd.KeyIsPressed('A')) //LEFT ROTATION
     {
         camera.Rotate(-dt, 0.0f);
+    }
+    if (wnd.kbd.KeyIsPressed('D')) //RIGHT ROTATION
+    {
+        camera.Rotate(dt, 0.0f);
     }
 
     //wnd.getRenderer().DrawCube(-timer.Peek(), -5.0f, 5.0f, 5.0f); // def: (0,0),(0,0)

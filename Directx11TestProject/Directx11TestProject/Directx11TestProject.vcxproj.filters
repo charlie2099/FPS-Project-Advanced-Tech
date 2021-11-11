@@ -22,6 +22,12 @@
     <Filter Include="Header Files\Buffers">
       <UniqueIdentifier>{c68e925b-99b4-461e-8315-2e74f2ec8267}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{ff6c8810-c337-43c2-9397-86f9ef3d7720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Levels">
+      <UniqueIdentifier>{b56c85e3-5b9c-4927-9471-d875812c08e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -111,11 +117,11 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="LevelMap2.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="LevelMap1.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Levels</Filter>
+    </Text>
+    <Text Include="LevelMap2.txt">
+      <Filter>Resource Files\Levels</Filter>
     </Text>
   </ItemGroup>
 </Project>

@@ -13,8 +13,8 @@ private:
 	DirectX::XMFLOAT3 pos;
 	float pitch;
 	float yaw;
-	static constexpr float travelSpeed = 12.0f;
-	static constexpr float rotationSpeed = 1.0f; //0.0001f
+	static constexpr float travelSpeed = 10.0f;
+	static constexpr float rotationSpeed = 2.0f; //0.0001f
 };
 
 //#include <d3d11.h>
