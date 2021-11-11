@@ -28,8 +28,8 @@ DirectX::XMMATRIX Camera::GetMatrix() const noexcept
 
 void Camera::Reset() noexcept
 {
-	pos = { 4.0f, -14.0f, 5.5f }; // 0.0f,0.0f,-18.0f
-	pitch = -1.6f; //0.0f //-1.5
+	pos = { 0.0f,0.0f,-18.0f }; // 0.0f,0.0f,-18.0f
+	pitch = 0.0f; //0.0f //-1.5
 	yaw = 0.0f; //0.0f
 }
 

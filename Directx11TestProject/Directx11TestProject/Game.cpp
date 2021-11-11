@@ -33,9 +33,9 @@ void Game::Update()
     //wnd.getRenderer().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f) * dx::XMVector3Rotate(0.1f, 0.0f, 0.0f);
     wnd.getRenderer().SetCamera(camera.GetMatrix());
 
-    ////////////////////////////////////
-    /// MOVE OUT OF UPDATE YOU MANIAC //
-    ////////////////////////////////////
+    /////////////////////////////////////////
+    /// MOVE THIS OUT OF UPDATE YOU MANIAC //
+    /////////////////////////////////////////
     //level.loadMap(Level::Map::ONE, wnd);
     std::fstream level_file;
     level_file.open("LevelMap1.txt");
@@ -55,18 +55,16 @@ void Game::Update()
     while (!level_file.eof())
     {
         x++;
-        if (x == (row_len + 1))
+        if (level_file.peek() == '\n')
         {
             y--;
             x = 0;
         }
         if (level_file.get() == wall)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                wnd.getRenderer().InitCube(angle, x * SPACING_X - (row_len + 1), y * SPACING_Y - column_len, z + (SPACING_Z * i));
-                //wnd.getRenderer().DrawCube();
-            }
+            wnd.getRenderer().InitCube(angle, x * SPACING_X - (row_len + 1), z + (SPACING_Z), y * SPACING_Y - column_len);
+            //wnd.getRenderer().InitCube(angle, x * SPACING_X - (row_len + 1), y * SPACING_Y - column_len, z + (SPACING_Z * i));
+            //wnd.getRenderer().DrawCube();
         }
     }
     level_file.close();
