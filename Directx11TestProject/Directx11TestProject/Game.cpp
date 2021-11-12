@@ -30,7 +30,6 @@ void Game::Update()
     const float c = sin(timer.Peek()) / 2.0f + 0.5f;
     wnd.getRenderer().ClearBuffer(0, 0, 0); 
 
-    //wnd.getRenderer().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f) * dx::XMVector3Rotate(0.1f, 0.0f, 0.0f);
     wnd.getRenderer().SetCamera(camera.GetMatrix());
 
     /////////////////////////////////////////
@@ -40,32 +39,29 @@ void Game::Update()
     std::fstream level_file;
     level_file.open("LevelMap1.txt");
     char wall = '#';
-    int row_len = 22; 
-    int column_len = 16; 
-
     float angle = 0.0f;
     float x = 0.0f;
-    float y = 20.0f; //5.5f
-    float z = -2.0f; //6.0f
-
-    const float SPACING_X = 1.9f;
-    const float SPACING_Y = 1.9f;
-    const float SPACING_Z = 1.9f;
+    float y = 0.0f; 
+    float z = 12.0f; 
+    const float SPACING = 1.9f;
 
     while (!level_file.eof())
     {
         x++;
         if (level_file.peek() == '\n')
         {
-            y--;
+            z--;
             x = 0;
         }
         if (level_file.get() == wall)
         {
-            wnd.getRenderer().InitCube(angle, x * SPACING_X - (row_len + 1), z + (SPACING_Z), y * SPACING_Y - column_len);
-            //wnd.getRenderer().InitCube(angle, x * SPACING_X - (row_len + 1), y * SPACING_Y - column_len, z + (SPACING_Z * i));
+            wnd.getRenderer().InitCube(angle, x * SPACING -5.0f, y * SPACING, z * SPACING);
             //wnd.getRenderer().DrawCube();
         }
+        //else // Floor (UNCOMMENT THIS BACK IN WHEN LEVEL OPENING IS HANDLED IN CONSTRUCTOR)
+        //{
+        //    wnd.getRenderer().InitCube(angle, x * SPACING -5.0f, y * SPACING -SPACING, z * SPACING);
+        //}
     }
     level_file.close();
     
@@ -89,7 +85,7 @@ void Game::Update()
         camera.Rotate(dt, 0.0f);
     }
 
-    //wnd.getRenderer().DrawCube(-timer.Peek(), -5.0f, 5.0f, 5.0f); // def: (0,0),(0,0)
-    //wnd.getRenderer().DrawCube(timer.Peek(), wnd.mouse.GetPosX() / 400.0f - 1.0f, -wnd.mouse.GetPosY() / 300.0f + 1.0f, 5.0f);
+    //wnd.getRenderer().InitCube(-timer.Peek(), -5.0f, 5.0f, 5.0f); // def: (0,0),(0,0)
+    //wnd.getRenderer().InitCube(timer.Peek(), wnd.mouse.GetPosX() / 400.0f - 1.0f, -wnd.mouse.GetPosY() / 300.0f + 1.0f, 5.0f);
     wnd.getRenderer().EndFrame();
 }
