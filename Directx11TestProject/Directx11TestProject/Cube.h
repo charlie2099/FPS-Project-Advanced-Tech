@@ -18,17 +18,19 @@ public:
 	void Render(Renderer& renderer);
 
 private:
+	void Binds(Renderer& renderer);
+
 	UINT stride;
 	UINT offset;
 
 	//VertexBuffer vertex_buffer;
 	IndexBuffer index_buffer;
-	ConstantBuffer constant_buffer_class;
-
+	ConstantBuffer constant_buffer;
 	wrl::ComPtr<ID3D11Buffer> vertex_buffer_old;
-	//wrl::ComPtr<ID3D11Buffer> constant_buffer;
 	wrl::ComPtr<ID3D11Buffer> constant_buffer2;
-	wrl::ComPtr<ID3D11PixelShader> pixel_shader;
-	wrl::ComPtr<ID3D11VertexShader> vertex_shader;
+
+	PixelShader pixel_shader;
+	VertexShader vertex_shader;
+
 	wrl::ComPtr<ID3D11InputLayout> input_layout;
 };

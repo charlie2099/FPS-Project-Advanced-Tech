@@ -18,7 +18,6 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 		} pos;
 	};
 
-	// vertex buffer 
 	const Vertex vertices[] =
 		//const /*std::vector<*/Vertex/*>*/ vertices[] =
 		//const std::vector<Vertex> vertices =
@@ -31,13 +30,6 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 		{1.0f, -1.0f, 1.0f},
 		{-1.0f, 1.0f, 1.0f},
 		{1.0f, 1.0f, 1.0f},
-
-		//{0.0f, 0.5f, 255, 0, 0, 0}, //v1
-		//{0.5f, -0.5f, 0, 255, 0, 0}, //v2..
-		//{-0.5f, -0.5f, 0, 0, 255, 0},
-		//{-0.3f, 0.3f, 0, 255, 0, 0},
-		//{0.3f, 0.3f, 0, 0, 255, 0}, 
-		//{0.0f, -1.0f, 255, 0, 0, 0}, 
 	};
 
 	//vertex_buffer.Init(renderer.GetDevice().Get(), vertices, 0u);
@@ -53,18 +45,8 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	D3D11_SUBRESOURCE_DATA sd = {};
 	sd.pSysMem = vertices/*.data()*/;
 	renderer.GetDevice()->CreateBuffer(&bd, &sd, &vertex_buffer_old);
-
-	//// Bind vertex buffer to pipeline
 	stride = sizeof(Vertex);
 	offset = 0u;
-	//renderer.GetContext()->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
-
-
-
-
-
-
-
 
 
 	// index buffer
@@ -76,22 +58,9 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 		4,5,7, 4,7,6,
 		0,4,2, 2,4,6,
 		0,1,4, 1,5,4
-
-		/*0,1,2,
-		0,2,3,
-		0,4,1,
-		2,1,5,*/
 	};
 
 	index_buffer.Init(renderer.GetDevice(), indices);
-	//index_buffer.Bind(renderer.GetContext(), 0u);
-
-
-
-
-
-
-
 
 
 	// constant buffer for transformation matrix
@@ -113,13 +82,8 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 		}
 	};
 
-	constant_buffer_class.Init(renderer.GetDevice(), const_buffer.transform);
-
-
-
-
-
-
+	constant_buffer.Init(renderer.GetDevice(), const_buffer.transform);
+	renderer.SetTransformMatrix(const_buffer.transform);
 
 
 	struct ConstantBuffer2
@@ -135,20 +99,6 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	struct ConstantBuffer2 cb2 =
 	{
 		{
-			//{1.0f, 0.0f, 1.0f}, //pink
-			//{0.0f, 1.0f, 0.0f}, //red
-			//{0.0f, 1.0f, 0.0f}, //green
-			//{0.0f, 0.0f, 1.0f}, //blue
-			//{1.0f, 1.0f, 0.0f}, // yellow
-			//{0.0f, 1.0f, 1.0f}, //light-blue
-
-			/*{0.0f, 0.0f, 0.0f},
-			{1.0f, 1.0f, 1.0f},
-			{0.0f, 0.0f, 0.0f},
-			{1.0f, 1.0f, 1.0f},
-			{0.0f, 0.0f, 0.0f},
-			{1.0f, 1.0f, 1.0f},*/
-
 			{0.0f, 0.5f, 1.0f},
 			{0.2f, 0.2f, 0.7f},
 			{0.1f, 0.8f, 0.5f},
@@ -157,7 +107,7 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 			{0.8f, 0.9f, 0.3f},
 		}
 	};
-	//wrl::ComPtr<ID3D11Buffer> constant_buffer2;
+
 	D3D11_BUFFER_DESC cbd2;
 	cbd2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbd2.Usage = D3D11_USAGE_DYNAMIC;
@@ -165,98 +115,30 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	cbd2.MiscFlags = 0u;
 	cbd2.ByteWidth = sizeof(cb2);
 	cbd2.StructureByteStride = 0u;
+
 	D3D11_SUBRESOURCE_DATA csd2 = {};
 	csd2.pSysMem = &cb2;
 	renderer.GetDevice()->CreateBuffer(&cbd2, &csd2, &constant_buffer2);
 
-	//// bind constant buffer to pixel shader
-	//renderer.GetContext()->PSSetConstantBuffers(0u, 1u, constant_buffer2.GetAddressOf());
 
+	pixel_shader.Create(renderer.GetDevice());
 
-
-
-
-
-
-
-
-	// create pixel shader
-	//wrl::ComPtr<ID3D11PixelShader> pixel_shader;
-	wrl::ComPtr<ID3DBlob> pBlob;
-	D3DReadFileToBlob(L"PixelShader.cso", &pBlob);
-	renderer.GetDevice()->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pixel_shader);
-	//// bind pixel shader
-	//renderer.GetContext()->PSSetShader(pixel_shader.Get(), nullptr, 0u);
-
-
-
-
-
-
-
-
-	// create vertex shader
-	//wrl::ComPtr<ID3D11VertexShader> vertex_shader;
-	D3DReadFileToBlob(L"VertexShader.cso", &pBlob);
-	renderer.GetDevice()->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &vertex_shader);
-	//// bind vertex shader
-	//renderer.GetContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
-
-
-
-
-
-
-
-
+	vertex_shader.Create(renderer.GetDevice());
 
 	// input (vertex) layout (2d position only)
-	//wrl::ComPtr<ID3D11InputLayout>input_layout;
 	const D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	renderer.GetDevice()->CreateInputLayout(
 		ied, (UINT)std::size(ied),
-		pBlob->GetBufferPointer(),
-		pBlob->GetBufferSize(),
+		vertex_shader.GetBlob()->GetBufferPointer(),
+		vertex_shader.GetBlob()->GetBufferSize(),
 		&input_layout
 	);
-	// bind vertex layout
-	//renderer.GetContext()->IASetInputLayout(input_layout.Get());
-
-	// Set primitive topology to triangle list (groups of 3 vertices)
-	//renderer.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
-
-
-
-	// bind vertex buffer to pipeline
-	renderer.GetContext()->IASetVertexBuffers(0u, 1u, vertex_buffer_old.GetAddressOf(), &stride, &offset);
-
-	// bind index buffer to pipeline 
-	index_buffer.Bind(renderer.GetContext(), 0u);
-
-	// bind constant buffer to vertex shader
-	//renderer.GetContext()->VSSetConstantBuffers(0u, 1u, constant_buffer.GetAddressOf());
-	constant_buffer_class.Bind(renderer.GetContext());
-
-	// bind constant buffer to pixel shader
-	renderer.GetContext()->PSSetConstantBuffers(0u, 1u, constant_buffer2.GetAddressOf());
-
-	// bind pixel shader
-	renderer.GetContext()->PSSetShader(pixel_shader.Get(), nullptr, 0u);
-
-	// bind vertex shader
-	renderer.GetContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
-
-	// bind vertex layout
-	renderer.GetContext()->IASetInputLayout(input_layout.Get());
-
-	// Set primitive topology to triangle list (groups of 3 vertices)
-	renderer.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+	Binds(renderer);
 	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
 }
 
@@ -266,65 +148,28 @@ void Cube::Render(Renderer& renderer)
 {
 	// Transformation matrix here??
 
+	Binds(renderer);
+	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
+}
 
-
-
-	// bind vertex buffer to pipeline
+/// PRIVATE FUNCTIONS
+void Cube::Binds(Renderer& renderer)
+{
 	renderer.GetContext()->IASetVertexBuffers(0u, 1u, vertex_buffer_old.GetAddressOf(), &stride, &offset);
 
-	// bind index buffer to pipeline 
 	index_buffer.Bind(renderer.GetContext(), 0u);
 
-	// bind constant buffer to vertex shader
-	//renderer.GetContext()->VSSetConstantBuffers(0u, 1u, constant_buffer.GetAddressOf());
-	constant_buffer_class.Bind(renderer.GetContext());
+	constant_buffer.Bind(renderer.GetContext());
 
-	// bind constant buffer to pixel shader
 	renderer.GetContext()->PSSetConstantBuffers(0u, 1u, constant_buffer2.GetAddressOf());
 
-	// bind pixel shader
-	renderer.GetContext()->PSSetShader(pixel_shader.Get(), nullptr, 0u);
+	pixel_shader.Bind(renderer.GetContext());
 
-	// bind vertex shader
-	renderer.GetContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
-
-	// bind vertex layout
-	renderer.GetContext()->IASetInputLayout(input_layout.Get());
-
-	// Set primitive topology to triangle list (groups of 3 vertices)
-	renderer.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
-
-
-
-
-
-
-	//// bind vertex buffer to pipeline
-	//renderer.GetContext()->IASetVertexBuffers(0u, 1u, vertex_buffer_old.GetAddressOf(), &stride, &offset);
-
-	//// bind index buffer to pipeline 
-	//index_buffer.Bind(renderer.GetContext(), 0u);
-
-	//// bind constant buffer to vertex shader
-	//renderer.GetContext()->VSSetConstantBuffers(0u, 1u, constant_buffer.GetAddressOf());
-
-	//// bind constant buffer to pixel shader
-	//renderer.GetContext()->PSSetConstantBuffers(0u, 1u, constant_buffer2.GetAddressOf());
-
-	//// bind pixel shader
-	//renderer.GetContext()->PSSetShader(pixel_shader.Get(), nullptr, 0u);
-
-	//// bind vertex shader
+	vertex_shader.Bind(renderer.GetContext());
 	//renderer.GetContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
 
-	//// bind vertex layout
-	//renderer.GetContext()->IASetInputLayout(input_layout.Get());
+	renderer.GetContext()->IASetInputLayout(input_layout.Get());
 
-	//// Set primitive topology to triangle list (groups of 3 vertices)
-	//renderer.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
+	renderer.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 

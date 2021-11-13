@@ -141,6 +141,16 @@ void Renderer::ClearBuffer(float red, float green, float blue) noexcept
 	device_context->ClearDepthStencilView(depth_stencil_view.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
+void Renderer::SetTransformMatrix(DirectX::XMMATRIX transform_matrix) noexcept
+{
+	transform_matrix_ = transform_matrix;
+}
+
+DirectX::XMMATRIX Renderer::GetTransformMatrix() const noexcept
+{
+	return transform_matrix_;
+}
+
 void Renderer::SetProjection(DirectX::FXMMATRIX proj) noexcept
 {
 	projection = proj;

@@ -3,6 +3,8 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
+#include "PixelShader.h"
+#include "VertexShader.h"
 #include <d3d11.h>
 #include <wrl.h>
 #include <vector>
@@ -20,6 +22,9 @@ public:
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
 
+	void SetTransformMatrix(DirectX::XMMATRIX transform_matrix) noexcept;
+	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
+
 	// Camera
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
@@ -32,6 +37,7 @@ public:
 	//Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetDeviceContext();
 
 private:
+	DirectX::XMMATRIX transform_matrix_{};
 	DirectX::XMMATRIX projection{};
 	DirectX::XMMATRIX camera{};
 
