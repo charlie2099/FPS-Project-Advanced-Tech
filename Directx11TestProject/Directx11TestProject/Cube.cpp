@@ -120,8 +120,6 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	csd2.pSysMem = &cb2;
 	renderer.GetDevice()->CreateBuffer(&cbd2, &csd2, &constant_buffer2);
 
-
-
 	pixel_shader.Create(renderer.GetDevice());
 
 	vertex_shader.Create(renderer.GetDevice());
