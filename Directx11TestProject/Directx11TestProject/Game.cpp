@@ -7,6 +7,7 @@ Game::Game()
     wnd(1280, 720, "FPS Window")
 {
     //wnd.getRenderer().initCube(angle, x * SPACING_X - (row_len + 1), y * SPACING_Y - column_len, z + (SPACING_Z * i));
+    //cube = std::make_unique<Cube>(wnd.getRenderer(), 0, 0, 0, 0);
     wnd.getRenderer().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f)); // 1.0f, 3.0f / 4.0f, 0.5f, 60.0f
 }
 
@@ -32,11 +33,35 @@ void Game::Update()
 
     wnd.getRenderer().SetCamera(camera.GetMatrix());
 
+    //cube->Render(wnd.getRenderer());
+    cube = std::make_unique<Cube>(wnd.getRenderer(), 0, 0, 0, 0);
+    cube2 = std::make_unique<Cube>(wnd.getRenderer(), 0, 5, 0, 0);
+
+   /*TODO
+   * Sat: REFACTORING + TEXTURING
+   * Sun: COLLISIONS
+   * Mon: BILLBOARD ENEMIES + SHOOTING
+   * Tues: REPORT
+   * Weds: REPORT
+   */
+   /*NOTES
+   * - Refactor buffers into their own classes
+   * - Cube class. cube.render(wnd.getRenderer());
+   * - 
+   */
+
+
+
+
+
+
+
+
     /////////////////////////////////////////
     /// MOVE THIS OUT OF UPDATE YOU MANIAC //
     /////////////////////////////////////////
     //level.loadMap(Level::Map::ONE, wnd);
-    std::fstream level_file;
+    /*std::fstream level_file;
     level_file.open("LevelMap1.txt");
     char wall = '#';
     float angle = 0.0f;
@@ -63,7 +88,7 @@ void Game::Update()
         //    wnd.getRenderer().InitCube(angle, x * SPACING -5.0f, y * SPACING -SPACING, z * SPACING);
         //}
     }
-    level_file.close();
+    level_file.close(); */
     
     // TRANSLATION
     if (wnd.kbd.KeyIsPressed('W')) //FORWARDS TRANSLATION

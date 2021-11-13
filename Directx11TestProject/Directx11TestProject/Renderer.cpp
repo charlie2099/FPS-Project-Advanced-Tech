@@ -82,6 +82,51 @@ Renderer::Renderer(HWND hWnd)
 
 	// bind depth stencil view to OM
 	device_context->OMSetRenderTargets(1u, render_target_view.GetAddressOf(), depth_stencil_view.Get());
+
+
+	// constant buffer for transformation matrix
+	//struct ConstantBuffer
+	//{
+	//	dx::XMMATRIX transform;
+	//};
+
+	//const ConstantBuffer const_buffer =
+	//{
+	//	{
+	//		dx::XMMatrixTranspose(
+	//			dx::XMMatrixRotationZ(0) *
+	//			dx::XMMatrixRotationX(0) *
+	//			dx::XMMatrixTranslation(0, 0, 0 + 4.0f) *
+	//			GetCamera() * GetProjection() *
+	//			dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 60.0f) // 10
+	//		)
+	//	}
+	//};
+	//wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
+	//D3D11_BUFFER_DESC cbd;
+	//cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//cbd.Usage = D3D11_USAGE_DYNAMIC;
+	//cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//cbd.MiscFlags = 0u;
+	//cbd.ByteWidth = sizeof(const_buffer);
+	//cbd.StructureByteStride = 0u;
+
+	//D3D11_SUBRESOURCE_DATA csd = {};
+	//csd.pSysMem = &const_buffer;
+	//device->CreateBuffer(&cbd, &csd, &pConstantBuffer);
+
+	//// bind constant buffer to vertex shader
+	//device_context->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
+
+	// configure viewport
+	D3D11_VIEWPORT vp;
+	vp.Width = 1280;
+	vp.Height = 720;
+	vp.MinDepth = 0;
+	vp.MaxDepth = 1;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	device_context->RSSetViewports(1u, &vp);
 }
 
 void Renderer::EndFrame()
@@ -300,14 +345,14 @@ void Renderer::InitCube(float angle, float x, float y, float z)
 	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// configure viewport
-	D3D11_VIEWPORT vp;
+	/*D3D11_VIEWPORT vp;
 	vp.Width = 1280;
 	vp.Height = 720;
 	vp.MinDepth = 0;
 	vp.MaxDepth = 1;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
-	device_context->RSSetViewports(1u, &vp);
+	device_context->RSSetViewports(1u, &vp);*/
 
 	//SetIndicesCount(indices);
 	device_context->DrawIndexed((UINT)std::size(indices), 0u, 0u);
@@ -361,4 +406,14 @@ void Renderer::SetCamera(DirectX::FXMMATRIX cam) noexcept
 DirectX::XMMATRIX Renderer::GetCamera() const noexcept
 {
 	return camera;
+}
+
+ID3D11Device* Renderer::GetDevice()
+{
+	return device.Get();
+}
+
+ID3D11DeviceContext* Renderer::GetContext()
+{
+	return device_context.Get();
 }

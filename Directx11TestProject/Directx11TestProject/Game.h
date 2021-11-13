@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Timer.h"
 //#include "Level.h"
+#include "Cube.h"
 #include <fstream>
 
 class Game
@@ -18,7 +19,8 @@ private:
 	Camera camera;
 	Timer timer;
 	//Level level;
-	//Cube cube;
+	std::unique_ptr<Cube> cube;
+	std::unique_ptr<Cube> cube2;
 
 	float speed_factor = 1.0f;
 };

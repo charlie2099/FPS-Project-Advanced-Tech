@@ -22,14 +22,17 @@ public:
 	//void DrawCube();
 	//void SetIndicesCount(const std::vector<unsigned short>& indices);
 	//std::vector<unsigned short>& GetIndicesCount();
-	//Microsoft::WRL::ComPtr<ID3D11Device>& GetDevice();
-	//Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetDeviceContext();
 
 	// Camera
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void SetCamera(DirectX::FXMMATRIX cam) noexcept;
 	DirectX::XMMATRIX GetCamera() const noexcept;
+
+	ID3D11Device* GetDevice();
+	ID3D11DeviceContext* GetContext();
+	//Microsoft::WRL::ComPtr<ID3D11Device>& GetDevice();
+	//Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetDeviceContext();
 
 private:
 	DirectX::XMMATRIX projection;
