@@ -20,7 +20,7 @@ private:
 	Timer timer;
 	//Level level;
 	std::unique_ptr<Cube> cube;
-	std::unique_ptr<Cube> cube2;
+	//std::unique_ptr<Cube> cube2;
 
 	float speed_factor = 1.0f;
 };

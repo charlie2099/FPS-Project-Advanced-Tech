@@ -35,7 +35,7 @@ void Game::Update()
 
     //cube->Render(wnd.getRenderer());
     cube = std::make_unique<Cube>(wnd.getRenderer(), 0, 0, 0, 0);
-    cube2 = std::make_unique<Cube>(wnd.getRenderer(), 0, 5, 0, 0);
+    //cube2 = std::make_unique<Cube>(wnd.getRenderer(), 0, 5, 0, 0);
 
    /*TODO
    * Sat: REFACTORING + TEXTURING
