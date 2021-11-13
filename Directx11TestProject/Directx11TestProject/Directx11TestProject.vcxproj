@@ -24,6 +24,7 @@
     <ProjectGuid>{2a7eef0a-7a9b-47c7-ac2b-7d9e8f191985}</ProjectGuid>
     <RootNamespace>Directx11TestProject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>DirectX11_FPS_Project</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
