@@ -5,6 +5,7 @@
 #include "ConstantBuffer.h"
 #include "PixelShader.h"
 #include "VertexShader.h"
+#include "InputLayout.h"
 #include <d3d11.h>
 #include <wrl.h>
 #include <vector>

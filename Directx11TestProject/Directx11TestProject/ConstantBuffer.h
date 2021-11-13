@@ -10,7 +10,9 @@ class ConstantBuffer
 {
 public:
 	void Init(ID3D11Device* device, dx::XMMATRIX const_buffer);
-	void Bind(ID3D11DeviceContext* device_context) noexcept;
+	void Init(ID3D11Device* device, float const_buffer);
+	void BindToVS(ID3D11DeviceContext* device_context) noexcept;
+	void BindToPS(ID3D11DeviceContext* device_context) noexcept;
 	UINT GetBufferSize() const noexcept;
 
 private:

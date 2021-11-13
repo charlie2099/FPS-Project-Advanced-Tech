@@ -121,22 +121,12 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	renderer.GetDevice()->CreateBuffer(&cbd2, &csd2, &constant_buffer2);
 
 
+
 	pixel_shader.Create(renderer.GetDevice());
 
 	vertex_shader.Create(renderer.GetDevice());
 
-	// input (vertex) layout (2d position only)
-	const D3D11_INPUT_ELEMENT_DESC ied[] =
-	{
-		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-	renderer.GetDevice()->CreateInputLayout(
-		ied, (UINT)std::size(ied),
-		vertex_shader.GetBlob()->GetBufferPointer(),
-		vertex_shader.GetBlob()->GetBufferSize(),
-		&input_layout
-	);
-
+	input_layout.Create(renderer.GetDevice(), vertex_shader.GetBlob());
 
 	Binds(renderer);
 	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
@@ -159,16 +149,14 @@ void Cube::Binds(Renderer& renderer)
 
 	index_buffer.Bind(renderer.GetContext(), 0u);
 
-	constant_buffer.Bind(renderer.GetContext());
-
+	constant_buffer.BindToVS(renderer.GetContext());
+	//constant_buffer2.BindToPS(renderer.GetContext());
 	renderer.GetContext()->PSSetConstantBuffers(0u, 1u, constant_buffer2.GetAddressOf());
 
 	pixel_shader.Bind(renderer.GetContext());
-
 	vertex_shader.Bind(renderer.GetContext());
-	//renderer.GetContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
 
-	renderer.GetContext()->IASetInputLayout(input_layout.Get());
+	input_layout.Bind(renderer.GetContext());
 
 	renderer.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }

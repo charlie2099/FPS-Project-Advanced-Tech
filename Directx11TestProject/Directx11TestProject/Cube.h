@@ -23,14 +23,14 @@ private:
 	UINT stride;
 	UINT offset;
 
-	//VertexBuffer vertex_buffer;
+	wrl::ComPtr<ID3D11Buffer> vertex_buffer_old; //VertexBuffer vertex_buffer;
 	IndexBuffer index_buffer;
 	ConstantBuffer constant_buffer;
-	wrl::ComPtr<ID3D11Buffer> vertex_buffer_old;
+	//ConstantBuffer constant_buffer2_new;
 	wrl::ComPtr<ID3D11Buffer> constant_buffer2;
 
 	PixelShader pixel_shader;
 	VertexShader vertex_shader;
 
-	wrl::ComPtr<ID3D11InputLayout> input_layout;
+	InputLayout input_layout;
 };
