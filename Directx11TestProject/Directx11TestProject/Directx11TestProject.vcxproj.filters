@@ -46,6 +46,12 @@
     <Filter Include="Source Files\Shaders">
       <UniqueIdentifier>{960fe128-4c82-4943-b991-1b3dc82faffa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Textures">
+      <UniqueIdentifier>{7da9b61b-bd08-48d3-a1d1-49aa0ee381dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Textures">
+      <UniqueIdentifier>{d34d3dc8-e679-4abe-a82d-00b38469fbf0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -95,6 +101,15 @@
     </ClCompile>
     <ClCompile Include="InputLayout.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureSampler.cpp">
+      <Filter>Source Files\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>Source Files\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\Textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +164,18 @@
     <ClInclude Include="InputLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextureSampler.h">
+      <Filter>Header Files\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>Header Files\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
@@ -165,5 +192,10 @@
     <Text Include="LevelMap2.txt">
       <Filter>Resource Files\Levels</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\Charl\Downloads\DirectXAV-master\DirectXAV-master\Bricks.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

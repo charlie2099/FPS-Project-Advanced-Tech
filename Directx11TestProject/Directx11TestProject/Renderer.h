@@ -47,4 +47,6 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swap_chain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target_view;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depth_stencil_view;
+	ID3D11ShaderResourceView* CubesTexture;
+	ID3D11SamplerState* CubesTexSamplerState;
 };
