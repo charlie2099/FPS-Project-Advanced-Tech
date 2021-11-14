@@ -8,28 +8,24 @@
 
 Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 {
-	struct Vertex
-	{
-		struct
-		{
-			float x;
-			float y;
-			float z;
-		} pos;
-	};
+	pixel_shader.Create(renderer.GetDevice());
 
-	const Vertex vertices[] =
-		//const /*std::vector<*/Vertex/*>*/ vertices[] =
-		//const std::vector<Vertex> vertices =
+	vertex_shader.Create(renderer.GetDevice());
+
+	input_layout.Create(renderer.GetDevice(), vertex_shader.GetBlob());
+
+
+	// vertex buffer
+    const std::vector<Vertex> vertices =
 	{
-		{-1.0, -1.0f, -1.0f },
-		{1.0f, -1.0f, -1.0f},
-		{-1.0f, 1.0f, -1.0f},
-		{1.0f, 1.0f, -1.0f},
-		{-1.0f, -1.0f, 1.0f},
-		{1.0f, -1.0f, 1.0f},
-		{-1.0f, 1.0f, 1.0f},
-		{1.0f, 1.0f, 1.0f},
+		{-1.0f, -1.0f, -1.0f },
+		{ 1.0f, -1.0f, -1.0f },
+		{-1.0f,  1.0f, -1.0f },
+		{ 1.0f,  1.0f, -1.0f },
+		{-1.0f, -1.0f,  1.0f },
+		{ 1.0f, -1.0f,  1.0f },
+		{-1.0f,  1.0f,  1.0f },
+		{ 1.0f,  1.0f,  1.0f },
 	};
 
 	//vertex_buffer.Init(renderer.GetDevice().Get(), vertices, 0u);
@@ -40,13 +36,16 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.CPUAccessFlags = 0u;
 	bd.MiscFlags = 0u;
-	bd.ByteWidth = sizeof(Vertex) * ARRAYSIZE(vertices);
+	bd.ByteWidth = UINT(sizeof(Vertex) * vertices.size()); 
 	bd.StructureByteStride = sizeof(Vertex);
+
 	D3D11_SUBRESOURCE_DATA sd = {};
-	sd.pSysMem = vertices/*.data()*/;
+	sd.pSysMem = vertices.data();
 	renderer.GetDevice()->CreateBuffer(&bd, &sd, &vertex_buffer_old);
 	stride = sizeof(Vertex);
 	offset = 0u;
+
+
 
 
 	// index buffer
@@ -86,6 +85,9 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	renderer.SetTransformMatrix(const_buffer.transform);
 
 
+
+
+
 	struct ConstantBuffer2
 	{
 		struct
@@ -120,11 +122,11 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	csd2.pSysMem = &cb2;
 	renderer.GetDevice()->CreateBuffer(&cbd2, &csd2, &constant_buffer2);
 
-	pixel_shader.Create(renderer.GetDevice());
 
-	vertex_shader.Create(renderer.GetDevice());
 
-	input_layout.Create(renderer.GetDevice(), vertex_shader.GetBlob());
+
+
+	
 
 	Binds(renderer);
 	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
