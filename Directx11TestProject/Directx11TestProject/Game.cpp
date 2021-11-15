@@ -71,7 +71,7 @@ void Game::Update()
             level_block = std::make_unique<Cube>(window.getRenderer(), angle, x * SPACING - 5.0f, y * SPACING, z * SPACING);
             break;
         case 'E': // Enemy
-            cube = std::make_unique<Cube>(window.getRenderer(), angle, x * SPACING - 5.0f, y * SPACING, z * SPACING);
+            plane = std::make_unique<Plane>(window.getRenderer(), dx::XMFLOAT3(x * SPACING - 5.0f, y * SPACING, z * SPACING));
             break;
         case '-': // Floor
             //level_block = std::make_unique<Cube>(window.getRenderer(), angle, x * SPACING - 5.0f, y * SPACING - SPACING, z * SPACING);
@@ -79,8 +79,6 @@ void Game::Update()
         }
     }
     level_file.close(); 
-
-    plane = std::make_unique<Plane>(window.getRenderer(), dx::XMFLOAT3(6, 1, 3));
     
     KeyInputs(dt);
 

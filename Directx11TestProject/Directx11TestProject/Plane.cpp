@@ -78,6 +78,8 @@ Plane::Plane(Renderer& renderer, dx::XMFLOAT3 pos)
 	const ConstantBuffer const_buffer =
 	{
 		dx::XMMatrixTranspose(
+			dx::XMMatrixRotationX(dx::XM_PI / 2) *
+			/*dx::XMMatrixLookAtLH(dx::XMVECTOR({1}), dx::XMVECTOR({1}), dx::XMVECTOR({1}))**/
 			dx::XMMatrixTranslation(pos.x, pos.y, pos.z + 4.0f) *
 			renderer.GetCamera() * renderer.GetProjection() *
 			dx::XMMatrixPerspectiveLH(1.0f, 1.0f, 0.5f, 60.0f) // 10
@@ -85,7 +87,7 @@ Plane::Plane(Renderer& renderer, dx::XMFLOAT3 pos)
 	};
 
 	constant_buffer.Init(renderer.GetDevice(), const_buffer.transform);
-	renderer.SetTransformMatrix(const_buffer.transform);
+	//renderer.SetTransformMatrix(const_buffer.transform);
 
 
 

@@ -133,9 +133,6 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 
 
 
-
-	
-
 	Binds(renderer);
 	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
 }
