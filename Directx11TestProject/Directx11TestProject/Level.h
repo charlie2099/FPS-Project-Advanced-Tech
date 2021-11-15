@@ -9,8 +9,8 @@ public:
 	~Level() = default;
 
 	enum class Map {ONE, TWO, THREE};
-	void loadMap(int lvl_map_idx, Window& wnd);
-	void loadMap(Map lvl_map, Window& wnd);
+	void loadMap(int lvl_map_idx, Window& window);
+	void loadMap(Map lvl_map, Window& window);
 
 private:
 	std::fstream level_file;

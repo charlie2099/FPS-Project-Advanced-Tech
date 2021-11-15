@@ -4,6 +4,7 @@
 #include "Timer.h"
 //#include "Level.h"
 #include "Cube.h"
+#include "Plane.h"
 #include <fstream>
 
 class Game
@@ -16,13 +17,13 @@ private:
 	void Update();
 	void KeyInputs(const float& dt);
 
-	Window wnd;
+	Window window;
 	Camera camera;
 	Timer timer;
 	//Level level;
+	std::unique_ptr<Plane> plane;
 	std::unique_ptr<Cube> cube;
 	std::unique_ptr<Cube> level_block;
-	//std::vector<std::unique_ptr<Cube>> level_blocks;
 
 	float speed_factor = 1.0f;
 };

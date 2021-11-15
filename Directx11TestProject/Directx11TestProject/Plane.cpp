@@ -1,4 +1,4 @@
-#include "Cube.h"
+#include "Plane.h"
 #include <sstream>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
@@ -6,7 +6,7 @@
 #pragma comment (lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
-Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
+Plane::Plane(Renderer& renderer, dx::XMFLOAT3 pos)
 {
 	pixel_shader.Create(renderer.GetDevice());
 
@@ -16,16 +16,12 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 
 
 	// vertex buffer
-    const std::vector<Vertex> vertices =
+	const std::vector<Vertex> vertices =
 	{
-		{-1.0f, -1.0f, -1.0f },
-		{ 1.0f, -1.0f, -1.0f },
-		{-1.0f,  1.0f, -1.0f },
-		{ 1.0f,  1.0f, -1.0f },
-		{-1.0f, -1.0f,  1.0f },
-		{ 1.0f, -1.0f,  1.0f },
-		{-1.0f,  1.0f,  1.0f },
-		{ 1.0f,  1.0f,  1.0f },
+		{ -1.0f, 0.0F, -1.0f },
+		{ -1.0f, 0.0F, +1.0f },
+		{ +1.0f, 0.0F, -1.0f },
+		{ +1.0f, 0.0F, +1.0f },
 	};
 
 	//vertex_buffer.Init(renderer.GetDevice().Get(), vertices, 0u);
@@ -36,7 +32,7 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.CPUAccessFlags = 0u;
 	bd.MiscFlags = 0u;
-	bd.ByteWidth = UINT(sizeof(Vertex) * vertices.size()); 
+	bd.ByteWidth = UINT(sizeof(Vertex) * vertices.size());
 	bd.StructureByteStride = sizeof(Vertex);
 
 	D3D11_SUBRESOURCE_DATA sd = {};
@@ -51,18 +47,29 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 	// index buffer
 	const std::vector<unsigned short> indices =
 	{
-		0,2,1, 2,3,1,
-		1,3,5, 3,7,5,
-		2,6,3, 3,6,7,
-		4,5,7, 4,7,6,
-		0,4,2, 2,4,6,
-		0,1,4, 1,5,4
+		0, 2, 1,
+		2, 3, 1,
 	};
 
 	index_buffer.Init(renderer.GetDevice(), indices);
 
 
 	// constant buffer for transformation matrix
+	//struct ConstantBuffer
+	//{
+	//	//dx::XMMATRIX transform;
+	//	dx::XMMATRIX model = dx::XMMatrixTranspose(dx::XMMatrixIdentity());;
+	//	dx::XMMATRIX view = dx::XMMatrixTranspose(dx::XMMatrixTranslation(0.0F, 0.0F, -5.0f));
+	//	dx::XMMATRIX projection = dx::XMMatrixTranspose(dx::XMMatrixPerspectiveRH(1.0F, 3.0F / 4.0F, 0.5F, 100.0F));
+	//};
+
+	//const ConstantBuffer const_buffer;
+
+	//constant_buffer.Init(renderer.GetDevice(), const_buffer);
+	//renderer.SetTransformMatrix(const_buffer.transform);
+
+
+	// MOVE TO RENDERER
 	struct ConstantBuffer
 	{
 		dx::XMMATRIX transform;
@@ -70,15 +77,11 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 
 	const ConstantBuffer const_buffer =
 	{
-		{
-			dx::XMMatrixTranspose(
-				dx::XMMatrixRotationZ(angle) *
-				dx::XMMatrixRotationX(angle) *
-				dx::XMMatrixTranslation(x, y, z + 4.0f) *
-				renderer.GetCamera() * renderer.GetProjection() *
-				dx::XMMatrixPerspectiveLH(1.0f, 1.0f, 0.5f, 60.0f) // 10
-			)
-		}
+		dx::XMMatrixTranspose(
+			dx::XMMatrixTranslation(pos.x, pos.y, pos.z + 4.0f) *
+			renderer.GetCamera() * renderer.GetProjection() *
+			dx::XMMatrixPerspectiveLH(1.0f, 1.0f, 0.5f, 60.0f) // 10
+		)
 	};
 
 	constant_buffer.Init(renderer.GetDevice(), const_buffer.transform);
@@ -98,17 +101,9 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 			float a;
 		} face_colours[6];
 	};
-
 	struct ConstantBuffer2 cb2 =
 	{
 		{
-			/*{0.2f, 0.2f, 0.7f}, 
-			{0.2f, 0.2f, 0.7f},
-			{0.2f, 0.2f, 0.7f},
-			{0.2f, 0.2f, 0.7f},
-			{0.2f, 0.2f, 0.7f},
-			{0.2f, 0.2f, 0.7f},*/
-	
 			{0.0f, 0.5f, 1.0f},
 			{0.2f, 0.2f, 0.7f},
 			{0.1f, 0.8f, 0.5f},
@@ -132,17 +127,13 @@ Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
 
 
 
-
-
-	
-
 	Binds(renderer);
 	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
 }
 
-void Cube::Update() {}
+void Plane::Update() {}
 
-void Cube::Render(Renderer& renderer)
+void Plane::Render(Renderer& renderer)
 {
 	// Transformation matrix here??
 
@@ -150,15 +141,24 @@ void Cube::Render(Renderer& renderer)
 	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
 }
 
+void Plane::setPosition(dx::XMMATRIX pos)
+{
+
+}
+
+void Plane::setRotation(dx::XMMATRIX rot)
+{
+
+}
+
 /// PRIVATE FUNCTIONS
-void Cube::Binds(Renderer& renderer)
+void Plane::Binds(Renderer& renderer)
 {
 	renderer.GetContext()->IASetVertexBuffers(0u, 1u, vertex_buffer_old.GetAddressOf(), &stride, &offset);
 
 	index_buffer.Bind(renderer.GetContext(), 0u);
 
 	constant_buffer.BindToVS(renderer.GetContext());
-	//constant_buffer2.BindToPS(renderer.GetContext());
 	renderer.GetContext()->PSSetConstantBuffers(0u, 1u, constant_buffer2.GetAddressOf());
 
 	pixel_shader.Bind(renderer.GetContext());
@@ -168,4 +168,3 @@ void Cube::Binds(Renderer& renderer)
 
 	renderer.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
-

@@ -1,6 +1,6 @@
 #include "Level.h"
 
-void Level::loadMap(Map lvl_map, Window& wnd)
+void Level::loadMap(Map lvl_map, Window& window)
 {
     switch (lvl_map)
     {
@@ -40,7 +40,7 @@ void Level::loadMap(Map lvl_map, Window& wnd)
         {
             for (int i = 0; i < 2; i++)
             {
-                //wnd.getRenderer().InitCube(angle, x * SPACING_X - (row_len + 1), y * SPACING_Y - column_len, z + (SPACING_Z * i));
+                //window.getRenderer().InitCube(angle, x * SPACING_X - (row_len + 1), y * SPACING_Y - column_len, z + (SPACING_Z * i));
             }
         }
     }
