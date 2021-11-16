@@ -10,27 +10,29 @@
 
 class Renderer
 {
-	friend class Bindable;
 public:
 	Renderer(HWND handle);
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 	~Renderer() = default;
 
-	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void ClearBuffer(DirectX::XMFLOAT3 colour) noexcept;
+	void EndFrame();
 
+	// SETTERS
 	void SetModelMatrix(DirectX::XMMATRIX model);
 	//void SetViewMatrix(DirectX::XMMATRIX view);
 
+	// GETTERS
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetContext();
+	ConstantBuffer::ConstantBufferData& GetConstantBufferData();
 
+private:
 	std::unique_ptr<ConstantBuffer> constant_buffer;
 	ConstantBuffer::ConstantBufferData constantBufferData;
 
-private:
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> device_context;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swap_chain;

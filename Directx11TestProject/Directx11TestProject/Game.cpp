@@ -32,15 +32,15 @@ void Game::Render()
 
 	for (auto& cube : cubes)
 	{
-		cube->Draw(window.getRenderer());
+		cube->Render(window.getRenderer());
 	}
 	for (auto& enemy : enemies)
 	{
-		enemy->Draw(window.getRenderer());
+		enemy->Render(window.getRenderer());
 	}
 	for (auto& plane : planes)
 	{
-		plane->Draw(window.getRenderer());
+		plane->Render(window.getRenderer());
 	}
 
 	window.getRenderer().EndFrame();
@@ -97,13 +97,13 @@ void Game::KeyboardInputs(const float& dt)
 	{
 		//camera.Translate({ 0.0f,0.0f,dt });
 		float translation = 2.0f;
-		window.getRenderer().constantBufferData.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().constantBufferData.view;
+		window.getRenderer().GetConstantBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().GetConstantBufferData().view;
 	}
 	if (window.keyboard.KeyIsPressed('S')) //BACKWARDS TRANSLATION																	
 	{
 		//camera.Translate({ 0.0f,0.0f,-dt });																						
 		float translation = -2.0f;
-		window.getRenderer().constantBufferData.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().constantBufferData.view;
+		window.getRenderer().GetConstantBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().GetConstantBufferData().view;
 	}
 
 	// ROTATION
@@ -111,12 +111,12 @@ void Game::KeyboardInputs(const float& dt)
 	{
 		//camera.Rotate(-dt, 0.0f);
 		float rotation = -2.0f;
-		window.getRenderer().constantBufferData.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(rotation * dt)) * window.getRenderer().constantBufferData.view;
+		window.getRenderer().GetConstantBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(rotation * dt)) * window.getRenderer().GetConstantBufferData().view;
 	}
 	if (window.keyboard.KeyIsPressed('D')) //RIGHT ROTATION
 	{
 		//camera.Rotate(dt, 0.0f);
 		float rotation = 2.0f;
-		window.getRenderer().constantBufferData.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(rotation * dt)) * window.getRenderer().constantBufferData.view;
+		window.getRenderer().GetConstantBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(rotation * dt)) * window.getRenderer().GetConstantBufferData().view;
 	}
 }

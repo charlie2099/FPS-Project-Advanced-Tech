@@ -128,6 +128,11 @@ ID3D11DeviceContext* Renderer::GetContext()
 	return device_context.Get();
 }
 
+ConstantBuffer::ConstantBufferData& Renderer::GetConstantBufferData()
+{
+	return constantBufferData;
+}
+
 void Renderer::SetModelMatrix(DirectX::XMMATRIX model)
 {
 	constantBufferData.model = DirectX::XMMatrixTranspose(model);

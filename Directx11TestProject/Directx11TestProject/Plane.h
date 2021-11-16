@@ -6,7 +6,7 @@ class Plane
 {
 public:
 	Plane(Renderer& getRenderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos);
-	void Draw(Renderer& getRenderer);
+	void Render(Renderer& getRenderer);
 	DirectX::XMMATRIX transform = DirectX::XMMatrixIdentity();
 
 private:
