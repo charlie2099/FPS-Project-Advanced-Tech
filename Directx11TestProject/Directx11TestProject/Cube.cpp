@@ -4,18 +4,22 @@ Cube::Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos) : 
 {
     renderer_ = &renderer;
 
-    /*pixel_shader = std::make_unique<PixelShader>(renderer);
-    input_layout = std::make_unique<InputLayout>(renderer, L"VertexShader.cso", std::vector<D3D11_INPUT_ELEMENT_DESC>
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-    });*/
-
     pixel_shader = std::make_unique<PixelShader>(renderer, L"PixelShader.cso");
     vertex_shader = std::make_unique<VertexShader>(renderer, L"VertexShader.cso");
 
     vertex_buffer = std::make_unique<VertexBuffer>(renderer, std::vector<Vertex>
-    {
+    {                             //UV mapping
+        /*{-size.x, -size.y, -size.z, 1.0f, 0.0f },
+        { size.x, -size.y, -size.z, 1.0f, 1.0f },
+        {-size.x,  size.y, -size.z, 0.0f, 1.0f },
+        { size.x,  size.y, -size.z, 1.0f, 0.0f },
+
+        {-size.x, -size.y,  size.z, 0.0f, 0.0f },
+        { size.x, -size.y,  size.z, 1.0f, 0.0f },
+        {-size.x,  size.y,  size.z, 0.0f, 1.0f },
+        { size.x,  size.y,  size.z, 1.0f, 0.0f },*/
+
+
         { -size.x, -size.y, -size.z, 0.0F, 0.0F },
         { +size.x, -size.y, -size.z, 1.0F, 0.0F },
         { -size.x, -size.y, +size.z, 0.0F, 1.0F },
@@ -44,6 +48,13 @@ Cube::Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos) : 
 
     index_buffer = std::make_unique<IndexBuffer>(renderer, std::vector<unsigned short>
     {
+        /*0,2,1,2,3,1,
+        1,3,5,3,7,5,
+        2,6,3,3,6,7,
+        4,5,7,4,7,6,
+        0,4,2,2,4,6,
+        0,1,4,1,5,4*/
+
         0, 2, 1, 2, 3, 1,
         4, 5, 6, 6, 5, 7,
         8, 10, 9, 9, 10, 11,
