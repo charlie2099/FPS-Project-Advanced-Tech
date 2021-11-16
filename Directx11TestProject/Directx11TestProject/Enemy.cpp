@@ -1,6 +1,6 @@
-#include "Plane.h"
+#include "Enemy.h"
 
-Plane::Plane(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos) : transform(DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z))
+Enemy::Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos) : transform(DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z))
 {
     pixel_shader = std::make_unique<PixelShader>(renderer, L"PixelShader.cso");
 
@@ -12,21 +12,21 @@ Plane::Plane(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos) 
 
     vertex_buffer = std::make_unique<VertexBuffer>(renderer, std::vector<Vertex>
     {
-        { -size.x, 0.0F, -size.y, 0.0F, 0.0F },
-        { -size.x, 0.0F, +size.y, 1.0F , 0.0F },
-        { +size.x, 0.0F, -size.y, 0.0F, 1.0F },
-        { +size.x, 0.0F, +size.y, 1.0F, 1.0F },
+        { -size.x, -size.y, 0.0F, 0.0F, 1.0F },
+        { -size.x, +size.y, 0.0F,  0.0F, 0.0F },
+        { +size.x, -size.y, 0.0F,  1.0F, 1.0F },
+        { +size.x, +size.y, 0.0F,  1.0F, 0.0F },
     });
 
     index_buffer = std::make_unique<IndexBuffer>(renderer, std::vector<unsigned short>{
-        0, 2, 1, 2, 3, 1,
+        0, 1, 2, 2, 1, 3,
     });
 
-    texture = std::make_unique<Texture>(renderer, L"greyfloor.jpg");
+    texture = std::make_unique<Texture>(renderer, L"wolfenstein_head.jpg");
     texture_sampler = std::make_unique<TextureSampler>(renderer);
 }
 
-void Plane::Draw(Renderer& renderer)
+void Enemy::Draw(Renderer& renderer)
 {
     pixel_shader->Bind(renderer);
     vertex_shader->Bind(renderer);

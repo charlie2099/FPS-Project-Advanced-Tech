@@ -1,12 +1,13 @@
 #include "PixelShader.h"
 
-void PixelShader::Create(ID3D11Device* device)
+PixelShader::PixelShader(Renderer& renderer, const std::wstring& path)
 {
-	D3DReadFileToBlob(L"PixelShader.cso", &blob_);
-	device->CreatePixelShader(blob_->GetBufferPointer(), blob_->GetBufferSize(), nullptr, &pixel_shader_);
+	Microsoft::WRL::ComPtr<ID3DBlob> blob_;
+	D3DReadFileToBlob(path.c_str(), &blob_);
+	renderer.GetDevice()->CreatePixelShader(blob_->GetBufferPointer(), blob_->GetBufferSize(), nullptr, &pixel_shader_);
 }
 
-void PixelShader::Bind(ID3D11DeviceContext* device_context) noexcept
+void PixelShader::Bind(Renderer& renderer)
 {
-	device_context->PSSetShader(pixel_shader_.Get(), nullptr, 0u);
+	renderer.GetContext()->PSSetShader(pixel_shader_.Get(), nullptr, 0u);
 }

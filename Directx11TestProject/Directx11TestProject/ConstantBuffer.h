@@ -1,21 +1,21 @@
 #pragma once
+#include <DirectXMath.h>
 #include <d3d11.h>
 #include <wrl.h>
-#include <vector>
-#include <directxmath.h>
-
-namespace dx = DirectX;
 
 class ConstantBuffer
 {
 public:
-	void Init(ID3D11Device* device, dx::XMMATRIX const_buffer);
-	void Init(ID3D11Device* device, float const_buffer);
-	void BindToVS(ID3D11DeviceContext* device_context) noexcept;
-	void BindToPS(ID3D11DeviceContext* device_context) noexcept;
-	UINT GetBufferSize() const noexcept;
+	struct ConstantBufferData
+	{
+		DirectX::XMMATRIX model = DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity());
+		DirectX::XMMATRIX view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0F, 0.0F, 0.0f));
+		DirectX::XMMATRIX projection = DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveRH(1.0F, 3.0F / 4.0F, 0.5F, 100.0F));
+	};
+
+	ConstantBuffer(ID3D11Device* device, const ConstantBufferData& bufferData);
+	void Bind(ID3D11DeviceContext* device_context, const ConstantBufferData& bufferData);
 
 private:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> constant_buffer_;
-	UINT buffer_size_;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> constant_buffer;
 };

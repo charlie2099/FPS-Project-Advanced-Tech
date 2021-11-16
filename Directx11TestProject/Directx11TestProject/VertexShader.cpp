@@ -1,19 +1,15 @@
 #include "VertexShader.h"
 
-void VertexShader::Create(ID3D11Device* device)
+VertexShader::VertexShader(Renderer& renderer, const std::wstring& path, const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout)
 {
-	D3DReadFileToBlob(L"VertexShader.cso", &blob_);
-	device->CreateVertexShader(blob_->GetBufferPointer(), blob_->GetBufferSize(), nullptr, &vertex_shader_);
+	D3DReadFileToBlob(path.c_str(), &blob);
+	renderer.GetDevice()->CreateInputLayout(layout.data(), layout.size(), blob->GetBufferPointer(), blob->GetBufferSize(), &input_layout);
+
+	renderer.GetDevice()->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertex_shader);
 }
 
-void VertexShader::Bind(ID3D11DeviceContext* device_context) noexcept
+void VertexShader::Bind(Renderer& renderer)
 {
-	device_context->VSSetShader(vertex_shader_.Get(), nullptr, 0u);
+	renderer.GetContext()->IASetInputLayout(input_layout.Get());
+	renderer.GetContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
 }
-
-Microsoft::WRL::ComPtr<ID3DBlob> VertexShader::GetBlob()
-{
-	return blob_;
-}
-
-

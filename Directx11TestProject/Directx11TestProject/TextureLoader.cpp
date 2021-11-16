@@ -1,6 +1,9 @@
+
 #pragma comment(lib, "dxguid.lib")
 #include <dxgiformat.h>
+
 #include <wincodec.h>
+
 #include <wrl\client.h>
 #include "TextureLoader.h"
 #include <algorithm>

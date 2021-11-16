@@ -1,29 +1,20 @@
 #include "IndexBuffer.h"
 
-void IndexBuffer::Init(ID3D11Device* device, const std::vector<unsigned short>& indices)
+IndexBuffer::IndexBuffer(Renderer& renderer, const std::vector<unsigned short>& indices)
 {
-	buffer_size_ = (UINT)indices.size();
-
-	D3D11_BUFFER_DESC index_buffer_desc = {};
-	index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	index_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	index_buffer_desc.CPUAccessFlags = 0u;
-	index_buffer_desc.MiscFlags = 0u;
-	index_buffer_desc.ByteWidth = UINT(buffer_size_ * sizeof(unsigned short));
-	index_buffer_desc.StructureByteStride = sizeof(unsigned short);
-
-	D3D11_SUBRESOURCE_DATA index_subr_data = {};
-	index_subr_data.pSysMem = indices.data();
-	device->CreateBuffer(&index_buffer_desc, &index_subr_data, &index_buffer_);
+	D3D11_BUFFER_DESC bufferDesc = {};
+	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER; // What to set the buffer up as
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT; // What the buffer will be used for
+	bufferDesc.CPUAccessFlags = 0U; // Whether the CPU needs to access the buffer (it doesn't yet)
+	bufferDesc.MiscFlags = 0u; // 
+	bufferDesc.ByteWidth = static_cast<unsigned int>(indices.size() * sizeof(unsigned short)); // Size of the buffer in bytes
+	bufferDesc.StructureByteStride = sizeof(unsigned short); // Size of each index
+	D3D11_SUBRESOURCE_DATA subresourceData = {};
+	subresourceData.pSysMem = indices.data(); // Triangles to use
+	renderer.GetDevice()->CreateBuffer(&bufferDesc, &subresourceData, &index_buffer);
 }
 
-
-void IndexBuffer::Bind(ID3D11DeviceContext* device_context, UINT offset) noexcept
+void IndexBuffer::Bind(Renderer& renderer)
 {
-	device_context->IASetIndexBuffer(index_buffer_.Get(), DXGI_FORMAT_R16_UINT, offset);
-}
-
-UINT IndexBuffer::GetBufferSize() const noexcept
-{
-	return buffer_size_;
+	renderer.GetContext()->IASetIndexBuffer(index_buffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 }

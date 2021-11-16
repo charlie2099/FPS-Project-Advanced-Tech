@@ -1,18 +1,19 @@
 #include "Texture.h"
 #include "TextureLoader.h"
-Texture::Texture(Renderer& renderer, const std::wstring& filepath)
+
+Texture::Texture(Renderer& getRenderer, const std::wstring& filepath)
 {
-	auto result = DirectX::CreateWICTextureFromFile(renderer.GetDevice(), filepath.c_str(), NULL, &shaderResourceView);
+	auto result = DirectX::CreateWICTextureFromFile(getRenderer.GetDevice(), filepath.c_str(), NULL, &shader_resource_view);
 	assert(SUCCEEDED(result));
 
 }
 
-void Texture::Bind(Renderer& renderer)
+void Texture::Bind(Renderer& getRenderer)
 {
-	renderer.GetContext()->PSSetShaderResources
+	getRenderer.GetContext()->PSSetShaderResources
 	(
 		0U,
 		1U,
-		shaderResourceView.GetAddressOf()
+		shader_resource_view.GetAddressOf()
 	);
 }

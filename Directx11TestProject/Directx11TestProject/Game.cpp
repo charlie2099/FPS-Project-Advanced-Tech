@@ -1,109 +1,122 @@
 #include "Game.h"
 
-namespace dx = DirectX;
-
-Game::Game()
-    :
-    window(1280, 720, "FPS Window")
+Game::Game() : window(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT, "FPS Window")
 {
-    //cube = std::make_unique<Cube>(window.getRenderer(), 0, -2.0f, -1.5f, 3);
-    window.getRenderer().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f)); // 1.0f, 3.0f / 4.0f, 0.5f, 60.0f
+	LoadMap();
 }
 
 int Game::Run()
 {
-    // Message loop
-    while (true)
-    {
-        // Process all pending messages
-        if (const auto ecode = Window::ProcessMessages())
-        {
-            return *ecode; 
-        }
-        Update(); 
-    }
-}
+	while (true)
+	{
+		if (const auto ecode = Window::ProcessMessages())
+		{
+			return *ecode;
+		}
 
-  /*TODO
-   * Sat: REFACTORING + TEXTURING
-   * Sun: COLLISIONS
-   * Mon: BILLBOARD ENEMIES + SHOOTING
-   * Tues: REPORT
-   * Weds: REPORT
-   */
+		Update();
+	}
+}
 
 void Game::Update()
 {
-    const auto dt = timer.Mark() * speed_factor;
-    const float c = sin(timer.Peek()) / 2.0f + 0.5f;
-    window.getRenderer().ClearBuffer(0, 0, 0); 
-    window.getRenderer().SetCamera(camera.GetMatrix());
+	const auto dt = timer.Mark() * 1.0f;
 
-    //cube->Render(window.getRenderer());
-    //cube = std::make_unique<Cube>(window.getRenderer(), 0, -2.0f, -1.5f, 3);
-    //cube = std::make_unique<Cube>(window.getRenderer(), timer.Peek(), window.mouse.GetPosX() / 400.0f - 1.0f, -window.mouse.GetPosY() / 300.0f + 1.0f, 5.0f);
-
-    /////////////////////////////////////////
-    /// MOVE THIS OUT OF UPDATE YOU MANIAC //
-    /////////////////////////////////////////
-    //level.loadMap(Level::Map::ONE, window);
-    std::fstream level_file;
-    level_file.open("LevelMap1.txt");
-    float angle = 0.0f;
-    float x = 0.0f;
-    float y = 0.0f; 
-    float z = 12.0f; 
-    const float SPACING = 1.9f;
-
-    while (!level_file.eof())
-    {
-        x++;
-        if (level_file.peek() == '\n')
-        {
-            z--;
-            x = 0;
-        }
-        
-        char level_char = level_file.get();
-        switch (level_char)
-        {
-        case '#': // Wall
-            level_block = std::make_unique<Cube>(window.getRenderer(), angle, x * SPACING - 5.0f, y * SPACING, z * SPACING);
-            break;
-        case 'E': // Enemy
-            plane = std::make_unique<Plane>(window.getRenderer(), dx::XMFLOAT3(x * SPACING - 5.0f, y * SPACING, z * SPACING));
-            break;
-        case '-': // Floor
-            //level_block = std::make_unique<Cube>(window.getRenderer(), angle, x * SPACING - 5.0f, y * SPACING - SPACING, z * SPACING);
-            break;
-        }
-    }
-    level_file.close(); 
-    
-    KeyInputs(dt);
-
-    window.getRenderer().EndFrame();
+	KeyboardInputs(dt);
+	Render();
 }
 
-void Game::KeyInputs(const float& dt)
+void Game::Render()
 {
-    // TRANSLATION
-    if (window.kbd.KeyIsPressed('W')) //FORWARDS TRANSLATION
-    {
-        camera.Translate({ 0.0f,0.0f,dt });
-    }
-    if (window.kbd.KeyIsPressed('S')) //BACKWARDS TRANSLATION
-    {
-        camera.Translate({ 0.0f,0.0f,-dt });
-    }
+	window.getRenderer().ClearBuffer(Colours::BLUE_PURPLE);
 
-    // ROTATION
-    if (window.kbd.KeyIsPressed('A')) //LEFT ROTATION
-    {
-        camera.Rotate(-dt, 0.0f);
-    }
-    if (window.kbd.KeyIsPressed('D')) //RIGHT ROTATION
-    {
-        camera.Rotate(dt, 0.0f);
-    }
+	for (auto& cube : cubes)
+	{
+		cube->Draw(window.getRenderer());
+	}
+	for (auto& enemy : enemies)
+	{
+		enemy->Draw(window.getRenderer());
+	}
+	for (auto& plane : planes)
+	{
+		plane->Draw(window.getRenderer());
+	}
+
+	window.getRenderer().EndFrame();
+}
+
+void Game::LoadMap()
+{
+	std::fstream level_file;
+	level_file.open("Level_Map_1.txt");
+	float angle = 0.0f;
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 12.0f;
+	const float SPACING = 1.9f;
+
+	while (!level_file.eof())
+	{
+		x++;
+		if (level_file.peek() == '\n')
+		{
+			z--;
+			x = 0;
+		}
+
+		char level_char = level_file.get();
+		switch (level_char)
+		{
+		case '#': // Wall
+			cubes.push_back(std::make_unique<Cube>(window.getRenderer(), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(x * SPACING, 0.0f, z * SPACING)));
+			break;
+		case 'E': // Enemy
+			enemies.push_back(std::make_unique<Enemy>(window.getRenderer(), DirectX::XMFLOAT2(1.0f, 1.0f), DirectX::XMFLOAT3(x * SPACING, 0.0f, z * SPACING)));
+			break;
+		case 'S':
+			// Spawn block
+			planes.push_back(std::make_unique<Plane>(window.getRenderer(), DirectX::XMFLOAT2(1.0f, 1.0f), DirectX::XMFLOAT3(x * SPACING, -1.0f, z * SPACING)));
+			// get position of the last plane that got pushed to the vector. Use to determine where camera should be positioned.
+
+			// Set 'camera' position
+			//window.getRenderer().constantBufferData.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f, 0.0F, 0.0f));
+			break;
+		}
+
+		// Floor
+		planes.push_back(std::make_unique<Plane>(window.getRenderer(), DirectX::XMFLOAT2(1.0f, 1.0f), DirectX::XMFLOAT3(x * SPACING, -1.0f, z * SPACING)));
+	}
+	level_file.close();
+}
+
+void Game::KeyboardInputs(const float& dt)
+{
+	// TRANSLATION
+	if (window.keyboard.KeyIsPressed('W')) //FORWARDS TRANSLATION
+	{
+		//camera.Translate({ 0.0f,0.0f,dt });
+		float translation = 2.0f;
+		window.getRenderer().constantBufferData.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().constantBufferData.view;
+	}
+	if (window.keyboard.KeyIsPressed('S')) //BACKWARDS TRANSLATION																	
+	{
+		//camera.Translate({ 0.0f,0.0f,-dt });																						
+		float translation = -2.0f;
+		window.getRenderer().constantBufferData.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().constantBufferData.view;
+	}
+
+	// ROTATION
+	if (window.keyboard.KeyIsPressed('A')) //LEFT ROTATION
+	{
+		//camera.Rotate(-dt, 0.0f);
+		float rotation = -2.0f;
+		window.getRenderer().constantBufferData.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(rotation * dt)) * window.getRenderer().constantBufferData.view;
+	}
+	if (window.keyboard.KeyIsPressed('D')) //RIGHT ROTATION
+	{
+		//camera.Rotate(dt, 0.0f);
+		float rotation = 2.0f;
+		window.getRenderer().constantBufferData.view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(rotation * dt)) * window.getRenderer().constantBufferData.view;
+	}
 }

@@ -1,6 +1,8 @@
 #include "Window.h"
 
+
 Window::WindowClass Window::WindowClass::wndClass;
+
 
 Window::WindowClass::WindowClass() noexcept
 	:
@@ -20,8 +22,9 @@ Window::WindowClass::WindowClass() noexcept
 	wc.lpszClassName = GetName();
 	wc.hIconSm = nullptr;
 	RegisterClassEx(&wc);
-}
 
+}
+//destructor
 Window::WindowClass::~WindowClass()
 {
 	UnregisterClass(wndClassName, GetInstance());
@@ -37,33 +40,56 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 	return wndClass.hInst;
 }
 
-Window::Window(int width, int height, const char* name) noexcept
+//window functions
+Window::Window(int width, int height, const char* name)
 {
-	// calculate window size based on desired client region size
-	RECT rect;
-	rect.left = 100;
-	rect.right = width + rect.left;
-	rect.top = 100;
-	rect.bottom = height + rect.top;
-	AdjustWindowRect(&rect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
-
-	// create window & get hWnd
-	window_handle = CreateWindow(
+	//window size based on desired client size
+	RECT wr;
+	wr.left = 100;
+	wr.right = width + wr.left;
+	wr.top = 100;
+	wr.bottom = height + wr.top;
+	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+	// window + hWnd
+	hWnd = CreateWindow(
 		WindowClass::GetName(), name,
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top,
-		nullptr, nullptr, WindowClass::GetInstance(), this
+		CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top, nullptr, nullptr, WindowClass::GetInstance(), this
 	);
-	// newly created windows start off as hidden
-	ShowWindow(window_handle, SW_SHOWDEFAULT);
-
-	// create renderer object
-	renderer = std::make_unique<Renderer>(window_handle);
+	//show window
+	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	// graphic object
+	renderer = std::make_unique<Renderer>(hWnd);
 }
 
 Window::~Window()
 {
-	DestroyWindow(window_handle);
+	DestroyWindow(hWnd);
+}
+
+//handles all the messages
+
+void Window::setTitle(std::string title)
+{
+	SetWindowText(hWnd, title.c_str());
+}
+
+std::optional<int> Window::ProcessMessages()
+{
+	MSG msg;
+
+	while ((PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)))
+	{
+
+		if (msg.message == WM_QUIT)
+		{
+			return msg.wParam;
+		}
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	// wParam here is the value passed to PostQuitMessage
+	return {};
 }
 
 Renderer& Window::getRenderer()
@@ -71,30 +97,25 @@ Renderer& Window::getRenderer()
 	return *renderer;
 }
 
-LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	// use create parameter passed in from CreateWindow() to store window class pointer at WinAPI side
+	//create paramater passed in from CreateWindow(), stores window class pointer
 	if (msg == WM_NCCREATE)
 	{
-		// extract ptr to window class from creation data
+		//extract ptr to window class from creation data
 		const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
 		Window* const pWnd = static_cast<Window*>(pCreate->lpCreateParams);
-		// set WinAPI-managed user data to store ptr to window instance
 		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
-		// set message proc to normal (non-setup) handler now that setup is finished
 		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
-		// forward message to window instance handler
 		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 	}
-	// if we get a message before the WM_NCCREATE message, handle with default handler
-	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	// retrieve ptr to window instance
+	//retrive ptr to window class
 	Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-	// forward message to window instance handler
+	//forward to window class handler
 	return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 }
 
@@ -102,58 +123,37 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 {
 	switch (msg)
 	{
-		// we don't want the DefProc to handle this message because
-		// we want our destructor to destroy the window, so return 0 instead of break
+		/*case WM_KEYDOWN:
+			keyboard.SetKey(wParam, true);
+			break;
+		case WM_KEYUP:
+			keyboard.SetKey(wParam, false);
+			break;*/
 	case WM_CLOSE:
-		{
-			PostQuitMessage(0);
-			return 0;
-		}
-	/*case WM_MOUSEMOVE:
-		{
-			POINTS pt = MAKEPOINTS(lParam);
-			mouse.OnMouseMove(pt.x, pt.y);
-		}*/
+		PostQuitMessage(0);
+		return 0;
+
 	case WM_KILLFOCUS:
-		{
-			kbd.ClearState();
-			break;
-		}
-	case WM_KEYDOWN:
-		{
-			kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
-			break;
-		}
-	case WM_KEYUP:
-		{
-			kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
-			break;
-		}
-	case WM_CHAR:
-		{
-			kbd.OnChar(static_cast<unsigned char>(wParam));
-			break;
-		}
+	{
+		keyboard.ClearState();
+		break;
 	}
-	
+	case WM_KEYDOWN:
+	{
+		keyboard.OnKeyPressed(static_cast<unsigned char>(wParam));
+		break;
+	}
+	case WM_KEYUP:
+	{
+		keyboard.OnKeyReleased(static_cast<unsigned char>(wParam));
+		break;
+	}
+	case WM_CHAR:
+	{
+		keyboard.OnChar(static_cast<unsigned char>(wParam));
+		break;
+	}
+	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
-}
-
-std::optional<int> Window::ProcessMessages()
-{
-	MSG msg = {0};
-
-	while (PeekMessage(&msg, nullptr, NULL, NULL, PM_REMOVE))
-	{
-		if (msg.message == WM_QUIT)
-		{
-			return msg.wParam;    
-		}
-
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-
-	return {};
 }
