@@ -7,7 +7,7 @@
 //
 //void VertexShader::Bind(Renderer& renderer)
 //{
-//	renderer.GetContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
+//	renderer.GetDeviceContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
 //}
 
 VertexShader::VertexShader(Renderer& renderer, const std::wstring& path)
@@ -26,6 +26,6 @@ VertexShader::VertexShader(Renderer& renderer, const std::wstring& path)
 
 void VertexShader::Bind(Renderer& renderer)
 {
-	renderer.GetContext()->IASetInputLayout(input_layout.Get());
-	renderer.GetContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
+	renderer.GetDeviceContext()->IASetInputLayout(input_layout.Get());
+	renderer.GetDeviceContext()->VSSetShader(vertex_shader.Get(), nullptr, 0u);
 }

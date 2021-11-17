@@ -1,11 +1,39 @@
+//--------------------------------------------------------------------------------------
+// File: WICTextureLoader11.cpp
+//
+// Function for loading a WIC image and creating a Direct3D runtime texture for it
+// (auto-generating mipmaps if possible)
+//
+// Note: Assumes application has already called CoInitializeEx
+//
+// Warning: CreateWICTexture* functions are not thread-safe if given a d3dContext instance for
+//          auto-gen mipmap support.
+//
+// Note these functions are useful for images created as simple 2D textures. For
+// more complex resources, DDSTextureLoader is an excellent light-weight runtime loader.
+// For a full-featured DDS file reader, writer, and texture processing pipeline see
+// the 'Texconv' sample and the 'DirectXTex' library.
+//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+//
+// http://go.microsoft.com/fwlink/?LinkId=248926
+// http://go.microsoft.com/fwlink/?LinkId=248929
+//--------------------------------------------------------------------------------------
 
-#pragma comment(lib, "dxguid.lib")
+// We could load multi-frame images (TIFF/GIF) into a texture array.
+// For now, we just load the first frame (note: DirectXTex supports multi-frame images)
+
+#pragma comment( lib, "dxguid.lib")
+
+#include "WICTextureLoader.h"
+
 #include <dxgiformat.h>
 
 #include <wincodec.h>
 
 #include <wrl\client.h>
-#include "TextureLoader.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cstring>

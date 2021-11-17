@@ -24,8 +24,12 @@ private:
 	Window window;
 	Timer timer;
 	std::vector<std::unique_ptr<Cube>> cubes;
+	std::vector<std::unique_ptr<Cube>> bullets;
 	std::vector<std::unique_ptr<Enemy>> enemies;
-	std::vector<std::unique_ptr<Plane>> planes;
-	//std::unique_ptr<Cube> test;
+	std::vector<std::unique_ptr<Plane>> floortiles;
+	std::unique_ptr<Cube> spawnpoint;
+	//std::vector<std::unique_ptr<Projectile>> bullets;
+
+	bool bullet_move = false;
 };
 

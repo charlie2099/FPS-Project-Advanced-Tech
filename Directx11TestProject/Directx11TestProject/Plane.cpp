@@ -1,7 +1,11 @@
 #include "Plane.h"
 
-Plane::Plane(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos) : transform(DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z))
+Plane::Plane(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos)
 {
+    position_ = pos;
+    renderer_ = &renderer;
+    transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+
     pixel_shader = std::make_unique<PixelShader>(renderer, L"PixelShader.cso");
     vertex_shader = std::make_unique<VertexShader>(renderer, L"VertexShader.cso");
 
@@ -31,6 +35,13 @@ void Plane::Render(Renderer& renderer)
     texture->Bind(renderer);
     texture_sampler->Bind(renderer);
 
-    renderer.SetModelMatrix(transform);
-    renderer.GetContext()->DrawIndexed(index_buffer->GetIndexCount(), 0u, 0u);
+    renderer.SetModelMatrix(transform_);
+    renderer.GetDeviceContext()->DrawIndexed(index_buffer->GetIndexCount(), 0u, 0u);
+}
+
+void Plane::SetPos(DirectX::XMFLOAT3 pos)
+{
+    position_ = pos;
+    transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    renderer_->SetModelMatrix(transform_);
 }

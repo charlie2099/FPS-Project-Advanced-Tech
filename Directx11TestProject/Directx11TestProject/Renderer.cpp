@@ -101,7 +101,7 @@ Renderer::Renderer(HWND hWnd)
 	viewport.TopLeftX = Constants::WINDOW_WIDTH / 2 - Constants::VIEW_WIDTH / 2;
 	viewport.TopLeftY = Constants::WINDOW_HEIGHT / 2 - Constants::VIEW_HEIGHT / 2;
 	device_context->RSSetViewports(1u, &viewport);
-	constant_buffer = std::make_unique<ConstantBuffer>(device.Get(), constantBufferData);
+	constant_buffer = std::make_unique<ConstantBuffer>(device.Get(), cbuffer_data);
 }
 
 void Renderer::ClearBuffer(float red, float green, float blue) noexcept
@@ -123,25 +123,25 @@ ID3D11Device* Renderer::GetDevice()
 	return device.Get();
 }
 
-ID3D11DeviceContext* Renderer::GetContext()
+ID3D11DeviceContext* Renderer::GetDeviceContext()
 {
 	return device_context.Get();
 }
 
-ConstantBuffer::ConstantBufferData& Renderer::GetConstantBufferData()
+ConstantBuffer::Data& Renderer::GetCBufferData()
 {
-	return constantBufferData;
+	return cbuffer_data;
 }
 
 void Renderer::SetModelMatrix(DirectX::XMMATRIX model)
 {
-	constantBufferData.model = DirectX::XMMatrixTranspose(model);
-	constant_buffer->Bind(device_context.Get(), constantBufferData);
+	cbuffer_data.model = DirectX::XMMatrixTranspose(model);
+	constant_buffer->Bind(device_context.Get(), cbuffer_data);
 }
 //void Renderer::SetViewMatrix(DirectX::XMMATRIX view)
 //{
-//	constantBufferData.view = DirectX::XMMatrixTranspose(view);
-//	constant_buffer->Bind(device_context.Get(), constantBufferData);
+//	cbuffer_data.view = DirectX::XMMatrixTranspose(view);
+//	constant_buffer->Bind(device_context.Get(), cbuffer_data);
 //}
 void Renderer::EndFrame()
 {

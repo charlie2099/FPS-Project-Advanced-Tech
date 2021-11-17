@@ -12,5 +12,5 @@ TextureSampler::TextureSampler(Renderer& renderer)
 
 void TextureSampler::Bind(Renderer& renderer)
 {
-	renderer.GetContext()->PSSetSamplers(0U, 1U, sampler.GetAddressOf());
+	renderer.GetDeviceContext()->PSSetSamplers(0U, 1U, sampler.GetAddressOf());
 }

@@ -175,7 +175,7 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="WICTextureLoader.cpp" />
     <ClCompile Include="TextureSampler.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
@@ -199,7 +199,7 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="WICTextureLoader.h" />
     <ClInclude Include="TextureSampler.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />

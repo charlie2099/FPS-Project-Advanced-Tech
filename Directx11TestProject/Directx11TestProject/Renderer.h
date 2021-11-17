@@ -26,12 +26,12 @@ public:
 
 	// GETTERS
 	ID3D11Device* GetDevice();
-	ID3D11DeviceContext* GetContext();
-	ConstantBuffer::ConstantBufferData& GetConstantBufferData();
+	ID3D11DeviceContext* GetDeviceContext();
+	ConstantBuffer::Data& GetCBufferData();
 
 private:
 	std::unique_ptr<ConstantBuffer> constant_buffer;
-	ConstantBuffer::ConstantBufferData constantBufferData;
+	ConstantBuffer::Data cbuffer_data;
 
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> device_context;

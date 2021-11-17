@@ -18,5 +18,5 @@ VertexBuffer::VertexBuffer(Renderer& renderer, const std::vector<Vertex>& vertic
 void VertexBuffer::Bind(Renderer& renderer)
 {
 	const UINT offset = 0u;
-	renderer.GetContext()->IASetVertexBuffers(0u, 1u, vertex_buffer.GetAddressOf(), &stride, &offset);
+	renderer.GetDeviceContext()->IASetVertexBuffers(0u, 1u, vertex_buffer.GetAddressOf(), &stride, &offset);
 }

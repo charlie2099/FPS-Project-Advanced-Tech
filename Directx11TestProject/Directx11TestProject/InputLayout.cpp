@@ -14,5 +14,5 @@ InputLayout::InputLayout(Renderer& renderer, const std::wstring& path)
 
 void InputLayout::Bind(Renderer& renderer)
 {
-	renderer.GetContext()->IASetInputLayout(input_layout.Get());
+	renderer.GetDeviceContext()->IASetInputLayout(input_layout.Get());
 }

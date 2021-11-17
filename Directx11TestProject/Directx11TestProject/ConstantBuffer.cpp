@@ -1,6 +1,6 @@
 #include "ConstantBuffer.h"
 
-ConstantBuffer::ConstantBuffer(ID3D11Device* device, const ConstantBufferData& bufferData)
+ConstantBuffer::ConstantBuffer(ID3D11Device* device, const Data& bufferData)
 {
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -15,7 +15,7 @@ ConstantBuffer::ConstantBuffer(ID3D11Device* device, const ConstantBufferData& b
 	device->CreateBuffer(&bufferDesc, &subresourceData, &constant_buffer);
 }
 
-void ConstantBuffer::Bind(ID3D11DeviceContext* device_context, const ConstantBufferData& bufferData)
+void ConstantBuffer::Bind(ID3D11DeviceContext* device_context, const Data& bufferData)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
 	device_context->Map(constant_buffer.Get(), 0U, D3D11_MAP_WRITE_DISCARD, 0U, &mappedSubresource);

@@ -5,11 +5,18 @@
 class Enemy
 {
 public:
-	Enemy(Renderer& getRenderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos);
-	void Render(Renderer& getRenderer);
-	DirectX::XMMATRIX transform = DirectX::XMMatrixIdentity();
+	Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos);
+	void Render(Renderer& renderer);
+
+	void SetPos(DirectX::XMFLOAT3 pos);
+	DirectX::XMFLOAT3 GetPos() { return position_; };
 
 private:
+	DirectX::XMMATRIX transform_;
+	DirectX::XMFLOAT3 position_;
+	DirectX::XMFLOAT3 size_;
+	Renderer* renderer_ = nullptr;
+
 	std::unique_ptr<PixelShader> pixel_shader;
 	std::unique_ptr<VertexShader> vertex_shader;
 	std::unique_ptr<VertexBuffer> vertex_buffer;

@@ -7,5 +7,5 @@ Topology::Topology(Renderer& renderer, D3D11_PRIMITIVE_TOPOLOGY type)
 
 void Topology::Bind(Renderer& renderer)
 {
-	renderer.GetContext()->IASetPrimitiveTopology(topology_type);
+	renderer.GetDeviceContext()->IASetPrimitiveTopology(topology_type);
 }

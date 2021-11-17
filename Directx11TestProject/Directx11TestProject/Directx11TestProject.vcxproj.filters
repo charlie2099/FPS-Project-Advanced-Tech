@@ -112,7 +112,7 @@
     <ClCompile Include="Plane.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="TextureLoader.cpp">
+    <ClCompile Include="WICTextureLoader.cpp">
       <Filter>Source Files\Texure</Filter>
     </ClCompile>
     <ClCompile Include="InputLayout.cpp">
@@ -177,7 +177,7 @@
     <ClInclude Include="Plane.h">
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="TextureLoader.h">
+    <ClInclude Include="WICTextureLoader.h">
       <Filter>Header Files\Texture</Filter>
     </ClInclude>
     <ClInclude Include="Colours.h">

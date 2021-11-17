@@ -9,5 +9,5 @@ PixelShader::PixelShader(Renderer& renderer, const std::wstring& path)
 
 void PixelShader::Bind(Renderer& renderer)
 {
-	renderer.GetContext()->PSSetShader(pixel_shader_.Get(), nullptr, 0u);
+	renderer.GetDeviceContext()->PSSetShader(pixel_shader_.Get(), nullptr, 0u);
 }

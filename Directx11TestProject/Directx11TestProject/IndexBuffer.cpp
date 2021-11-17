@@ -18,7 +18,7 @@ IndexBuffer::IndexBuffer(Renderer& renderer, const std::vector<unsigned short>& 
 
 void IndexBuffer::Bind(Renderer& renderer)
 {
-	renderer.GetContext()->IASetIndexBuffer(index_buffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+	renderer.GetDeviceContext()->IASetIndexBuffer(index_buffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 }
 
 UINT IndexBuffer::GetIndexCount()
