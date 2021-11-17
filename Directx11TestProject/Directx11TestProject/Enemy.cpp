@@ -1,6 +1,6 @@
-#include "Plane.h"
+#include "Enemy.h"
 
-Plane::Plane(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos)
+Enemy::Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos)
 {
     position_ = pos;
     renderer_ = &renderer;
@@ -11,22 +11,22 @@ Plane::Plane(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos)
 
     vertex_buffer = std::make_unique<VertexBuffer>(renderer, std::vector<Vertex>
     {
-        { -size.x, 0.0F, -size.y, 0.0F, 0.0F },
-        { -size.x, 0.0F, +size.y, 1.0F , 0.0F },
-        { +size.x, 0.0F, -size.y, 0.0F, 1.0F },
-        { +size.x, 0.0F, +size.y, 1.0F, 1.0F },
+        { -size.x, -size.y, 0.0F, 0.0F, 1.0F },
+        { -size.x, +size.y, 0.0F,  0.0F, 0.0F },
+        { +size.x, -size.y, 0.0F,  1.0F, 1.0F },
+        { +size.x, +size.y, 0.0F,  1.0F, 0.0F },
     });
 
     index_buffer = std::make_unique<IndexBuffer>(renderer, std::vector<unsigned short>
     {
-        0, 2, 1, 2, 3, 1,
+        0, 1, 2, 2, 1, 3,
     });
 
-    texture = std::make_unique<Texture>(renderer, L"greyfloor.jpg");
+    texture = std::make_unique<Texture>(renderer, L"wolfenstein_head.jpg");
     texture_sampler = std::make_unique<TextureSampler>(renderer);
 }
 
-void Plane::Render(Renderer& renderer)
+void Enemy::Render(Renderer& renderer)
 {
     pixel_shader->Bind(renderer);
     vertex_shader->Bind(renderer);
@@ -39,7 +39,7 @@ void Plane::Render(Renderer& renderer)
     renderer.GetDeviceContext()->DrawIndexed(index_buffer->GetIndexCount(), 0u, 0u);
 }
 
-void Plane::SetPos(DirectX::XMFLOAT3 pos)
+void Enemy::SetPos(DirectX::XMFLOAT3 pos)
 {
     position_ = pos;
     transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);

@@ -6,6 +6,8 @@ class TextureSampler
 public:
 	TextureSampler(Renderer& renderer);
 	void Bind(Renderer& renderer);
+
 private:
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler;
 };
+

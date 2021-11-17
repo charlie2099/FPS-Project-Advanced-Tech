@@ -1,109 +1,157 @@
 #include "Game.h"
 
-namespace dx = DirectX;
-
-Game::Game()
-    :
-    window(1280, 720, "FPS Window")
+Game::Game() : window(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT, "FPS Window")
 {
-    //cube = std::make_unique<Cube>(window.getRenderer(), 0, -2.0f, -1.5f, 3);
-    window.getRenderer().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f)); // 1.0f, 3.0f / 4.0f, 0.5f, 60.0f
+	LoadMap();
+
+	// Camera origin
+	//DirectX::XMFLOAT3 camera_pos { spawnpoint->GetPos().x, spawnpoint->GetPos().y, spawnpoint->GetPos().z };
+
+	window.getRenderer().GetCBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(-5,0,-5));
+
+	// Spawn one bullet
+	for (int i = 0; i < 1; i++)
+	{
+		DirectX::XMFLOAT3 bullet_size{ 0.5f, 0.5f, 0.5f };
+		DirectX::XMFLOAT3 bullet_pos{ 4.0, 0.10f, 15.0f };
+		bullets.push_back(std::make_unique<Cube>(window.getRenderer(), L"Palpatine.jpg", bullet_size, bullet_pos));
+	}
 }
 
 int Game::Run()
 {
-    // Message loop
-    while (true)
-    {
-        // Process all pending messages
-        if (const auto ecode = Window::ProcessMessages())
-        {
-            return *ecode; 
-        }
-        Update(); 
-    }
+	while (true)
+	{
+		if (const auto ecode = Window::ProcessMessages())
+		{
+			return *ecode;
+		}
+
+		Update();
+	}
 }
 
-  /*TODO
-   * Sat: REFACTORING + TEXTURING
-   * Sun: COLLISIONS
-   * Mon: BILLBOARD ENEMIES + SHOOTING
-   * Tues: REPORT
-   * Weds: REPORT
-   */
+void Game::KeyboardInputs(const float& dt)
+{
+	if (window.keyboard.KeyIsPressed('W')) //FORWARDS TRANSLATION
+	{
+		//camera.Translate({ 0.0f,0.0f,dt });
+		float translation = 2.0f;
+		window.getRenderer().GetCBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().GetCBufferData().view;
+	}
+	if (window.keyboard.KeyIsPressed('S')) //BACKWARDS TRANSLATION																	
+	{
+		//camera.Translate({ 0.0f,0.0f,-dt });																						
+		float translation = -2.0f;
+		window.getRenderer().GetCBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().GetCBufferData().view;
+	}
+
+	if (window.keyboard.KeyIsPressed('A')) //LEFT ROTATION
+	{
+		//camera.Rotate(-dt, 0.0f);
+		float rotation = -2.0f;
+		window.getRenderer().GetCBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(rotation * dt)) * window.getRenderer().GetCBufferData().view;
+	}
+	if (window.keyboard.KeyIsPressed('D')) //RIGHT ROTATION
+	{
+		//camera.Rotate(dt, 0.0f);
+		float rotation = 2.0f;
+		window.getRenderer().GetCBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(rotation * dt)) * window.getRenderer().GetCBufferData().view;
+	}
+
+	const int SPACEBAR = 32;
+	if (window.keyboard.KeyIsPressed(SPACEBAR))
+	{
+		bullet_move = true;
+	}
+
+	//if (window.keyboard.KeyIsPressed('M'))
+	//{
+	//	// Set 'camera' position
+	//	window.getRenderer().GetCBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f, 0.0F, 0.0f));
+	//}
+}
 
 void Game::Update()
 {
-    const auto dt = timer.Mark() * speed_factor;
-    const float c = sin(timer.Peek()) / 2.0f + 0.5f;
-    window.getRenderer().ClearBuffer(0, 0, 0); 
-    window.getRenderer().SetCamera(camera.GetMatrix());
+	const auto dt = timer.Mark() * 1.0f;
+	KeyboardInputs(dt);
 
-    //cube->Render(window.getRenderer());
-    //cube = std::make_unique<Cube>(window.getRenderer(), 0, -2.0f, -1.5f, 3);
-    //cube = std::make_unique<Cube>(window.getRenderer(), timer.Peek(), window.mouse.GetPosX() / 400.0f - 1.0f, -window.mouse.GetPosY() / 300.0f + 1.0f, 5.0f);
+	if(bullet_move)
+	{
+		bullets[0]->SetPos({ bullets[0]->GetPos().x + 2 * dt, bullets[0]->GetPos().y, bullets[0]->GetPos().z });
+	}
 
-    /////////////////////////////////////////
-    /// MOVE THIS OUT OF UPDATE YOU MANIAC //
-    /////////////////////////////////////////
-    //level.loadMap(Level::Map::ONE, window);
-    std::fstream level_file;
-    level_file.open("LevelMap1.txt");
-    float angle = 0.0f;
-    float x = 0.0f;
-    float y = 0.0f; 
-    float z = 12.0f; 
-    const float SPACING = 1.9f;
-
-    while (!level_file.eof())
-    {
-        x++;
-        if (level_file.peek() == '\n')
-        {
-            z--;
-            x = 0;
-        }
-        
-        char level_char = level_file.get();
-        switch (level_char)
-        {
-        case '#': // Wall
-            level_block = std::make_unique<Cube>(window.getRenderer(), angle, x * SPACING - 5.0f, y * SPACING, z * SPACING);
-            break;
-        case 'E': // Enemy
-            plane = std::make_unique<Plane>(window.getRenderer(), dx::XMFLOAT3(x * SPACING - 5.0f, y * SPACING, z * SPACING));
-            break;
-        case '-': // Floor
-            //level_block = std::make_unique<Cube>(window.getRenderer(), angle, x * SPACING - 5.0f, y * SPACING - SPACING, z * SPACING);
-            break;
-        }
-    }
-    level_file.close(); 
-    
-    KeyInputs(dt);
-
-    window.getRenderer().EndFrame();
+	Render();
 }
 
-void Game::KeyInputs(const float& dt)
+void Game::Render()
 {
-    // TRANSLATION
-    if (window.kbd.KeyIsPressed('W')) //FORWARDS TRANSLATION
-    {
-        camera.Translate({ 0.0f,0.0f,dt });
-    }
-    if (window.kbd.KeyIsPressed('S')) //BACKWARDS TRANSLATION
-    {
-        camera.Translate({ 0.0f,0.0f,-dt });
-    }
+	window.getRenderer().ClearBuffer(Colours::BLUE_PURPLE);
 
-    // ROTATION
-    if (window.kbd.KeyIsPressed('A')) //LEFT ROTATION
-    {
-        camera.Rotate(-dt, 0.0f);
-    }
-    if (window.kbd.KeyIsPressed('D')) //RIGHT ROTATION
-    {
-        camera.Rotate(dt, 0.0f);
-    }
+	for (auto& cube : cubes)
+	{
+		cube->Render(window.getRenderer());
+	}
+	for (auto& enemy : enemies)
+	{
+		enemy->Render(window.getRenderer());
+	}
+	for (auto& tiles : floortiles)
+	{
+		tiles->Render(window.getRenderer());
+	}
+	for (auto& bullet : bullets)
+	{
+		bullet->Render(window.getRenderer());
+	}
+	spawnpoint->Render(window.getRenderer());
+
+	window.getRenderer().EndFrame();
 }
+
+void Game::LoadMap()
+{
+	std::fstream level_file;
+	level_file.open("Level_Map_1.txt");
+	float angle = 0.0f;
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+	const float SPACING = 1.9f;
+
+	while (!level_file.eof())
+	{
+		x++;
+		if (level_file.peek() == '\n')
+		{
+			z++;
+			x = 0;
+		}
+
+		char level_char = level_file.get();
+		switch (level_char)
+		{
+		case '#': // Wall
+			DirectX::XMFLOAT3 cube_size { 1.0, 1.0f, 1.0f };
+			DirectX::XMFLOAT3 cube_pos  { x * SPACING, 0.0f, z * SPACING };
+			cubes.push_back(std::make_unique<Cube>(window.getRenderer(), cube_size, cube_pos));
+			break;
+		case 'E': // Enemy
+			DirectX::XMFLOAT2 enemy_size { 0.5f, 1.0f };
+			DirectX::XMFLOAT3 enemy_pos  { x * SPACING, -0.25f, z * SPACING };
+			enemies.push_back(std::make_unique<Enemy>(window.getRenderer(), enemy_size, enemy_pos));
+			break;
+		case 'S':
+			spawnpoint = std::make_unique<Cube>(window.getRenderer(), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(x * SPACING, -1.9f, z * SPACING));
+			break;
+		}
+
+		// Floor
+		DirectX::XMFLOAT2 floor_size { 1.0, 1.0f };
+		DirectX::XMFLOAT3 floor_pos  { x * SPACING, -1.0f, z * SPACING };
+		floortiles.push_back(std::make_unique<Plane>(window.getRenderer(), floor_size, floor_pos));
+	}
+	level_file.close();
+}
+

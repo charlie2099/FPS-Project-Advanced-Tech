@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -16,138 +12,131 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{1c97140d-0b88-46b7-8192-b2ce185dd216}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Buffers">
-      <UniqueIdentifier>{07d4962e-1bc5-43cd-84cc-0ecb5cb48f00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Buffers">
-      <UniqueIdentifier>{c68e925b-99b4-461e-8315-2e74f2ec8267}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Textures">
-      <UniqueIdentifier>{ff6c8810-c337-43c2-9397-86f9ef3d7720}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Levels">
       <UniqueIdentifier>{b56c85e3-5b9c-4927-9471-d875812c08e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Input">
       <UniqueIdentifier>{e63e6588-68c3-444b-84cb-368f741c88d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Input">
-      <UniqueIdentifier>{95e46aeb-0a96-4e58-95ec-913a4b070f1e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Primitives">
       <UniqueIdentifier>{1261b103-8d5d-45c3-b5f1-8e8752aac52c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{a9692c7e-4adf-4c6e-9ab9-c70357e68e61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Bindables">
+      <UniqueIdentifier>{7519edbc-a905-4ff4-8e68-e16c8f532f9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{82cb88b7-41ae-41c7-9cf0-08bc684c039f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Bindables">
+      <UniqueIdentifier>{bca5000e-e7fc-4f9a-87af-702713fcd16d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{46fe2e96-02f6-4eaa-af3d-31e04dcb8ca5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\Primitives">
-      <UniqueIdentifier>{ac0d995f-0259-494c-b1a6-b114d8f821f5}</UniqueIdentifier>
+      <UniqueIdentifier>{d8065063-e14d-4fdf-a07f-df2b10f8e31b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Shaders">
-      <UniqueIdentifier>{04ec55cd-3007-4887-bc6d-2c97504a1ec4}</UniqueIdentifier>
+    <Filter Include="Source Files\Texure">
+      <UniqueIdentifier>{465d18d8-9a71-4f22-940f-54e3bdf222e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Shaders">
-      <UniqueIdentifier>{960fe128-4c82-4943-b991-1b3dc82faffa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Textures">
+    <Filter Include="Header Files\Texture">
       <UniqueIdentifier>{7da9b61b-bd08-48d3-a1d1-49aa0ee381dd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Textures">
-      <UniqueIdentifier>{d34d3dc8-e679-4abe-a82d-00b38469fbf0}</UniqueIdentifier>
+    <Filter Include="Header Files\Window">
+      <UniqueIdentifier>{ede1201a-4266-43b9-b83d-a5f23cbb86b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Window">
+      <UniqueIdentifier>{5aa464bc-df9a-4a59-86ca-1ec204f09cc7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
+    <Text Include="Level_Map_1.txt">
+      <Filter>Resource Files\Levels</Filter>
+    </Text>
+    <Text Include="Level_Map_2.txt">
+      <Filter>Resource Files\Levels</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source Files\Window</Filter>
     </ClCompile>
-    <ClCompile Include="Level.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
-      <Filter>Source Files\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Source Files\Buffers</Filter>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>Source Files\Window</Filter>
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Mouse.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="Cube.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp">
-      <Filter>Source Files\Buffers</Filter>
+      <Filter>Source Files\Bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Source Files\Bindables</Filter>
     </ClCompile>
     <ClCompile Include="PixelShader.cpp">
-      <Filter>Source Files\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexShader.cpp">
-      <Filter>Source Files\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="InputLayout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureSampler.cpp">
-      <Filter>Source Files\Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureLoader.cpp">
-      <Filter>Source Files\Textures</Filter>
+      <Filter>Source Files\Bindables</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>Source Files\Textures</Filter>
+      <Filter>Source Files\Bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureSampler.cpp">
+      <Filter>Source Files\Bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="Topology.cpp">
+      <Filter>Source Files\Bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Source Files\Bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Source Files\Bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Source Files\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="Plane.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
+    <ClCompile Include="WICTextureLoader.cpp">
+      <Filter>Source Files\Texure</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>Source Files\Bindables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WindowsHeader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
+    <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
+    <ClInclude Include="Vertex.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Level.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MathCode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
-      <Filter>Header Files\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>Header Files\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>Header Files\Input</Filter>
+    <ClInclude Include="Window.h">
+      <Filter>Header Files\Window</Filter>
     </ClInclude>
     <ClInclude Include="Keyboard.h">
       <Filter>Header Files\Input</Filter>
@@ -155,53 +144,55 @@
     <ClInclude Include="Cube.h">
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="BindableHeaders.h">
+      <Filter>Header Files\Bindables</Filter>
+    </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
-      <Filter>Header Files\Buffers</Filter>
+      <Filter>Header Files\Bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Header Files\Bindables</Filter>
     </ClInclude>
     <ClInclude Include="PixelShader.h">
-      <Filter>Header Files\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShader.h">
-      <Filter>Header Files\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="InputLayout.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureSampler.h">
-      <Filter>Header Files\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureLoader.h">
-      <Filter>Header Files\Textures</Filter>
+      <Filter>Header Files\Bindables</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Header Files\Textures</Filter>
+      <Filter>Header Files\Bindables</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="TextureSampler.h">
+      <Filter>Header Files\Bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="Topology.h">
+      <Filter>Header Files\Bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Header Files\Bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Header Files\Bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Header Files\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="Plane.h">
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="WICTextureLoader.h">
+      <Filter>Header Files\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Colours.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>Header Files\Bindables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="VertexShader.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="PixelShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="LevelMap1.txt">
-      <Filter>Resource Files\Levels</Filter>
-    </Text>
-    <Text Include="LevelMap2.txt">
-      <Filter>Resource Files\Levels</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="C:\Users\Charl\Downloads\DirectXAV-master\DirectXAV-master\Bricks.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

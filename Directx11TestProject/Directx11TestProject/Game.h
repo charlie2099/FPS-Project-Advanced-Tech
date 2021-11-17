@@ -1,10 +1,12 @@
 #pragma once
 #include "Window.h"
-#include "Camera.h"
 #include "Timer.h"
-//#include "Level.h"
 #include "Cube.h"
+#include "Enemy.h"
 #include "Plane.h"
+#include "Constants.h"
+#include "Colours.h"
+#include <iostream>
 #include <fstream>
 
 class Game
@@ -15,15 +17,19 @@ public:
 
 private:
 	void Update();
-	void KeyInputs(const float& dt);
+	void Render();
+	void KeyboardInputs(const float& dt);
+	void LoadMap();
 
 	Window window;
-	Camera camera;
 	Timer timer;
-	//Level level;
-	std::unique_ptr<Plane> plane;
-	std::unique_ptr<Cube> cube;
-	std::unique_ptr<Cube> level_block;
+	std::vector<std::unique_ptr<Cube>> cubes;
+	std::vector<std::unique_ptr<Cube>> bullets;
+	std::vector<std::unique_ptr<Enemy>> enemies;
+	std::vector<std::unique_ptr<Plane>> floortiles;
+	std::unique_ptr<Cube> spawnpoint;
+	//std::vector<std::unique_ptr<Projectile>> bullets;
 
-	float speed_factor = 1.0f;
+	bool bullet_move = false;
 };
+

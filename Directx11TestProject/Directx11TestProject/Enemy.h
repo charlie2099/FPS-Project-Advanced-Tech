@@ -2,10 +2,10 @@
 #include "Renderer.h"
 #include "BindableHeaders.h"
 
-class Plane
+class Enemy
 {
 public:
-	Plane(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos);
+	Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos);
 	void Render(Renderer& renderer);
 
 	void SetPos(DirectX::XMFLOAT3 pos);
@@ -14,6 +14,7 @@ public:
 private:
 	DirectX::XMMATRIX transform_;
 	DirectX::XMFLOAT3 position_;
+	DirectX::XMFLOAT3 size_;
 	Renderer* renderer_ = nullptr;
 
 	std::unique_ptr<PixelShader> pixel_shader;
@@ -23,4 +24,5 @@ private:
 	std::unique_ptr<Texture> texture;
 	std::unique_ptr<TextureSampler> texture_sampler;
 };
+
 

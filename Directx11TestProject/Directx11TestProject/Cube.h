@@ -1,37 +1,28 @@
 #pragma once
 #include "Renderer.h"
-#include "Vertex.h"
-#include <d3d11.h>
-#include <wrl.h>
-#include <vector>
-#include <memory>
-
-namespace wrl = Microsoft::WRL;
-namespace dx = DirectX;
+#include "BindableHeaders.h"
 
 class Cube
 {
 public:
-	Cube(Renderer& renderer, float angle, float x, float y, float z);
-	~Cube() = default;
-
-	void Update();
+	Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos);
+	Cube(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos);
 	void Render(Renderer& renderer);
 
+	void SetPos(DirectX::XMFLOAT3 pos);
+	DirectX::XMFLOAT3 GetPos() { return position_; };
+
 private:
-	void Binds(Renderer& renderer);
+	DirectX::XMMATRIX transform_;
+	DirectX::XMFLOAT3 position_;
+	Renderer* renderer_ = nullptr;
 
-	UINT stride;
-	UINT offset;
-
-	wrl::ComPtr<ID3D11Buffer> vertex_buffer_old; //VertexBuffer vertex_buffer;
-	IndexBuffer index_buffer;
-	ConstantBuffer constant_buffer;
-	//ConstantBuffer constant_buffer2_new;
-	wrl::ComPtr<ID3D11Buffer> constant_buffer2;
-
-	PixelShader pixel_shader;
-	VertexShader vertex_shader;
-
-	InputLayout input_layout;
+	std::unique_ptr<PixelShader> pixel_shader;
+	std::unique_ptr<VertexShader> vertex_shader;
+	std::unique_ptr<VertexBuffer> vertex_buffer;
+	//std::unique_ptr<InputLayout> input_layout;
+	std::unique_ptr<IndexBuffer> index_buffer;
+	std::unique_ptr<Texture> texture;
+	std::unique_ptr<TextureSampler> texture_sampler;
 };
+

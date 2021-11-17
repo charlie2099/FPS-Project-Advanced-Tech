@@ -1,168 +1,159 @@
 #include "Cube.h"
-#include <sstream>
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
 
-#pragma comment (lib, "d3d11.lib")
-#pragma comment(lib, "D3DCompiler.lib")
-
-Cube::Cube(Renderer& renderer, float angle, float x, float y, float z)
+Cube::Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos)
 {
-	pixel_shader.Create(renderer.GetDevice());
+    position_ = pos;
+    renderer_ = &renderer;
+    transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
-	vertex_shader.Create(renderer.GetDevice());
+    pixel_shader = std::make_unique<PixelShader>(renderer, L"PixelShader.cso");
+    vertex_shader = std::make_unique<VertexShader>(renderer, L"VertexShader.cso");
 
-	input_layout.Create(renderer.GetDevice(), vertex_shader.GetBlob());
+    vertex_buffer = std::make_unique<VertexBuffer>(renderer, std::vector<Vertex>
+    {                             //UV mapping
+        /*{-size.x, -size.y, -size.z, 1.0f, 0.0f },
+        { size.x, -size.y, -size.z, 1.0f, 1.0f },
+        {-size.x,  size.y, -size.z, 0.0f, 1.0f },
+        { size.x,  size.y, -size.z, 1.0f, 0.0f },
 
-
-	// vertex buffer
-    const std::vector<Vertex> vertices =
-	{
-		{-1.0f, -1.0f, -1.0f },
-		{ 1.0f, -1.0f, -1.0f },
-		{-1.0f,  1.0f, -1.0f },
-		{ 1.0f,  1.0f, -1.0f },
-		{-1.0f, -1.0f,  1.0f },
-		{ 1.0f, -1.0f,  1.0f },
-		{-1.0f,  1.0f,  1.0f },
-		{ 1.0f,  1.0f,  1.0f },
-	};
-
-	//vertex_buffer.Init(renderer.GetDevice().Get(), vertices, 0u);
-	//vertex_buffer.Bind(renderer.GetContext().Get(), 0u, 1u);
-
-	D3D11_BUFFER_DESC bd = {};
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.CPUAccessFlags = 0u;
-	bd.MiscFlags = 0u;
-	bd.ByteWidth = UINT(sizeof(Vertex) * vertices.size()); 
-	bd.StructureByteStride = sizeof(Vertex);
-
-	D3D11_SUBRESOURCE_DATA sd = {};
-	sd.pSysMem = vertices.data();
-	renderer.GetDevice()->CreateBuffer(&bd, &sd, &vertex_buffer_old);
-	stride = sizeof(Vertex);
-	offset = 0u;
+        {-size.x, -size.y,  size.z, 0.0f, 0.0f },
+        { size.x, -size.y,  size.z, 1.0f, 0.0f },
+        {-size.x,  size.y,  size.z, 0.0f, 1.0f },
+        { size.x,  size.y,  size.z, 1.0f, 0.0f },*/
 
 
+        { -size.x, -size.y, -size.z, 0.0F, 0.0F },
+        { +size.x, -size.y, -size.z, 1.0F, 0.0F },
+        { -size.x, -size.y, +size.z, 0.0F, 1.0F },
+        { +size.x, -size.y, +size.z, 1.0F, 1.0F },
+        { -size.x, +size.y, -size.z, 0.0F, 0.0F },
+        { +size.x, +size.y, -size.z, 1.0F, 0.0F },
+        { -size.x, +size.y, +size.z, 0.0F, 1.0F },
+        { +size.x, +size.y, +size.z, 1.0F, 1.0F },
+        { -size.x, -size.y, +size.z, 0.0F, 1.0F },
+        { +size.x, -size.y, +size.z, 1.0F, 1.0F },
+        { -size.x, +size.y, +size.z, 0.0F, 0.0F },
+        { +size.x, +size.y, +size.z, 1.0F, 0.0F },
+        { -size.x, -size.y, -size.z, 1.0F, 1.0F },
+        { +size.x, -size.y, -size.z, 0.0F, 1.0F },
+        { -size.x, +size.y, -size.z, 1.0F, 0.0F },
+        { +size.x, +size.y, -size.z, 0.0F, 0.0F },
+        { -size.x, -size.y, +size.z, 1.0F, 1.0F },
+        { -size.x, +size.y, +size.z, 1.0F, 0.0F },
+        { -size.x, -size.y, -size.z, 0.0F, 1.0F },
+        { -size.x, +size.y, -size.z, 0.0F, 0.0F },
+        { +size.x, -size.y, +size.z, 0.0F, 1.0F },
+        { +size.x, +size.y, +size.z, 0.0F, 0.0F },
+        { +size.x, -size.y, -size.z, 1.0F, 1.0F },
+        { +size.x, +size.y, -size.z, 1.0F, 0.0F },
+    });
 
+    index_buffer = std::make_unique<IndexBuffer>(renderer, std::vector<unsigned short>
+    {
+        /*0,2,1,2,3,1,
+        1,3,5,3,7,5,
+        2,6,3,3,6,7,
+        4,5,7,4,7,6,
+        0,4,2,2,4,6,
+        0,1,4,1,5,4*/
 
-	// index buffer
-	const std::vector<unsigned short> indices =
-	{
-		0,2,1, 2,3,1,
-		1,3,5, 3,7,5,
-		2,6,3, 3,6,7,
-		4,5,7, 4,7,6,
-		0,4,2, 2,4,6,
-		0,1,4, 1,5,4
-	};
+        0, 2, 1, 2, 3, 1,
+        4, 5, 6, 6, 5, 7,
+        8, 10, 9, 9, 10, 11,
+        12, 13, 14, 13, 15, 14,
+        16, 18, 17, 17, 18, 19,
+        20, 21, 22, 22, 21, 23
+    });
 
-	index_buffer.Init(renderer.GetDevice(), indices);
-
-
-	// constant buffer for transformation matrix
-	struct ConstantBuffer
-	{
-		dx::XMMATRIX transform;
-	};
-
-	const ConstantBuffer const_buffer =
-	{
-		{
-			dx::XMMatrixTranspose(
-				dx::XMMatrixRotationZ(angle) *
-				dx::XMMatrixRotationX(angle) *
-				dx::XMMatrixTranslation(x, y, z + 4.0f) *
-				renderer.GetCamera() * renderer.GetProjection() *
-				dx::XMMatrixPerspectiveLH(1.0f, 1.0f, 0.5f, 60.0f) // 10
-			)
-		}
-	};
-
-	constant_buffer.Init(renderer.GetDevice(), const_buffer.transform);
-	renderer.SetTransformMatrix(const_buffer.transform);
-
-
-
-
-
-	struct ConstantBuffer2
-	{
-		struct
-		{
-			float r;
-			float g;
-			float b;
-			float a;
-		} face_colours[6];
-	};
-
-	struct ConstantBuffer2 cb2 =
-	{
-		{
-			/*{0.2f, 0.2f, 0.7f}, 
-			{0.2f, 0.2f, 0.7f},
-			{0.2f, 0.2f, 0.7f},
-			{0.2f, 0.2f, 0.7f},
-			{0.2f, 0.2f, 0.7f},
-			{0.2f, 0.2f, 0.7f},*/
-	
-			{0.0f, 0.5f, 1.0f},
-			{0.2f, 0.2f, 0.7f},
-			{0.1f, 0.8f, 0.5f},
-			{0.5f, 1.0f, 0.2f},
-			{0.4f, 0.3f, 0.8f},
-			{0.8f, 0.9f, 0.3f},
-		}
-	};
-
-	D3D11_BUFFER_DESC cbd2;
-	cbd2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbd2.Usage = D3D11_USAGE_DYNAMIC;
-	cbd2.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbd2.MiscFlags = 0u;
-	cbd2.ByteWidth = sizeof(cb2);
-	cbd2.StructureByteStride = 0u;
-
-	D3D11_SUBRESOURCE_DATA csd2 = {};
-	csd2.pSysMem = &cb2;
-	renderer.GetDevice()->CreateBuffer(&cbd2, &csd2, &constant_buffer2);
-
-
-
-
-	Binds(renderer);
-	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
+    texture = std::make_unique<Texture>(renderer, L"wall.jpg");
+    texture_sampler = std::make_unique<TextureSampler>(renderer);
 }
 
-void Cube::Update() {}
+Cube::Cube(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos)
+{
+    position_ = pos;
+    renderer_ = &renderer;
+    transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+    pixel_shader = std::make_unique<PixelShader>(renderer, L"PixelShader.cso");
+    vertex_shader = std::make_unique<VertexShader>(renderer, L"VertexShader.cso");
+
+    vertex_buffer = std::make_unique<VertexBuffer>(renderer, std::vector<Vertex>
+    {                             //UV mapping
+        /*{-size.x, -size.y, -size.z, 1.0f, 0.0f },
+        { size.x, -size.y, -size.z, 1.0f, 1.0f },
+        {-size.x,  size.y, -size.z, 0.0f, 1.0f },
+        { size.x,  size.y, -size.z, 1.0f, 0.0f },
+
+        {-size.x, -size.y,  size.z, 0.0f, 0.0f },
+        { size.x, -size.y,  size.z, 1.0f, 0.0f },
+        {-size.x,  size.y,  size.z, 0.0f, 1.0f },
+        { size.x,  size.y,  size.z, 1.0f, 0.0f },*/
+
+
+        { -size.x, -size.y, -size.z, 0.0F, 0.0F },
+        { +size.x, -size.y, -size.z, 1.0F, 0.0F },
+        { -size.x, -size.y, +size.z, 0.0F, 1.0F },
+        { +size.x, -size.y, +size.z, 1.0F, 1.0F },
+        { -size.x, +size.y, -size.z, 0.0F, 0.0F },
+        { +size.x, +size.y, -size.z, 1.0F, 0.0F },
+        { -size.x, +size.y, +size.z, 0.0F, 1.0F },
+        { +size.x, +size.y, +size.z, 1.0F, 1.0F },
+        { -size.x, -size.y, +size.z, 0.0F, 1.0F },
+        { +size.x, -size.y, +size.z, 1.0F, 1.0F },
+        { -size.x, +size.y, +size.z, 0.0F, 0.0F },
+        { +size.x, +size.y, +size.z, 1.0F, 0.0F },
+        { -size.x, -size.y, -size.z, 1.0F, 1.0F },
+        { +size.x, -size.y, -size.z, 0.0F, 1.0F },
+        { -size.x, +size.y, -size.z, 1.0F, 0.0F },
+        { +size.x, +size.y, -size.z, 0.0F, 0.0F },
+        { -size.x, -size.y, +size.z, 1.0F, 1.0F },
+        { -size.x, +size.y, +size.z, 1.0F, 0.0F },
+        { -size.x, -size.y, -size.z, 0.0F, 1.0F },
+        { -size.x, +size.y, -size.z, 0.0F, 0.0F },
+        { +size.x, -size.y, +size.z, 0.0F, 1.0F },
+        { +size.x, +size.y, +size.z, 0.0F, 0.0F },
+        { +size.x, -size.y, -size.z, 1.0F, 1.0F },
+        { +size.x, +size.y, -size.z, 1.0F, 0.0F },
+    });
+
+    index_buffer = std::make_unique<IndexBuffer>(renderer, std::vector<unsigned short>
+    {
+        /*0,2,1,2,3,1,
+        1,3,5,3,7,5,
+        2,6,3,3,6,7,
+        4,5,7,4,7,6,
+        0,4,2,2,4,6,
+        0,1,4,1,5,4*/
+
+        0, 2, 1, 2, 3, 1,
+            4, 5, 6, 6, 5, 7,
+            8, 10, 9, 9, 10, 11,
+            12, 13, 14, 13, 15, 14,
+            16, 18, 17, 17, 18, 19,
+            20, 21, 22, 22, 21, 23
+    });
+    
+    texture = std::make_unique<Texture>(renderer, filepath.c_str());
+    texture_sampler = std::make_unique<TextureSampler>(renderer);
+}
 
 void Cube::Render(Renderer& renderer)
 {
-	// Transformation matrix here??
+    pixel_shader->Bind(renderer);
+    vertex_shader->Bind(renderer);
+    vertex_buffer->Bind(renderer);
+    index_buffer->Bind(renderer);
+    texture->Bind(renderer);
+    texture_sampler->Bind(renderer);
 
-	Binds(renderer);
-	renderer.GetContext()->DrawIndexed(index_buffer.GetBufferSize(), 0u, 0u);
+    renderer.SetModelMatrix(transform_);
+    renderer.GetDeviceContext()->DrawIndexed(index_buffer->GetIndexCount(), 0u, 0u);
 }
 
-/// PRIVATE FUNCTIONS
-void Cube::Binds(Renderer& renderer)
+void Cube::SetPos(DirectX::XMFLOAT3 pos)
 {
-	renderer.GetContext()->IASetVertexBuffers(0u, 1u, vertex_buffer_old.GetAddressOf(), &stride, &offset);
-
-	index_buffer.Bind(renderer.GetContext(), 0u);
-
-	constant_buffer.BindToVS(renderer.GetContext());
-	//constant_buffer2.BindToPS(renderer.GetContext());
-	renderer.GetContext()->PSSetConstantBuffers(0u, 1u, constant_buffer2.GetAddressOf());
-
-	pixel_shader.Bind(renderer.GetContext());
-	vertex_shader.Bind(renderer.GetContext());
-
-	input_layout.Bind(renderer.GetContext());
-
-	renderer.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    position_ = pos;
+    transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    renderer_->SetModelMatrix(transform_);
 }
-
