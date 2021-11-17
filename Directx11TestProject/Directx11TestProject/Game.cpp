@@ -1,7 +1,12 @@
+#define _CRTDBG_MAP_ALLOC
 #include "Game.h"
+#include <crtdbg.h>
 
 Game::Game() : window(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT, "FPS Window")
 {
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtDumpMemoryLeaks();
+
 	LoadMap();
 
 	// Camera origin
@@ -82,11 +87,6 @@ void Game::Update()
 		bullets[0]->SetPos({ bullets[0]->GetPos().x + 2 * dt, bullets[0]->GetPos().y, bullets[0]->GetPos().z });
 	}
 
-	Render();
-}
-
-void Game::Render()
-{
 	window.getRenderer().ClearBuffer(Colours::BLUE_PURPLE);
 
 	for (auto& cube : cubes)

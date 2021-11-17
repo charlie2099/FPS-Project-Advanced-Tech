@@ -17,7 +17,7 @@ public:
 
 private:
 	void Update();
-	void Render();
+	//void Render();
 	void KeyboardInputs(const float& dt);
 	void LoadMap();
 
