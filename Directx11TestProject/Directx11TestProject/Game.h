@@ -6,6 +6,7 @@
 #include "Plane.h"
 #include "Constants.h"
 #include "Colours.h"
+#include "Collision.h"
 #include <iostream>
 #include <fstream>
 
@@ -16,9 +17,9 @@ public:
 	int Run();
 
 private:
-	void Update();
-	//void Render();
 	void KeyboardInputs(const float& dt);
+	void Update();
+	void Render();
 	void LoadMap();
 
 	Window window;
@@ -29,6 +30,8 @@ private:
 	std::vector<std::unique_ptr<Plane>> floortiles;
 	std::unique_ptr<Cube> spawnpoint;
 	//std::vector<std::unique_ptr<Projectile>> bullets;
+
+	Collision collider;
 
 	bool bullet_move = false;
 };

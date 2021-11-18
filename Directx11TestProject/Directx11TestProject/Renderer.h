@@ -19,17 +19,24 @@ public:
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void ClearBuffer(DirectX::XMFLOAT3 colour) noexcept;
 	void EndFrame();
-
-	// SETTERS
+	
 	void SetModelMatrix(DirectX::XMMATRIX model);
-	//void SetViewMatrix(DirectX::XMMATRIX view);
 
-	// GETTERS
+	void SetViewMatrix(DirectX::XMMATRIX view);
+	DirectX::XMMATRIX GetViewMatrix() { return view_matrix_; };
+
+	void SetViewPos(DirectX::XMFLOAT3 pos); // CAMERA CLASS
+	DirectX::XMFLOAT3 GetViewPos() { return view_pos_; };
+	//void UpdateViewPos();
+
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
 	ConstantBuffer::Data& GetCBufferData();
 
 private:
+	DirectX::XMMATRIX view_matrix_ = DirectX::XMMatrixIdentity();
+	DirectX::XMFLOAT3 view_pos_;
+
 	std::unique_ptr<ConstantBuffer> constant_buffer;
 	ConstantBuffer::Data cbuffer_data;
 
