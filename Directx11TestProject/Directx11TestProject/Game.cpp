@@ -1,19 +1,16 @@
-//#define _CRTDBG_MAP_ALLOC
-//#include <crtdbg.h>
 #include "Game.h"
 
 Game::Game() : window(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT, "FPS Window")
 {
-	//_CrtDumpMemoryLeaks();
-
 	LoadMap();
 
 	// Camera origin
 	//DirectX::XMFLOAT3 camera_pos { spawnpoint->GetPos().x, spawnpoint->GetPos().y, spawnpoint->GetPos().z };
 
-	//DirectX::XMMATRIX transform = DirectX::XMMatrixTranslation(-5, 0, -5);
-	//window.getRenderer().SetViewMatrix(transform);
-	window.getRenderer().SetViewPos({ -5.0f, 0.0f, -25.0f });
+
+	camera = std::make_unique<Camera>(window.getRenderer());
+	camera->SetView({ -5.0f, 0.0f, -25.0f });
+
 
 	cubes[0]->SetPos({ 0,0,0 });
 
@@ -42,61 +39,42 @@ int Game::Run()
 
 void Game::KeyboardInputs(const float& dt)
 {
-	auto view_pos = window.getRenderer().GetViewPos();
-	auto view_matrix = window.getRenderer().GetViewMatrix();
-	float translation = 2.0f;
-	float rotation = 2.0f;
+	//camera->Update();
 
-	if (window.keyboard.KeyIsPressed('W')) //FORWARDS TRANSLATION
+	auto speed = 2.0f;
+	if (window.keyboard.KeyIsPressed(Keycodes::W)) //FORWARDS TRANSLATION
 	{
-		window.getRenderer().SetViewPos({ view_pos.x, view_pos.y, view_pos.z + 3 * dt });
-
-		//window.getRenderer().SetViewMatrix(DirectX::XMMatrixTranslation(view_pos.x, view_pos.y, view_pos.z + 2.0f * dt));
-		//DirectX::XMMATRIX transform = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().GetCBufferData().view;
-	    //window.getRenderer().GetCBufferData().view = transform;
-		//window.getRenderer().SetViewMatrix(transform);
-
-		//window.getRenderer().SetViewMatrix(view_matrix * DirectX::XMMatrixTranslation(0, 0, 0 + translation * dt));
+		camera->SetPosition({ 0.0f, 0.0f, speed * dt });
 	}
-	if (window.keyboard.KeyIsPressed('S')) //BACKWARDS TRANSLATION																	
+	if (window.keyboard.KeyIsPressed(Keycodes::S)) //BACKWARDS TRANSLATION
 	{
-		//camera.Translate({ 0.0f,0.0f,-dt });																						
-		//window.getRenderer().SetViewPos({ view_pos.x, view_pos.y, view_pos.z - translation * dt });
-
-		//window.getRenderer().GetCBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0f * dt * 2.0f, 0.0f, translation * dt * 2.0f)) * window.getRenderer().GetCBufferData().view;
-		window.getRenderer().SetViewMatrix(view_matrix * DirectX::XMMatrixTranslation(0, 0, 0 - translation * dt));
+		camera->SetPosition({ 0.0f, 0.0f, -speed * dt });
 	}
-
-	if (window.keyboard.KeyIsPressed('A')) //LEFT ROTATION
+	if (window.keyboard.KeyIsPressed(Keycodes::W) && window.keyboard.KeyIsPressed(Keycodes::SHIFT)) //SPRINT
 	{
-		//camera.Rotate(-dt, 0.0f);
-		//float rotation = -2.0f;
-		//window.getRenderer().SetViewPos({ view_pos.x, view_pos.y, view_pos.z - translation * dt });
-		//window.getRenderer().SetViewPos({ view_pos.x, view_pos.y, view_pos.z });
-		//window.getRenderer().GetCBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(-rotation * dt)) * window.getRenderer().GetCBufferData().view;
-		window.getRenderer().SetViewMatrix(view_matrix * DirectX::XMMatrixRotationY(-rotation * dt));
+		camera->SetPosition({ 0, 0, speed * 1.15f * dt });
 	}
-	if (window.keyboard.KeyIsPressed('D')) //RIGHT ROTATION
+	if (window.keyboard.KeyIsPressed(Keycodes::A)) //LEFT ROTATION
 	{
-		//camera.Rotate(dt, 0.0f);
-		//float rotation = 2.0f;
-		//window.getRenderer().GetCBufferData().view = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationY(rotation * dt)) * window.getRenderer().GetCBufferData().view;
-		window.getRenderer().SetViewMatrix(view_matrix * DirectX::XMMatrixRotationY(rotation * dt));
+		camera->SetRotation(-speed * dt);
 	}
-
-
-
-
+	if (window.keyboard.KeyIsPressed(Keycodes::D)) //RIGHT ROTATION
+	{
+		camera->SetRotation(speed * dt);
+	}
 
 	const int SPACEBAR = 32;
-	if (window.keyboard.KeyIsPressed(SPACEBAR))
+	if (window.keyboard.KeyIsPressed(Keycodes::SPACE))
 	{
 		bullet_move = true;
 	}
 
 	if (window.keyboard.KeyIsPressed('M'))
 	{
-		window.getRenderer().GetViewPos();
+		//window.getRenderer().GetViewPos();
+
+		// PROBLEM: View pos returns correct position, but GetPosition() doesn't?! Gives values like 0.001 
+		camera->GetPosition();
 	}
 }
 
@@ -110,13 +88,9 @@ void Game::Update()
 		bullets[0]->SetPos({ bullets[0]->GetPos().x + 2 * dt, bullets[0]->GetPos().y, bullets[0]->GetPos().z });
 	}
 
-	//transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
-	//renderer_->SetModelMatrix(transform_);
-	//window.getRenderer().SetViewMatrix()
-
 	for (size_t i = 0; i < cubes.size(); i++)
 	{
-		if (collider.CollisionBox(window.getRenderer().GetViewPos(), { -5.0f, 0.0f, -13.0f } /*cubes[i]->GetPos()*/))
+		if (collider.CollisionBox(camera->GetPosition(), { -5.0f, 0.0f, -13.0f } /*cubes[i]->GetPos()*/))
 		{
 			OutputDebugString("COLLISION DETECTED\n");
 		}
@@ -125,7 +99,7 @@ void Game::Update()
 
 void Game::Render()
 {
-	window.getRenderer().ClearBuffer(Colours::BLUE_PURPLE);
+	window.getRenderer().ClearBuffer(Colours::BLUE_PURPLE); 
 
 	for (auto& cube : cubes)
 	{

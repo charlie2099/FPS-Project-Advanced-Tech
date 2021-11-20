@@ -25,10 +25,6 @@ public:
 	void SetViewMatrix(DirectX::XMMATRIX view);
 	DirectX::XMMATRIX GetViewMatrix() { return view_matrix_; };
 
-	void SetViewPos(DirectX::XMFLOAT3 pos); // CAMERA CLASS
-	DirectX::XMFLOAT3 GetViewPos() { return view_pos_; };
-	//void UpdateViewPos();
-
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
 	ConstantBuffer::Data& GetCBufferData();

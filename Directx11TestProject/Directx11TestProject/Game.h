@@ -6,7 +6,9 @@
 #include "Plane.h"
 #include "Constants.h"
 #include "Colours.h"
+#include "Keycodes.h"
 #include "Collision.h"
+#include "Camera.h"
 #include <iostream>
 #include <fstream>
 
@@ -24,6 +26,7 @@ private:
 
 	Window window;
 	Timer timer;
+	std::unique_ptr<Camera> camera;
 	std::vector<std::unique_ptr<Cube>> cubes;
 	std::vector<std::unique_ptr<Cube>> bullets;
 	std::vector<std::unique_ptr<Enemy>> enemies;

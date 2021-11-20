@@ -138,17 +138,12 @@ void Renderer::SetModelMatrix(DirectX::XMMATRIX model)
 	cbuffer_data.model = DirectX::XMMatrixTranspose(model);
 	constant_buffer->Bind(device_context.Get(), cbuffer_data);
 }
+
 void Renderer::SetViewMatrix(DirectX::XMMATRIX view)
 {
 	cbuffer_data.view = DirectX::XMMatrixTranspose(view);
 	constant_buffer->Bind(device_context.Get(), cbuffer_data);
-	view_matrix_ = view;
-}
-void Renderer::SetViewPos(DirectX::XMFLOAT3 pos)
-{
-	view_pos_ = pos;
-	view_matrix_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
-	SetViewMatrix(view_matrix_);
+	view_matrix_ = view; 
 }
 
 void Renderer::EndFrame()
