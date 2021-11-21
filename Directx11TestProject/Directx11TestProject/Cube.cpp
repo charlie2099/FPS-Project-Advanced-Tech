@@ -157,3 +157,10 @@ void Cube::SetPos(DirectX::XMFLOAT3 pos)
     transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
     renderer_->SetModelMatrix(transform_);
 }
+
+void Cube::SetRotation(float rot)
+{
+    rotation_ = rot;
+    transform_ = DirectX::XMMatrixRotationY(-rot) * DirectX::XMMatrixTranslation(position_.x, position_.y, position_.z);
+    renderer_->SetModelMatrix(transform_);
+}

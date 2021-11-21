@@ -16,19 +16,6 @@ Game::Game() : window(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT, "FPS Wi
 		DirectX::XMFLOAT3 bullet_pos{ 5.0f, 10.0f, 0.0f };
 		bullets.push_back(std::make_unique<Cube>(window.getRenderer(), L"Palpatine.jpg", bullet_size, bullet_pos));
 	}
-
-	//enemies[3]->SetPos({ spawnpoint_pos });
-	//enemies[3]->SetRotation(0);
-
-	//std::ofstream out("out.txt");
-	//coutbuf = std::cout.rdbuf(); //save old buf
-	//std::cout.rdbuf(out.rdbuf()); //redirect std::cout to out.txt!
-
-	//std::cout << "X: [" << camera->GetPosition().x << "]\nY: [" << camera->GetPosition().y << "]\nZ: [" << camera->GetPosition().z << "]" << std::endl;
-	//camera->SetPosition({ -spawnpoint_pos.x, spawnpoint_pos.y, -spawnpoint_pos.z });
-	//camera->SetPosition(camera->GetPosition());
-
-	//std::cout.rdbuf(coutbuf); //reset to standard output again
 }
 
 int Game::Run()
@@ -47,29 +34,6 @@ int Game::Run()
 
 void Game::KeyboardInputs(const float& dt)
 {
-	camera->Update(window, dt);
-	//auto speed = 2.0f;
-	//if (window.keyboard.KeyIsPressed(Keycodes::W)) //FORWARDS TRANSLATION
-	//{
-	//	camera->Translate({ 0.0f, 0.0f, speed * dt });
-	//}
-	//if (window.keyboard.KeyIsPressed(Keycodes::S)) //BACKWARDS TRANSLATION
-	//{
-	//	camera->Translate({ 0.0f, 0.0f, -speed * dt });
-	//}
-	//if (window.keyboard.KeyIsPressed(Keycodes::W) && window.keyboard.KeyIsPressed(Keycodes::SHIFT)) //SPRINT
-	//{
-	//	camera->Translate({ 0, 0, speed * 1.15f * dt });
-	//}
-	//if (window.keyboard.KeyIsPressed(Keycodes::A)) //LEFT ROTATION
-	//{
-	//	camera->Rotate(-speed * dt);
-	//}
-	//if (window.keyboard.KeyIsPressed(Keycodes::D)) //RIGHT ROTATION
-	//{
-	//	camera->Rotate(speed * dt);
-	//}
-
 	const int SPACEBAR = 32;
 	if (window.keyboard.KeyIsPressed(Keycodes::SPACE))
 	{
@@ -94,6 +58,7 @@ void Game::KeyboardInputs(const float& dt)
 void Game::Update()
 {
 	const auto dt = timer.Mark() * 1.0f;
+	camera->Update(window, dt);
 	KeyboardInputs(dt);
 
 	if(bullet_move)
@@ -101,24 +66,33 @@ void Game::Update()
 		bullets[0]->SetPos({ bullets[0]->GetPos().x + 2 * dt, bullets[0]->GetPos().y, bullets[0]->GetPos().z });
 	}
 
-	
+	// WALL COLLISION
 	for (size_t i = 0; i < cubes.size(); i++)
 	{
 		DirectX::XMFLOAT3 cube_pos{ -cubes[i]->GetPos().x, cubes[i]->GetPos().y, -cubes[i]->GetPos().z };
-		if (collider.CollisionBox(camera->GetPosition(), cube_pos)) // -7.6f, 0.0f, -2.02f
+		if (collider.CollisionBox(camera->GetPosition(), cube_pos))
 		{
-			OutputDebugString("COLLISION DETECTED\n");
-			/* TODO
-			 * Collision Response
-		     */
+			OutputDebugString("WALL COLLISION DETECTED\n");
+			//camera->SetView({ camera->GetPosition().x - 5, 0, camera->GetPosition().z - 5 });
 		}
 	}
 
-	/*for (auto& enemy : enemies)
+	// ENEMY COLLISION
+	for (size_t i = 0; i < enemies.size(); i++)
+	{
+		DirectX::XMFLOAT3 enemy_pos{ -enemies[i]->GetPos().x, enemies[i]->GetPos().y, -enemies[i]->GetPos().z };
+		if (collider.CollisionBox(camera->GetPosition(), enemy_pos)) // adapt to suit plane size (atm only works properly with cubes)
+		{
+			OutputDebugString("ENEMY COLLISION DETECTED\n");
+			// enemies[i]->Destroy()   bool than triggers whether enemy is drawn or not
+			//camera->SetView({ camera->GetPosition().x - 5, 0, camera->GetPosition().z - 5 });
+		}
+	}
+
+	for (auto& enemy : enemies)
 	{
 		enemy->SetRotation(camera->GetRotation());
-	}*/
-	//enemies[3]->SetRotation(10);
+	}
 }
 
 void Game::Render()

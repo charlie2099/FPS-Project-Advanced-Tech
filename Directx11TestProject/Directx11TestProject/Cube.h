@@ -10,11 +10,14 @@ public:
 	void Render(Renderer& renderer);
 
 	void SetPos(DirectX::XMFLOAT3 pos);
+	void SetRotation(float rot);
+
 	DirectX::XMFLOAT3 GetPos() { return position_; };
 
 private:
 	DirectX::XMMATRIX transform_;
 	DirectX::XMFLOAT3 position_;
+	float rotation_ = 0;
 	Renderer* renderer_ = nullptr;
 
 	std::unique_ptr<PixelShader> pixel_shader;

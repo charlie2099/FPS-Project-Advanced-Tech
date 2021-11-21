@@ -50,7 +50,7 @@ void Enemy::SetPos(DirectX::XMFLOAT3 pos)
 void Enemy::SetRotation(float rot)
 {
     rotation_ = rot;
-    transform_ = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rot));
+    transform_ = DirectX::XMMatrixRotationY(-rot) * DirectX::XMMatrixTranslation(position_.x, position_.y, position_.z);
     renderer_->SetModelMatrix(transform_);
 }
 
