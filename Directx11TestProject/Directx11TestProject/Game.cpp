@@ -5,14 +5,9 @@ Game::Game() : window(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT, "FPS Wi
 	LoadMap();
 
 	// Camera origin
-	//DirectX::XMFLOAT3 camera_pos { spawnpoint->GetPos().x, spawnpoint->GetPos().y, spawnpoint->GetPos().z };
-
-
+	DirectX::XMFLOAT3 spawnpoint_pos { spawnpoint->GetPos().x, 0.0f, spawnpoint->GetPos().z };
 	camera = std::make_unique<Camera>(window.getRenderer());
-	camera->SetView({ -5.0f, 0.0f, -25.0f });
-
-
-	cubes[0]->SetPos({ 0,0,0 });
+	camera->SetView({ -spawnpoint_pos.x , spawnpoint_pos.y, -spawnpoint_pos.z }, DirectX::XMConvertToRadians(0));
 
 	// Spawn one bullet
 	for (int i = 0; i < 1; i++)
@@ -21,6 +16,19 @@ Game::Game() : window(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT, "FPS Wi
 		DirectX::XMFLOAT3 bullet_pos{ 5.0f, 10.0f, 0.0f };
 		bullets.push_back(std::make_unique<Cube>(window.getRenderer(), L"Palpatine.jpg", bullet_size, bullet_pos));
 	}
+
+	//enemies[3]->SetPos({ spawnpoint_pos });
+	//enemies[3]->SetRotation(0);
+
+	//std::ofstream out("out.txt");
+	//coutbuf = std::cout.rdbuf(); //save old buf
+	//std::cout.rdbuf(out.rdbuf()); //redirect std::cout to out.txt!
+
+	//std::cout << "X: [" << camera->GetPosition().x << "]\nY: [" << camera->GetPosition().y << "]\nZ: [" << camera->GetPosition().z << "]" << std::endl;
+	//camera->SetPosition({ -spawnpoint_pos.x, spawnpoint_pos.y, -spawnpoint_pos.z });
+	//camera->SetPosition(camera->GetPosition());
+
+	//std::cout.rdbuf(coutbuf); //reset to standard output again
 }
 
 int Game::Run()
@@ -39,29 +47,28 @@ int Game::Run()
 
 void Game::KeyboardInputs(const float& dt)
 {
-	//camera->Update();
-
-	auto speed = 2.0f;
-	if (window.keyboard.KeyIsPressed(Keycodes::W)) //FORWARDS TRANSLATION
-	{
-		camera->SetPosition({ 0.0f, 0.0f, speed * dt });
-	}
-	if (window.keyboard.KeyIsPressed(Keycodes::S)) //BACKWARDS TRANSLATION
-	{
-		camera->SetPosition({ 0.0f, 0.0f, -speed * dt });
-	}
-	if (window.keyboard.KeyIsPressed(Keycodes::W) && window.keyboard.KeyIsPressed(Keycodes::SHIFT)) //SPRINT
-	{
-		camera->SetPosition({ 0, 0, speed * 1.15f * dt });
-	}
-	if (window.keyboard.KeyIsPressed(Keycodes::A)) //LEFT ROTATION
-	{
-		camera->SetRotation(-speed * dt);
-	}
-	if (window.keyboard.KeyIsPressed(Keycodes::D)) //RIGHT ROTATION
-	{
-		camera->SetRotation(speed * dt);
-	}
+	camera->Update(window, dt);
+	//auto speed = 2.0f;
+	//if (window.keyboard.KeyIsPressed(Keycodes::W)) //FORWARDS TRANSLATION
+	//{
+	//	camera->Translate({ 0.0f, 0.0f, speed * dt });
+	//}
+	//if (window.keyboard.KeyIsPressed(Keycodes::S)) //BACKWARDS TRANSLATION
+	//{
+	//	camera->Translate({ 0.0f, 0.0f, -speed * dt });
+	//}
+	//if (window.keyboard.KeyIsPressed(Keycodes::W) && window.keyboard.KeyIsPressed(Keycodes::SHIFT)) //SPRINT
+	//{
+	//	camera->Translate({ 0, 0, speed * 1.15f * dt });
+	//}
+	//if (window.keyboard.KeyIsPressed(Keycodes::A)) //LEFT ROTATION
+	//{
+	//	camera->Rotate(-speed * dt);
+	//}
+	//if (window.keyboard.KeyIsPressed(Keycodes::D)) //RIGHT ROTATION
+	//{
+	//	camera->Rotate(speed * dt);
+	//}
 
 	const int SPACEBAR = 32;
 	if (window.keyboard.KeyIsPressed(Keycodes::SPACE))
@@ -71,10 +78,16 @@ void Game::KeyboardInputs(const float& dt)
 
 	if (window.keyboard.KeyIsPressed('M'))
 	{
-		//window.getRenderer().GetViewPos();
+		std::ofstream out("out.txt");
+		coutbuf = std::cout.rdbuf(); //save old buf
+		std::cout.rdbuf(out.rdbuf()); //redirect std::cout to out.txt!
 
 		// PROBLEM: View pos returns correct position, but GetPosition() doesn't?! Gives values like 0.001 
-		camera->GetPosition();
+		std::cout << "CAMERA (X: [" << camera->GetPosition().x << "]\nY: [" << camera->GetPosition().y << "]\nZ: [" << camera->GetPosition().z << "])" << std::endl;
+
+		std::cout << "CUBES (X: [" << cubes[3]->GetPos().x << "]\nY: [" << cubes[3]->GetPos().y << "]\nZ: [" << cubes[3]->GetPos().z << "])" << std::endl;
+
+		std::cout.rdbuf(coutbuf); //reset to standard output again
 	}
 }
 
@@ -88,13 +101,24 @@ void Game::Update()
 		bullets[0]->SetPos({ bullets[0]->GetPos().x + 2 * dt, bullets[0]->GetPos().y, bullets[0]->GetPos().z });
 	}
 
+	
 	for (size_t i = 0; i < cubes.size(); i++)
 	{
-		if (collider.CollisionBox(camera->GetPosition(), { -5.0f, 0.0f, -13.0f } /*cubes[i]->GetPos()*/))
+		DirectX::XMFLOAT3 cube_pos{ -cubes[i]->GetPos().x, cubes[i]->GetPos().y, -cubes[i]->GetPos().z };
+		if (collider.CollisionBox(camera->GetPosition(), cube_pos)) // -7.6f, 0.0f, -2.02f
 		{
 			OutputDebugString("COLLISION DETECTED\n");
+			/* TODO
+			 * Collision Response
+		     */
 		}
 	}
+
+	/*for (auto& enemy : enemies)
+	{
+		enemy->SetRotation(camera->GetRotation());
+	}*/
+	//enemies[3]->SetRotation(10);
 }
 
 void Game::Render()
@@ -152,10 +176,10 @@ void Game::LoadMap()
 		case 'E': // Enemy
 			DirectX::XMFLOAT2 enemy_size { 0.5f, 1.0f };
 			DirectX::XMFLOAT3 enemy_pos  { x * SPACING, -0.25f, z * SPACING };
-			enemies.push_back(std::make_unique<Enemy>(window.getRenderer(), enemy_size, enemy_pos));
+			enemies.push_back(std::make_unique<Enemy>(window.getRenderer(), enemy_size, enemy_pos/*, 10.0f*/));
 			break;
 		case 'S':
-			spawnpoint = std::make_unique<Cube>(window.getRenderer(), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(x * SPACING, -1.9f, z * SPACING));
+			spawnpoint = std::make_unique<Cube>(window.getRenderer(), L"Palpatine.jpg", DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(x * SPACING, -1.99f, z * SPACING));
 			break;
 		}
 

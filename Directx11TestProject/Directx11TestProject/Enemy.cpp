@@ -1,10 +1,11 @@
 #include "Enemy.h"
 
-Enemy::Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos)
+Enemy::Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos, float rot)
 {
     position_ = pos;
+    rotation_ = rot;
     renderer_ = &renderer;
-    transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) * DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rot));
 
     pixel_shader = std::make_unique<PixelShader>(renderer, L"PixelShader.cso");
     vertex_shader = std::make_unique<VertexShader>(renderer, L"VertexShader.cso");
@@ -45,3 +46,29 @@ void Enemy::SetPos(DirectX::XMFLOAT3 pos)
     transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
     renderer_->SetModelMatrix(transform_);
 }
+
+void Enemy::SetRotation(float rot)
+{
+    rotation_ = rot;
+    transform_ = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rot));
+    renderer_->SetModelMatrix(transform_);
+}
+
+//void Enemy::SetRotation(float rot)
+//{
+//    /*rotation_ = rot;
+//    transform_ *= DirectX::XMMatrixRotationY(rot);
+//    renderer_->SetModelMatrix(transform_);*/
+//
+//
+//
+//    //transform_ = DirectX::XMMatrixTranslation(position_.x, position_.y, position_.z) * DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rot));
+//    //renderer_->SetModelMatrix(transform_);
+//
+//    transform_ = DirectX::XMMatrixTranslation(0,0,0);
+//    transform_ = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rot)) * transform_;
+//    rotation_ = DirectX::XMConvertToRadians(rot);
+//    //auto model_matrix = transform_;
+//    //model_matrix *= DirectX::XMMatrixTranslation(0,0,0) * DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rot));
+//    //rotation_ = rot;
+//}

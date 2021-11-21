@@ -37,5 +37,7 @@ private:
 	Collision collider;
 
 	bool bullet_move = false;
+
+	std::streambuf* coutbuf;
 };
 

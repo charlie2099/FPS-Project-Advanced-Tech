@@ -5,16 +5,19 @@
 class Enemy
 {
 public:
-	Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos);
+	Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos, float rot = 0);
 	void Render(Renderer& renderer);
 
 	void SetPos(DirectX::XMFLOAT3 pos);
 	DirectX::XMFLOAT3 GetPos() { return position_; };
 
+	void SetRotation(float rot);
+
 private:
-	DirectX::XMMATRIX transform_;
+	DirectX::XMMATRIX transform_ = DirectX::XMMatrixIdentity();
 	DirectX::XMFLOAT3 position_;
 	DirectX::XMFLOAT3 size_;
+	float rotation_ = 0;
 	Renderer* renderer_ = nullptr;
 
 	std::unique_ptr<PixelShader> pixel_shader;
