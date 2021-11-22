@@ -28,6 +28,7 @@ private:
 	Timer timer;
 	std::unique_ptr<Camera> camera;
 	std::vector<std::unique_ptr<Cube>> cubes;
+	std::vector<std::unique_ptr<Cube>> palp_cube;
 	std::vector<std::unique_ptr<Cube>> bullets;
 	std::vector<std::unique_ptr<Enemy>> enemies;
 	std::vector<std::unique_ptr<Plane>> floortiles;

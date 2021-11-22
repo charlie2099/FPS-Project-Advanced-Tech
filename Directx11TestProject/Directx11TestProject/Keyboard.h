@@ -15,15 +15,9 @@ public:
 			Press,
 			Release,
 		};
-	private:
-		Type type;
-		unsigned char code;
-	public:
-		Event(Type type, unsigned char code) noexcept
-			:
-			type(type),
-			code(code)
-		{}
+
+		Event(Type type, unsigned char code) noexcept : type(type), code(code) {}
+
 		bool IsPress() const noexcept
 		{
 			return type == Type::Press;
@@ -36,6 +30,9 @@ public:
 		{
 			return code;
 		}
+	private:
+		Type type;
+		unsigned char code;
 	};
 public:
 	Keyboard() = default;
@@ -55,6 +52,7 @@ public:
 	void EnableAutorepeat() noexcept;
 	void DisableAutorepeat() noexcept;
 	bool AutorepeatIsEnabled() const noexcept;
+
 private:
 	void OnKeyPressed(unsigned char keycode) noexcept;
 	void OnKeyReleased(unsigned char keycode) noexcept;
@@ -62,7 +60,6 @@ private:
 	void ClearState() noexcept;
 	template<typename T>
 	static void TrimBuffer(std::queue<T>& buffer) noexcept;
-private:
 	static constexpr unsigned int nKeys = 256u;
 	static constexpr unsigned int bufferSize = 16u;
 	bool autorepeatEnabled = false;

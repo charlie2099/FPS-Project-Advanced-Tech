@@ -59,6 +59,9 @@
     <Text Include="Level_Map_2.txt">
       <Filter>Resource Files\Levels</Filter>
     </Text>
+    <Text Include="Level_Map_3.txt">
+      <Filter>Resource Files\Levels</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">

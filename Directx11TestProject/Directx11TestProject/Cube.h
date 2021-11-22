@@ -9,15 +9,19 @@ public:
 	Cube(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos);
 	void Render(Renderer& renderer);
 
+	void Destroy();
+
 	void SetPos(DirectX::XMFLOAT3 pos);
 	void SetRotation(float rot);
 
 	DirectX::XMFLOAT3 GetPos() { return position_; };
+	bool IsAlive() { return alive_; };
 
 private:
 	DirectX::XMMATRIX transform_;
 	DirectX::XMFLOAT3 position_;
 	float rotation_ = 0;
+	bool alive_ = true;
 	Renderer* renderer_ = nullptr;
 
 	std::unique_ptr<PixelShader> pixel_shader;

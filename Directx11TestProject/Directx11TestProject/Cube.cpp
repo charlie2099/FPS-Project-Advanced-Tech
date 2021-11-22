@@ -151,6 +151,11 @@ void Cube::Render(Renderer& renderer)
     renderer.GetDeviceContext()->DrawIndexed(index_buffer->GetIndexCount(), 0u, 0u);
 }
 
+void Cube::Destroy()
+{
+    alive_ = false;
+}
+
 void Cube::SetPos(DirectX::XMFLOAT3 pos)
 {
     position_ = pos;

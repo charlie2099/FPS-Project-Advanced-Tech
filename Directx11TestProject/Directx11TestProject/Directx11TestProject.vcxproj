@@ -162,6 +162,7 @@
   <ItemGroup>
     <Text Include="Level_Map_1.txt" />
     <Text Include="Level_Map_2.txt" />
+    <Text Include="Level_Map_3.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
