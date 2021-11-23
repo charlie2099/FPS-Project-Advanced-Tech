@@ -15,6 +15,7 @@ public:
 	void SetRotation(float rot);
 
 	DirectX::XMFLOAT3 GetPos() { return position_; };
+	float GetRot() { return rotation_; };
 	bool IsAlive() { return alive_; };
 
 private:

@@ -8,9 +8,9 @@ class ConstantBuffer
 public:
 	struct Data
 	{
-		DirectX::XMMATRIX model = DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity());
-		DirectX::XMMATRIX view = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.0F, 0.0F, 0.0f));
-		DirectX::XMMATRIX projection = DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveRH(1.0F, 3.0F / 4.0F, 0.5F, 100.0F));
+		DirectX::XMMATRIX world;
+		DirectX::XMMATRIX view;
+		DirectX::XMMATRIX projection;
 	};
 
 	ConstantBuffer(ID3D11Device* device, const Data& bufferData);

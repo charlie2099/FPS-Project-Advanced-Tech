@@ -133,9 +133,9 @@ ConstantBuffer::Data& Renderer::GetCBufferData()
 	return cbuffer_data;
 }
 
-void Renderer::SetModelMatrix(DirectX::XMMATRIX model)
+void Renderer::SetModelMatrix(DirectX::XMMATRIX world)
 {
-	cbuffer_data.model = DirectX::XMMatrixTranspose(model);
+	cbuffer_data.world = DirectX::XMMatrixTranspose(world);
 	constant_buffer->Bind(device_context.Get(), cbuffer_data);
 }
 
@@ -144,6 +144,11 @@ void Renderer::SetViewMatrix(DirectX::XMMATRIX view)
 	cbuffer_data.view = DirectX::XMMatrixTranspose(view);
 	constant_buffer->Bind(device_context.Get(), cbuffer_data);
 	view_matrix_ = view; 
+}
+
+void Renderer::SetProjectionMatrix(DirectX::XMMATRIX projection)
+{
+	cbuffer_data.projection = DirectX::XMMatrixTranspose(projection);
 }
 
 void Renderer::EndFrame()

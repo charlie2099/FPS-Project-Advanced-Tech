@@ -20,10 +20,10 @@ public:
 	void ClearBuffer(DirectX::XMFLOAT3 colour) noexcept;
 	void EndFrame();
 	
-	void SetModelMatrix(DirectX::XMMATRIX model);
-
+	void SetModelMatrix(DirectX::XMMATRIX world);
 	void SetViewMatrix(DirectX::XMMATRIX view);
 	DirectX::XMMATRIX GetViewMatrix() { return view_matrix_; };
+	void SetProjectionMatrix(DirectX::XMMATRIX projection);
 
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
@@ -31,7 +31,6 @@ public:
 
 private:
 	DirectX::XMMATRIX view_matrix_ = DirectX::XMMatrixIdentity();
-	DirectX::XMFLOAT3 view_pos_;
 
 	std::unique_ptr<ConstantBuffer> constant_buffer;
 	ConstantBuffer::Data cbuffer_data;

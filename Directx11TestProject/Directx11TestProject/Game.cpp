@@ -2,20 +2,15 @@
 
 Game::Game() : window(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT, "FPS Window")
 {
+	window.getRenderer().SetProjectionMatrix(DirectX::XMMatrixPerspectiveRH(1.0F, 3.0F / 4.0F, 0.5F, 100.0F));
 	LoadMap();
+	InitCamera();
 
-	// Camera origin
-	DirectX::XMFLOAT3 spawnpoint_pos { spawnpoint->GetPos().x, 0.0f, spawnpoint->GetPos().z };
-	camera = std::make_unique<Camera>(window.getRenderer());
-	camera->SetView({ -spawnpoint_pos.x , spawnpoint_pos.y, -spawnpoint_pos.z }, DirectX::XMConvertToRadians(0));
-
-	// Spawn palp cube
-	for (int i = 0; i < 1; i++)
-	{
-		DirectX::XMFLOAT3 bullet_size{5.0f, 5.0f, 5.0f};
-		DirectX::XMFLOAT3 bullet_pos { 5.0f, 10.0f, 0.0f };
-		palp_cube.push_back(std::make_unique<Cube>(window.getRenderer(), L"Palpatine.jpg", bullet_size, bullet_pos));
-	}
+	DirectX::XMFLOAT3 bullet_size{ 0.10f, 0.10f, 0.10f };
+	DirectX::XMFLOAT3 bullet_pos{ 0.0f, 0.0f, 0.0f };
+	bullets.push_back(std::make_unique<Cube>(window.getRenderer(), L"bullet.jpg", bullet_size, bullet_pos));
+	bullets[0]->SetPos({ -camera->GetPosition().x + sin(camera->GetRotation()), camera->GetPosition().y - 0.25f, -camera->GetPosition().z + cos(camera->GetRotation()) - 1.65f });
+	bullets[0]->SetRotation(camera->GetRotation());
 }
 
 int Game::Run()
@@ -35,42 +30,63 @@ int Game::Run()
 void Game::KeyboardInputs(const float& dt)
 {
 	const int SPACEBAR = 32;
-	if (window.keyboard.KeyIsPressed(Keycodes::SPACE) && !bullet_move)
+	if (window.keyboard.KeyIsPressed(Keycodes::SPACE) && !bullet_fired)
 	{
-		bullet_move = true;
-		DirectX::XMFLOAT3 bullet_size{ 0.15f, 0.15f, 0.15f };
-		DirectX::XMFLOAT3 bullet_pos{ -camera->GetPosition().x, camera->GetPosition().y - 0.25f, -camera->GetPosition().z - 0.65f };
-		bullets.push_back(std::make_unique<Cube>(window.getRenderer(), L"Palpatine.jpg", bullet_size, bullet_pos));
+		bullet_fired = true;
+
+
+		/* TODO:
+		* Instantiate bullet when SPACEBAR is pressed
+		* Bullet fire rate, (set bullet_firing bool to false every 2 seconds)
+		*/
+
+
+
+
+
+
+
+		/*DirectX::XMFLOAT3 bullet_size{ 0.10f, 0.10f, 0.10f };
+		DirectX::XMFLOAT3 bullet_pos{ 0.0f, 0.0f, 0.0f };
+		bullets.push_back(std::make_unique<Cube>(window.getRenderer(), L"bullet.jpg", bullet_size, bullet_pos));
+		bullets[0]->SetPos({ -camera->GetPosition().x + sin(camera->GetRotation()), camera->GetPosition().y - 0.25f, -camera->GetPosition().z + cos(camera->GetRotation()) });
+		bullets[0]->SetRotation(camera->GetRotation());*/
 	}
 
 	if (window.keyboard.KeyIsPressed('M'))
 	{
-		std::ofstream out("out.txt");
-		coutbuf = std::cout.rdbuf(); //save old buf
-		std::cout.rdbuf(out.rdbuf()); //redirect std::cout to out.txt!
-
-		std::cout << "CAMERA \nX: [" << camera->GetPosition().x << "]\nY: [" << camera->GetPosition().y << "]\nZ: [" << camera->GetPosition().z << "]\n" << std::endl;
-
-		std::cout << "ENEMY \nX: [" << enemies[3]->GetPos().x << "]\nY: [" << enemies[3]->GetPos().y << "]\nZ: [" << enemies[3]->GetPos().z << "]\n" << std::endl;
-
-		//std::cout << "BULLET \nX: [" << bullets[0]->GetPos().x << "]\nY: [" << bullets[0]->GetPos().y << "]\nZ: [" << bullets[0]->GetPos().z << "]\n" << std::endl;
-
-		std::cout.rdbuf(coutbuf); //reset to standard output again
+		PrintToFile();
 	}
 }
 
 void Game::Update()
 {
-	const auto dt = timer.Mark() * 1.0f;
+	auto dt = timer.Mark() * 1.0f;
 	camera->Update(window, dt);
 	KeyboardInputs(dt);
+
+
+	if (!bullet_fired)
+	{
+		bullets[0]->SetPos({ -camera->GetPosition().x + sin(camera->GetRotation()),
+			                  camera->GetPosition().y - 0.25f, 
+			                 -camera->GetPosition().z - cos(camera->GetRotation()) });
+		bullets[0]->SetRotation(camera->GetRotation());
+	}
+
 
 	// ENEMY and BULLET COLLISION
 	for (size_t i = 0; i < bullets.size(); i++)
 	{
-		if (bullet_move)
+		if (bullet_fired)
 		{
-			bullets[i]->SetPos({ bullets[i]->GetPos().x, bullets[i]->GetPos().y,  bullets[i]->GetPos().z - 1 * dt });
+			//bullets[i]->SetPos({ bullets[i]->GetPos().x, bullets[i]->GetPos().y,  bullets[i]->GetPos().z - 5.0f * dt });
+
+			const float speed = 5.0f;
+			bullets[i]->SetPos({ bullets[i]->GetPos().x + sin(bullets[i]->GetRot()) * speed * dt, 
+				                 bullets[i]->GetPos().y,
+								 bullets[i]->GetPos().z - cos(bullets[i]->GetRot()) * speed * dt });
+			bullets[0]->SetRotation(camera->GetRotation());
 		}
 
 		for (size_t j = 0; j < enemies.size(); j++)
@@ -81,10 +97,7 @@ void Game::Update()
 				enemies[j]->Destroy();
 				bullets[i]->Destroy();
 				//bullets.pop_back();
-				//bullets[i]->Destroy();
 				//bullet_move = false;
-				// enemies[i]->Destroy()   bool than triggers whether enemy is drawn or not
-				//camera->SetView({ camera->GetPosition().x - 5, 0, camera->GetPosition().z - 5 });
 			}
 		}
 	}
@@ -96,8 +109,6 @@ void Game::Update()
 		if (collider.CollisionBox(camera->GetPosition(), enemy_pos)) // adapt to suit plane size (atm only works properly with cubes)
 		{
 			OutputDebugString("ENEMY COLLISION DETECTED\n");
-			// enemies[i]->Destroy()   bool than triggers whether enemy is drawn or not
-			//camera->SetView({ camera->GetPosition().x - 5, 0, camera->GetPosition().z - 5 });
 		}
 	}
 
@@ -108,7 +119,6 @@ void Game::Update()
 		if (collider.CollisionBox(camera->GetPosition(), cube_pos))
 		{
 			OutputDebugString("WALL COLLISION DETECTED\n");
-			//camera->SetView({ camera->GetPosition().x - 5, 0, camera->GetPosition().z - 5 });
 		}
 	}
 
@@ -137,13 +147,9 @@ void Game::Render()
 	{
 		tiles->Render(window.getRenderer());
 	}
-	for (auto& palp : palp_cube)
-	{
-		palp->Render(window.getRenderer());
-	}
 	for (auto& bullet : bullets)
 	{
-		if (bullet->IsAlive())
+		if (bullet->IsAlive()) // refactor
 		{
 			bullet->Render(window.getRenderer());
 		}
@@ -186,15 +192,35 @@ void Game::LoadMap()
 			enemies.push_back(std::make_unique<Enemy>(window.getRenderer(), enemy_size, enemy_pos/*, 10.0f*/));
 			break;
 		case 'S':
-			spawnpoint = std::make_unique<Cube>(window.getRenderer(), L"Palpatine.jpg", DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(x * SPACING, -1.99f, z * SPACING));
+			spawnpoint = std::make_unique<Plane>(window.getRenderer(), L"spawnpoint.jpg", DirectX::XMFLOAT2(1.0f, 1.0f), DirectX::XMFLOAT3(x * SPACING, -0.98f, z * SPACING));
 			break;
 		}
 
 		// Floor
 		DirectX::XMFLOAT2 floor_size { 1.0, 1.0f };
 		DirectX::XMFLOAT3 floor_pos  { x * SPACING, -1.0f, z * SPACING };
-		floortiles.push_back(std::make_unique<Plane>(window.getRenderer(), floor_size, floor_pos));
+		floortiles.push_back(std::make_unique<Plane>(window.getRenderer(), L"greyfloor.jpg", floor_size, floor_pos));
 	}
 	level_file.close();
+}
+
+void Game::InitCamera()
+{
+	DirectX::XMFLOAT3 spawnpoint_pos{ spawnpoint->GetPos().x, 0.0f, spawnpoint->GetPos().z };
+	camera = std::make_unique<Camera>(window.getRenderer());
+	camera->SetView({ -spawnpoint_pos.x , spawnpoint_pos.y, -spawnpoint_pos.z }, DirectX::XMConvertToRadians(0));
+}
+
+void Game::PrintToFile()
+{
+	std::ofstream out("out.txt");
+	std::streambuf* coutbuf = std::cout.rdbuf(); //save old buf
+	std::cout.rdbuf(out.rdbuf()); //redirect std::cout to out.txt
+
+	std::cout << "CAMERA \nX: [" << camera->GetPosition().x << "]\nY: [" << camera->GetPosition().y << "]\nZ: [" << camera->GetPosition().z << "]\n" << std::endl;
+	std::cout << "ENEMY \nX: [" << enemies[3]->GetPos().x << "]\nY: [" << enemies[3]->GetPos().y << "]\nZ: [" << enemies[3]->GetPos().z << "]\n" << std::endl;
+	std::cout << "BULLET \nX: [" << bullets[0]->GetPos().x << "]\nY: [" << bullets[0]->GetPos().y << "]\nZ: [" << bullets[0]->GetPos().z << "]\n" << std::endl;
+
+	std::cout.rdbuf(coutbuf); //reset to standard output again
 }
 

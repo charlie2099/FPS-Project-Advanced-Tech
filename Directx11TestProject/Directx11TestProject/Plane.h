@@ -6,6 +6,7 @@ class Plane
 {
 public:
 	Plane(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos);
+	Plane(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos);
 	void Render(Renderer& renderer);
 
 	void SetPos(DirectX::XMFLOAT3 pos);
