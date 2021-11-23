@@ -51,6 +51,12 @@
     <Filter Include="Source Files\Window">
       <UniqueIdentifier>{5aa464bc-df9a-4a59-86ca-1ec204f09cc7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Enemy">
+      <UniqueIdentifier>{013d212f-9a47-4b45-8f9d-b60e04a743f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Enemy">
+      <UniqueIdentifier>{a6132891-a005-49ec-8a1b-e3afbc532295}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Level_Map_1.txt">
@@ -109,9 +115,6 @@
     <ClCompile Include="VertexShader.cpp">
       <Filter>Source Files\Bindables</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Source Files\Primitives</Filter>
-    </ClCompile>
     <ClCompile Include="Plane.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
@@ -126,6 +129,12 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Source Files\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Source Files\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -180,9 +189,6 @@
     <ClInclude Include="VertexShader.h">
       <Filter>Header Files\Bindables</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Header Files\Primitives</Filter>
-    </ClInclude>
     <ClInclude Include="Plane.h">
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
@@ -203,6 +209,12 @@
     </ClInclude>
     <ClInclude Include="Keycodes.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Header Files\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Header Files\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

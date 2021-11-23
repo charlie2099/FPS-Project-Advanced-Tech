@@ -1,10 +1,11 @@
 #include "Cube.h"
 
-Cube::Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos)
+Cube::Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos, float rot)
 {
     position_ = pos;
+    rotation_ = rot;
     renderer_ = &renderer;
-    transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    transform_ = DirectX::XMMatrixRotationY(-rot) * DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
     pixel_shader = std::make_unique<PixelShader>(renderer, L"PixelShader.cso");
     vertex_shader = std::make_unique<VertexShader>(renderer, L"VertexShader.cso");
@@ -69,11 +70,12 @@ Cube::Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos)
     texture_sampler = std::make_unique<TextureSampler>(renderer);
 }
 
-Cube::Cube(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos)
+Cube::Cube(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos, float rot)
 {
     position_ = pos;
+    rotation_ = rot;
     renderer_ = &renderer;
-    transform_ = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    transform_ = DirectX::XMMatrixRotationY(-rot) * DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
     pixel_shader = std::make_unique<PixelShader>(renderer, L"PixelShader.cso");
     vertex_shader = std::make_unique<VertexShader>(renderer, L"VertexShader.cso");

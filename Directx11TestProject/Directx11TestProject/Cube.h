@@ -5,8 +5,8 @@
 class Cube
 {
 public:
-	Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos);
-	Cube(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos);
+	Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos, float rot = 0);
+	Cube(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos, float rot = 0);
 	void Render(Renderer& renderer);
 
 	void Destroy();

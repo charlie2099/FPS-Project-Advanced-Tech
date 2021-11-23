@@ -176,6 +176,7 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Keycodes.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="WICTextureLoader.h" />

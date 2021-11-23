@@ -4,18 +4,24 @@ using namespace std::chrono;
 
 Timer::Timer()
 {
-	last = steady_clock::now();
+	start = steady_clock::now();
 }
 
 float Timer::Mark()
 {
-	const auto old = last;
-	last = steady_clock::now();
-	const duration<float> frameTime = last - old;
+	const auto last = start;
+	start = steady_clock::now();
+	const duration<float> frameTime = start - last;
 	return frameTime.count();
 }
 
 float Timer::Peek() const
 {
-	return duration<float>(steady_clock::now() - last).count();
+	return duration<float>(steady_clock::now() - start).count();
+}
+
+float Timer::TimeElapsed()
+{
+	auto now = steady_clock::now();
+	return duration_cast<seconds>(now - start).count();
 }

@@ -9,6 +9,7 @@
 #include "Keycodes.h"
 #include "Collision.h"
 #include "Camera.h"
+#include "Projectile.h"
 #include <iostream>
 #include <fstream>
 
@@ -20,7 +21,8 @@ public:
 	int Run();
 
 private:
-	void KeyboardInputs(const float& dt);
+	void KeyboardInputs(float& dt);
+	void CreateBullet();
 	void PrintToFile();
 	void Update();
 	void Render();
@@ -30,14 +32,14 @@ private:
 	Timer timer;
 	std::unique_ptr<Camera> camera;
 	std::vector<std::unique_ptr<Cube>> cubes;
-	std::vector<std::unique_ptr<Cube>> bullets;
-	//std::vector<std::unique_ptr<Projectile>> bullets;
+	std::vector<std::unique_ptr<Projectile>> bullets;
 	std::vector<std::unique_ptr<Enemy>> enemies;
-	std::vector<std::unique_ptr<Plane>> floortiles;
 	std::unique_ptr<Plane> spawnpoint;
+	std::vector<std::unique_ptr<Plane>> floortiles;
 
 	Collision collider;
 
-	bool bullet_fired = false;
+	bool fire_bullet = false;
+	size_t current_bullet = 0;
 };
 
