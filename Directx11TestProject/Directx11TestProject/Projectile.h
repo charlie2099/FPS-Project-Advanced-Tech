@@ -13,12 +13,12 @@ public:
 	bool isMoving() { return moving_; };
 
 	void Destroy();
-	bool IsDestroyed() { return destroyed_; };
+	bool IsDestroyed() { return _destroyed; };
 
 	std::unique_ptr<Cube>& GetCube() { return projectile; };
 
 private:
 	std::unique_ptr<Cube> projectile;
 	bool moving_ = false;
-	bool destroyed_ = false;
+	bool _destroyed = false;
 };

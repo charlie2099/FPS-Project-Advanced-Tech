@@ -12,7 +12,7 @@ Enemy::Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos, 
 
     vertex_buffer = std::make_unique<VertexBuffer>(renderer, std::vector<Vertex>
     {
-        { -size.x, -size.y, 0.0F, 0.0F, 1.0F },
+        { -size.x, -size.y, 0.0F,  0.0F, 1.0F },
         { -size.x, +size.y, 0.0F,  0.0F, 0.0F },
         { +size.x, -size.y, 0.0F,  1.0F, 1.0F },
         { +size.x, +size.y, 0.0F,  1.0F, 0.0F },

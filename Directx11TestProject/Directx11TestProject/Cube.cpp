@@ -155,7 +155,7 @@ void Cube::Render(Renderer& renderer)
 
 void Cube::Destroy()
 {
-    alive_ = false;
+    _destroyed = true;
 }
 
 void Cube::SetPos(DirectX::XMFLOAT3 pos)

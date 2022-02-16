@@ -39,9 +39,6 @@
     <Filter Include="Source Files\Primitives">
       <UniqueIdentifier>{d8065063-e14d-4fdf-a07f-df2b10f8e31b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Texure">
-      <UniqueIdentifier>{465d18d8-9a71-4f22-940f-54e3bdf222e8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Texture">
       <UniqueIdentifier>{7da9b61b-bd08-48d3-a1d1-49aa0ee381dd}</UniqueIdentifier>
     </Filter>
@@ -56,6 +53,9 @@
     </Filter>
     <Filter Include="Source Files\Enemy">
       <UniqueIdentifier>{a6132891-a005-49ec-8a1b-e3afbc532295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Texture">
+      <UniqueIdentifier>{465d18d8-9a71-4f22-940f-54e3bdf222e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -119,7 +119,7 @@
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="WICTextureLoader.cpp">
-      <Filter>Source Files\Texure</Filter>
+      <Filter>Source Files\Texture</Filter>
     </ClCompile>
     <ClCompile Include="InputLayout.cpp">
       <Filter>Source Files\Bindables</Filter>

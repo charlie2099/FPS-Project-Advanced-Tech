@@ -16,13 +16,13 @@ public:
 
 	DirectX::XMFLOAT3 GetPos() { return position_; };
 	float GetRot() { return rotation_; };
-	bool IsAlive() { return alive_; };
+	bool IsDestroyed() { return _destroyed; };
 
 private:
 	DirectX::XMMATRIX transform_;
 	DirectX::XMFLOAT3 position_;
 	float rotation_ = 0;
-	bool alive_ = true;
+	bool _destroyed = false;
 	Renderer* renderer_ = nullptr;
 
 	std::unique_ptr<PixelShader> pixel_shader;

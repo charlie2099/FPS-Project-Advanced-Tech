@@ -22,7 +22,7 @@ public:
 
 private:
 	void KeyboardInputs(float& dt);
-	void CreateBullet();
+	void CreateBullet(float& dt);
 	void PrintToFile();
 	void Update();
 	void Render();
@@ -34,12 +34,13 @@ private:
 	std::vector<std::unique_ptr<Cube>> cubes;
 	std::vector<std::unique_ptr<Projectile>> bullets;
 	std::vector<std::unique_ptr<Enemy>> enemies;
-	std::unique_ptr<Plane> spawnpoint;
 	std::vector<std::unique_ptr<Plane>> floortiles;
+	std::unique_ptr<Plane> spawnpoint;
 
 	Collision collider;
 
-	bool fire_bullet = false;
+	//bool fire_bullet = false;
+	size_t fire_rate = 2;
 	size_t current_bullet = 0;
 };
 

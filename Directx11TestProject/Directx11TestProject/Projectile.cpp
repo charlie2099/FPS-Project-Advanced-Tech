@@ -16,10 +16,7 @@ void Projectile::Update(float dt)
 
 void Projectile::Render(Renderer& renderer)
 {
-	if (!destroyed_)
-	{
-		projectile->Render(renderer);
-	}
+	projectile->Render(renderer);
 }
 
 void Projectile::Move(bool moving)
@@ -29,5 +26,5 @@ void Projectile::Move(bool moving)
 
 void Projectile::Destroy()
 {
-	destroyed_ = true;
+	_destroyed = true;
 }

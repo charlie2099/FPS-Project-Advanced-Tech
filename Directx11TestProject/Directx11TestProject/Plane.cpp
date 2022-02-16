@@ -12,7 +12,7 @@ Plane::Plane(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos)
     vertex_buffer = std::make_unique<VertexBuffer>(renderer, std::vector<Vertex>
     {
         { -size.x, 0.0F, -size.y, 0.0F, 0.0F },
-        { -size.x, 0.0F, +size.y, 1.0F , 0.0F },
+        { -size.x, 0.0F, +size.y, 1.0F, 0.0F },
         { +size.x, 0.0F, -size.y, 0.0F, 1.0F },
         { +size.x, 0.0F, +size.y, 1.0F, 1.0F },
     });
