@@ -79,3 +79,39 @@ void Camera::SetView(XMFLOAT3 pos, float rot)
 	DirectX::XMMATRIX view = XMMatrixTranslation(pos.x, pos.y, pos.z) * XMMatrixRotationY(rot);
 	renderer_->SetViewMatrix(view);
 }
+
+bool Camera::CollidesWith(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size)
+{
+	//check the X axis
+	if (abs(pos.x - position_.x) < size.x + 1.0f)
+	{
+		//check the Y axis
+		if (abs(pos.y - position_.y) < size.y + 1.0f)
+		{
+			//check the Z axis
+			if (abs(pos.z - position_.z) < size.z + 1.0f)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool Camera::CollidesWith(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT2 size)
+{
+	//check the X axis
+	if (abs(pos.x - position_.x) < size.x + 1.0f)
+	{
+		//check the Y axis
+		if (abs(pos.y - position_.y) < size.y + 1.0f)
+		{
+			//check the Z axis
+			if (abs(pos.z - position_.z) < 0.25f + 1.0f)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}

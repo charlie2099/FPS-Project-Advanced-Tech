@@ -14,12 +14,15 @@ public:
 	void SetPos(DirectX::XMFLOAT3 pos);
 	void SetRotation(float rot);
 
+	DirectX::XMFLOAT3 GetSize() { return size_; };
 	DirectX::XMFLOAT3 GetPos() { return position_; };
 	float GetRot() { return rotation_; };
+
 	bool IsDestroyed() { return _destroyed; };
 
 private:
 	DirectX::XMMATRIX transform_;
+	DirectX::XMFLOAT3 size_;
 	DirectX::XMFLOAT3 position_;
 	float rotation_ = 0;
 	bool _destroyed = false;

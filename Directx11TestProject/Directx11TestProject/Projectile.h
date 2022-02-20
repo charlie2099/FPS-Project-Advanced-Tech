@@ -15,6 +15,9 @@ public:
 	void Destroy();
 	bool IsDestroyed() { return _destroyed; };
 
+	bool CollidesWith(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size);
+	bool CollidesWith(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT2 size);
+
 	std::unique_ptr<Cube>& GetCube() { return projectile; };
 
 private:

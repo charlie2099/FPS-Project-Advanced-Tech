@@ -28,3 +28,39 @@ void Projectile::Destroy()
 {
 	_destroyed = true;
 }
+
+bool Projectile::CollidesWith(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size)
+{
+	//check the X axis
+	if (abs(pos.x - projectile->GetPos().x) < size.x + projectile->GetSize().x)
+	{
+		//check the Y axis
+		if (abs(pos.y - projectile->GetPos().y) < size.y + projectile->GetSize().y)
+		{
+			//check the Z axis
+			if (abs(pos.z - projectile->GetPos().z) < size.z + projectile->GetSize().z)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool Projectile::CollidesWith(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT2 size)
+{
+	//check the X axis
+	if (abs(pos.x - projectile->GetPos().x) < size.x + projectile->GetSize().x)
+	{
+		//check the Y axis
+		if (abs(pos.y - projectile->GetPos().y) < size.y + projectile->GetSize().y)
+		{
+			//check the Z axis
+			if (abs(pos.z - projectile->GetPos().z) < 0.25f + projectile->GetSize().z)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}

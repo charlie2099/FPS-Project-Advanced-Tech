@@ -1,7 +1,11 @@
 #include "Enemy.h"
 
+int Enemy::enemy_count = 0;
+
 Enemy::Enemy(Renderer& renderer, DirectX::XMFLOAT2 size, DirectX::XMFLOAT3 pos, float rot)
 {
+    enemy_count += 1;
+    size_ = size;
     position_ = pos;
     rotation_ = rot;
     renderer_ = &renderer;
@@ -42,7 +46,7 @@ void Enemy::Render(Renderer& renderer)
 
 void Enemy::Destroy()
 {
-    alive_ = false;
+    destroyed_ = true;
 }
 
 void Enemy::SetPos(DirectX::XMFLOAT3 pos)

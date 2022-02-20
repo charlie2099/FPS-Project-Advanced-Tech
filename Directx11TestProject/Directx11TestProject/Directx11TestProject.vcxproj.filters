@@ -57,6 +57,9 @@
     <Filter Include="Source Files\Texture">
       <UniqueIdentifier>{465d18d8-9a71-4f22-940f-54e3bdf222e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Managers">
+      <UniqueIdentifier>{a019e7ec-7e19-4447-bfc2-49b6b0d27c5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Level_Map_1.txt">
@@ -124,9 +127,6 @@
     <ClCompile Include="InputLayout.cpp">
       <Filter>Source Files\Bindables</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -135,6 +135,9 @@
     </ClCompile>
     <ClCompile Include="Projectile.cpp">
       <Filter>Source Files\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTime.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -201,9 +204,6 @@
     <ClInclude Include="InputLayout.h">
       <Filter>Header Files\Bindables</Filter>
     </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -215,6 +215,9 @@
     </ClInclude>
     <ClInclude Include="Projectile.h">
       <Filter>Header Files\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTime.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

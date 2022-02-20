@@ -23,12 +23,6 @@ int Game::Run()
 
 void Game::KeyboardInputs(float& dt)
 {
-	//if (dt > 2.0f)
-	//{
-	//	fire_bullet = false;
-	//	// reset timer
-	//}
-
 	if (window.keyboard.KeyIsPressed(Keycodes::SPACE) /*&& !fire_bullet*/)
 	{
 		CreateBullet(dt);
@@ -44,22 +38,16 @@ void Game::KeyboardInputs(float& dt)
 void Game::Update()
 {
 	auto dt = timer.Mark() * 1.0f;
-	//auto clock = timer.TimeElapsed();
-	camera->Update(window, dt);
+	time.Tick();
 
-	//timer.Peek();
-
-	//if (timer.Peek() > 10)
-	//{
-	//	fire_bullet = false;
-	//	// reset timer
-	//}
-
-	KeyboardInputs(dt);
+	if (Enemy::enemy_count > 0)
+	{
+		camera->Update(window, dt);
+		KeyboardInputs(dt);
+	}
 
 	for (size_t i = 0; i < bullets.size(); i++)
 	{
-		// Stop detecting collisons if bullets have been destroyed
 		if (!bullets[i]->IsDestroyed())
 		{
 			bullets[i]->Update(dt);
@@ -68,9 +56,12 @@ void Game::Update()
 		// BULLET and ENEMY COLLISION
 		for (size_t j = 0; j < enemies.size(); j++)
 		{
-			if (collider.CollisionBox(bullets[i]->GetCube()->GetPos(), enemies[j]->GetPos()))
+			if (bullets[i]->CollidesWith(enemies[j]->GetPos(), enemies[j]->GetSize()))
 			{
-				OutputDebugString("BULLET COLLISION WITH ENEMY DETECTED\n");
+				if (!enemies[j]->IsDestroyed())
+				{
+					Enemy::enemy_count -= 1;
+				}
 				bullets[i]->Destroy();
 				enemies[j]->Destroy();
 			}
@@ -79,51 +70,28 @@ void Game::Update()
 		// BULLET and WALL COLLISION
 		for (size_t j = 0; j < cubes.size(); j++)
 		{
-			DirectX::XMFLOAT3 cube_pos { -cubes[j]->GetPos().x, cubes[j]->GetPos().y, -cubes[j]->GetPos().z };
-			DirectX::XMFLOAT3 bullet_pos = { -bullets[i]->GetCube()->GetPos().x, bullets[i]->GetCube()->GetPos().y, -bullets[i]->GetCube()->GetPos().z };
-			if (collider.CollisionBox(bullet_pos, cube_pos) /*&& !cubes[j]->IsDestroyed()*/)
+			if (bullets[i]->CollidesWith(cubes[j]->GetPos(), cubes[j]->GetSize()))
 			{
-				OutputDebugString("BULLET COLLISION WITH WALL DETECTED\n");
 				bullets[i]->Destroy();
-				cubes[j]->Destroy();
 			}
 		}
 	}
-
-	/*if (fire_bullet)
-	{*/
-	//if (bullets[current_bullet-1] != NULL)
-	//{
-	//	bullets[current_bullet-1]->Update(dt);
-
-	//	for (size_t i = 0; i < enemies.size(); i++)
-	//	{
-	//		if (collider.CollisionBox(bullets[current_bullet-1]->GetCube()->GetPos(), enemies[i]->GetPos()))
-	//		{
-	//			OutputDebugString("BULLET COLLISION WITH ENEMY DETECTED\n");
-	//			bullets[current_bullet-1]->Destroy();
-	//			enemies[i]->Destroy();
-	//			//fire_bullet = false;
-	//		}
-	//	}
-	//}
-	/*}*/
 
 	// ENEMY and PLAYER COLLISION
 	for (size_t i = 0; i < enemies.size(); i++)
 	{
 		DirectX::XMFLOAT3 enemy_pos{ -enemies[i]->GetPos().x, enemies[i]->GetPos().y, -enemies[i]->GetPos().z };
-		if (collider.CollisionBox(camera->GetPosition(), enemy_pos)) // adapt to suit plane size (atm only works properly with cubes)
+		if (camera->CollidesWith(enemy_pos, enemies[i]->GetSize()))
 		{
 			OutputDebugString("ENEMY COLLISION DETECTED\n");
 		}
 	}
 
-	// WALL COLLISION
+	// WALL and PLAYER COLLISION
 	for (size_t i = 0; i < cubes.size(); i++)
 	{
 		DirectX::XMFLOAT3 cube_pos{ -cubes[i]->GetPos().x, cubes[i]->GetPos().y, -cubes[i]->GetPos().z };
-		if (collider.CollisionBox(camera->GetPosition(), cube_pos))
+		if (camera->CollidesWith(cube_pos, cubes[i]->GetSize()))
 		{
 			OutputDebugString("WALL COLLISION DETECTED\n");
 		}
@@ -134,38 +102,47 @@ void Game::Update()
 	{
 		enemy->SetRotation(camera->GetRotation());
 	}
+
+	// Win Condition
+	if (Enemy::enemy_count <= 0)
+	{
+		OutputDebugString("YOU WIN");
+	}
 }
 
 void Game::Render()
 {
 	window.getRenderer().ClearBuffer(Colours::BLUE_PURPLE); 
 
-	for (auto& cube : cubes)
+	if (Enemy::enemy_count > 0)
 	{
-		if (!cube->IsDestroyed())
+		for (auto& cube : cubes)
 		{
-			cube->Render(window.getRenderer());
+			if (!cube->IsDestroyed())
+			{
+				cube->Render(window.getRenderer());
+			}
 		}
-	}
-	for (auto& enemy : enemies)
-	{
-		if (enemy->IsAlive())
+		for (auto& enemy : enemies)
 		{
-			enemy->Render(window.getRenderer());
+			if (!enemy->IsDestroyed())
+			{
+				enemy->Render(window.getRenderer());
+			}
 		}
+		for (auto& tiles : floortiles)
+		{
+			tiles->Render(window.getRenderer());
+		}
+		for (auto& bullet : bullets)
+		{
+			if (!bullet->IsDestroyed())
+			{
+				bullet->Render(window.getRenderer());
+			}
+		}
+		spawnpoint->Render(window.getRenderer());
 	}
-	for (auto& tiles : floortiles)
-	{
-		tiles->Render(window.getRenderer());
-	}
-	for (auto& bullet : bullets)
-	{
-		/*if (!bullet->IsDestroyed())
-		{*/
-			bullet->Render(window.getRenderer());
-		/*}*/
-	}
-	spawnpoint->Render(window.getRenderer());
 
 	window.getRenderer().EndFrame();
 }
@@ -234,8 +211,8 @@ void Game::PrintToFile()
 	std::cout << "ENEMY \nX: [" << enemies[3]->GetPos().x << "]\nY: [" << enemies[3]->GetPos().y << "]\nZ: [" << enemies[3]->GetPos().z << "]\n" << std::endl;
 	//std::cout << "BULLET \nX: [" << bullets[0]->GetPos().x << "]\nY: [" << bullets[0]->GetPos().y << "]\nZ: [" << bullets[0]->GetPos().z << "]\n" << std::endl;
 
-	//std::cout << "\nTime elapsed: " << clock << std::endl;
-	std::cout << "Timer peek: " << timer.TimeElapsed() << std::endl;
+	std::cout << "Time: " << time.Time() << "\n" << std::endl;
+	std::cout << "Enemies: " << Enemy::enemy_count << std::endl;
 
 	std::cout.rdbuf(coutbuf); //reset to standard output again
 }
@@ -251,14 +228,18 @@ void Game::CreateBullet(float& dt)
 	//}
 
 
-	// if x amount of seconds passed, create new bullet
+	if (time.Time() > time_passed)
+	{
+		// if x amount of seconds passed, create new bullet
+		DirectX::XMFLOAT3 bullet_size{ 0.10f, 0.10f, 0.10f };
+		DirectX::XMFLOAT3 bullet_pos{ -camera->GetPosition().x + sin(camera->GetRotation()),
+									   camera->GetPosition().y - 0.25f,
+									  -camera->GetPosition().z - cos(camera->GetRotation()) };
+		float bullet_rot = camera->GetRotation();
+		bullets.push_back(std::make_unique<Projectile>(window.getRenderer(), L"bullet.jpg", bullet_size, bullet_pos, bullet_rot));
+		current_bullet++;
 
-	DirectX::XMFLOAT3 bullet_size{ 0.10f, 0.10f, 0.10f };
-	DirectX::XMFLOAT3 bullet_pos{ -camera->GetPosition().x + sin(camera->GetRotation()),
-		                           camera->GetPosition().y - 0.25f,
-		                          -camera->GetPosition().z - cos(camera->GetRotation()) };
-	float bullet_rot = camera->GetRotation();
-	bullets.push_back(std::make_unique<Projectile>(window.getRenderer(), L"bullet.jpg", bullet_size, bullet_pos, bullet_rot));
-	current_bullet++;
+		time_passed += fire_rate;
+	}
 }
 

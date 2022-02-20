@@ -2,6 +2,7 @@
 
 Cube::Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos, float rot)
 {
+    size_ = size;
     position_ = pos;
     rotation_ = rot;
     renderer_ = &renderer;

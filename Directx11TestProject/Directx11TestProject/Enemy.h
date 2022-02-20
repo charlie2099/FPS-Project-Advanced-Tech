@@ -15,16 +15,19 @@ public:
 	void SetRotation(float rot);
 
 	// GETTERS
+	DirectX::XMFLOAT2 GetSize() { return size_; };
 	DirectX::XMFLOAT3 GetPos() { return position_; };
-	bool IsAlive() { return alive_; };
+	bool IsDestroyed() { return destroyed_; };
+
+	static int enemy_count;
 
 private:
-	DirectX::XMMATRIX transform_ = DirectX::XMMatrixIdentity();
-	DirectX::XMFLOAT3 position_;
-	DirectX::XMFLOAT3 size_;
-	float rotation_ = 0;
-	bool alive_ = true;
 	Renderer* renderer_ = nullptr;
+	DirectX::XMMATRIX transform_ = DirectX::XMMatrixIdentity();
+	DirectX::XMFLOAT2 size_;
+	DirectX::XMFLOAT3 position_;
+	float rotation_ = 0;
+	bool destroyed_ = false;
 
 	std::unique_ptr<PixelShader> pixel_shader;
 	std::unique_ptr<VertexShader> vertex_shader;

@@ -166,11 +166,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameTime.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Keyboard.cpp" />
@@ -191,13 +191,13 @@
   <ItemGroup>
     <ClInclude Include="BindableHeaders.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Collision.h" />
     <ClInclude Include="Colours.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameTime.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Keyboard.h" />
