@@ -1,7 +1,6 @@
 #pragma once
 #include "Window.h"
-#include "Timer.h"
-#include "GameTime.h"
+#include "Time.h"
 #include "Cube.h"
 #include "Enemy.h"
 #include "Plane.h"
@@ -29,8 +28,7 @@ private:
 	void LoadMap();
 
 	Window window;
-	Timer timer;
-	GameTime time;
+	Time time;
 	std::unique_ptr<Camera> camera;
 	std::vector<std::unique_ptr<Cube>> cubes;
 	std::vector<std::unique_ptr<Projectile>> bullets;
@@ -38,7 +36,6 @@ private:
 	std::vector<std::unique_ptr<Plane>> floortiles;
 	std::unique_ptr<Plane> spawnpoint;
 
-	//bool fire_bullet = false;
 	float time_passed     = 0.0f;
 	float fire_rate       = 0.5f;
 	size_t current_bullet = 0;

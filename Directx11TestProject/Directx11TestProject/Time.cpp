@@ -1,25 +1,25 @@
-#include "GameTime.h"
+#include "Time.h"
 
-GameTime::GameTime()
+Time::Time()
 {
 	now = std::chrono::steady_clock::now();
 	last = now;
 	starting = now;
 }
 
-void GameTime::Tick()
+void Time::Tick()
 {
 	last = now;
 	now = std::chrono::steady_clock::now();
 }
 
-float GameTime::DeltaTime()
+float Time::DeltaTime()
 {
 	const std::chrono::duration<float> delta = now - last;
 	return delta.count();
 }
 
-float GameTime::Time()
+float Time::TimeElapsed()
 {
 	const std::chrono::duration<float> delta = now - starting;
 	return delta.count();

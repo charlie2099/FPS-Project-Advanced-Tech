@@ -2,7 +2,7 @@
 #include "Renderer.h"
 #include "Window.h"
 #include "Keycodes.h"
-#include "Timer.h"
+#include <iostream>
 using namespace DirectX;
 
 class Camera

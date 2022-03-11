@@ -170,7 +170,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameTime.cpp" />
+    <ClCompile Include="Time.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Keyboard.cpp" />
@@ -181,7 +181,6 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
     <ClCompile Include="TextureSampler.cpp" />
-    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
@@ -197,7 +196,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameTime.h" />
+    <ClInclude Include="Time.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Keyboard.h" />
@@ -209,7 +208,6 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="WICTextureLoader.h" />
     <ClInclude Include="TextureSampler.h" />
-    <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />

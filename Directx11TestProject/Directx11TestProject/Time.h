@@ -1,12 +1,12 @@
 #pragma once
 #include <chrono>
-class GameTime
+class Time
 {
 public:
-	GameTime();
+	Time();
 	void Tick();
 	float DeltaTime();
-	float Time();
+	float TimeElapsed();
 
 private:
 	std::chrono::steady_clock::time_point now;

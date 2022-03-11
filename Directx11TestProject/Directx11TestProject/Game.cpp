@@ -23,10 +23,9 @@ int Game::Run()
 
 void Game::KeyboardInputs(float& dt)
 {
-	if (window.keyboard.KeyIsPressed(Keycodes::SPACE) /*&& !fire_bullet*/)
+	if (window.keyboard.KeyIsPressed(Keycodes::SPACE))
 	{
 		CreateBullet(dt);
-		//fire_bullet = true;
 	}
 
 	if (window.keyboard.KeyIsPressed('M'))
@@ -37,7 +36,7 @@ void Game::KeyboardInputs(float& dt)
 
 void Game::Update()
 {
-	auto dt = timer.Mark() * 1.0f;
+	auto dt = time.DeltaTime() * 1.0f;
 	time.Tick();
 
 	if (Enemy::enemy_count > 0)
@@ -211,7 +210,6 @@ void Game::PrintToFile()
 	std::cout << "ENEMY \nX: [" << enemies[3]->GetPos().x << "]\nY: [" << enemies[3]->GetPos().y << "]\nZ: [" << enemies[3]->GetPos().z << "]\n" << std::endl;
 	//std::cout << "BULLET \nX: [" << bullets[0]->GetPos().x << "]\nY: [" << bullets[0]->GetPos().y << "]\nZ: [" << bullets[0]->GetPos().z << "]\n" << std::endl;
 
-	std::cout << "Time: " << time.Time() << "\n" << std::endl;
 	std::cout << "Enemies: " << Enemy::enemy_count << std::endl;
 
 	std::cout.rdbuf(coutbuf); //reset to standard output again
@@ -219,16 +217,7 @@ void Game::PrintToFile()
 
 void Game::CreateBullet(float& dt)
 {
-	//timer.Peek();
-
-	//if (timer.Peek() > 10)
-	//{
-	//	fire_bullet = false;
-	//	// reset timer
-	//}
-
-
-	if (time.Time() > time_passed)
+	if (time.TimeElapsed() > time_passed)
 	{
 		// if x amount of seconds passed, create new bullet
 		DirectX::XMFLOAT3 bullet_size{ 0.10f, 0.10f, 0.10f };
