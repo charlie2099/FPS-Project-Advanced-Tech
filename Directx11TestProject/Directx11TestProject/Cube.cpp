@@ -73,6 +73,7 @@ Cube::Cube(Renderer& renderer, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos, fl
 
 Cube::Cube(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 pos, float rot)
 {
+    size_ = size;
     position_ = pos;
     rotation_ = rot;
     renderer_ = &renderer;
@@ -130,11 +131,11 @@ Cube::Cube(Renderer& renderer, const std::wstring& filepath, DirectX::XMFLOAT3 s
         0,1,4,1,5,4*/
 
         0, 2, 1, 2, 3, 1,
-            4, 5, 6, 6, 5, 7,
-            8, 10, 9, 9, 10, 11,
-            12, 13, 14, 13, 15, 14,
-            16, 18, 17, 17, 18, 19,
-            20, 21, 22, 22, 21, 23
+        4, 5, 6, 6, 5, 7,
+        8, 10, 9, 9, 10, 11,
+        12, 13, 14, 13, 15, 14,
+        16, 18, 17, 17, 18, 19,
+        20, 21, 22, 22, 21, 23
     });
     
     texture = std::make_unique<Texture>(renderer, filepath.c_str());

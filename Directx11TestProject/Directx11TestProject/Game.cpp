@@ -39,6 +39,8 @@ void Game::Update()
 	auto dt = time.DeltaTime() * 1.0f;
 	time.Tick();
 
+	XMFLOAT3 prevCamPos = camera->GetPosition();
+
 	if (Enemy::enemy_count > 0)
 	{
 		camera->Update(window, dt);
@@ -67,9 +69,9 @@ void Game::Update()
 		}
 
 		// BULLET and WALL COLLISION
-		for (size_t j = 0; j < cubes.size(); j++)
+		for (size_t j = 0; j < walls.size(); j++)
 		{
-			if (bullets[i]->CollidesWith(cubes[j]->GetPos(), cubes[j]->GetSize()))
+			if (bullets[i]->CollidesWith(walls[j]->GetPos(), walls[j]->GetSize()))
 			{
 				bullets[i]->Destroy();
 			}
@@ -87,12 +89,28 @@ void Game::Update()
 	}
 
 	// WALL and PLAYER COLLISION
-	for (size_t i = 0; i < cubes.size(); i++)
+	for (size_t i = 0; i < walls.size(); i++)
 	{
-		DirectX::XMFLOAT3 cube_pos{ -cubes[i]->GetPos().x, cubes[i]->GetPos().y, -cubes[i]->GetPos().z };
-		if (camera->CollidesWith(cube_pos, cubes[i]->GetSize()))
+		// fmax returns larger of two floating point arguments
+	    // fmin returns smaller of two floating point arguments
+	    // 1.0 = size offset of wall
+		auto cubeSize = 1.0F;
+		auto xPos = std::fmaxf(-walls[i]->GetPos().x - cubeSize, std::fminf(camera->GetPosition().x, -walls[i]->GetPos().x + cubeSize));
+		auto zPos = std::fmaxf(-walls[i]->GetPos().z - cubeSize, std::fminf(prevCamPos.z, -walls[i]->GetPos().z + cubeSize));
+		auto distanceFromWall = std::sqrtf((xPos - camera->GetPosition().x) * (xPos - camera->GetPosition().x) + (zPos - prevCamPos.z) * (zPos - prevCamPos.z));
+		if (distanceFromWall < 0.75F) // distance to wall on x axis
 		{
-			OutputDebugString("WALL COLLISION DETECTED\n");
+			OutputDebugString("WALL X COLLISION DETECTED\n");
+			camera->SetView({ prevCamPos.x, camera->GetPosition().y, camera->GetPosition().z}, camera->GetRotation());
+		}
+
+		xPos = std::fmaxf(-walls[i]->GetPos().x - cubeSize, std::fminf(prevCamPos.x, -walls[i]->GetPos().x + cubeSize));
+		zPos = std::fmaxf(-walls[i]->GetPos().z - cubeSize, std::fminf(camera->GetPosition().z, -walls[i]->GetPos().z + cubeSize));
+		distanceFromWall = std::sqrtf((xPos - prevCamPos.x) * (xPos - prevCamPos.x) + (zPos - camera->GetPosition().z) * (zPos - camera->GetPosition().z));
+		if (distanceFromWall < 0.75F) // distance to wall on z axis
+		{
+			OutputDebugString("WALL Z COLLISION DETECTED\n");
+			camera->SetView({camera->GetPosition().x, camera->GetPosition().y, prevCamPos.z}, camera->GetRotation());
 		}
 	}
 
@@ -101,11 +119,19 @@ void Game::Update()
 	{
 		enemy->SetRotation(camera->GetRotation());
 	}
-
+	
 	// Win Condition
-	if (Enemy::enemy_count <= 0)
+	if (Enemy::enemy_count <= 0 && !isComplete)
 	{
-		OutputDebugString("YOU WIN");
+		OutputDebugString("YOU WIN\n");
+
+		camera->SetView({0,0,0});
+
+		// Render win screen 
+		DirectX::XMFLOAT3 screen_size{5.0, 5.0f, 5.0f};
+		DirectX::XMFLOAT3 screen_pos{0, 0, -10};
+		winscreen = std::make_unique<Cube>(window.getRenderer(), L"win_screen.jpg", screen_size, screen_pos);
+		isComplete = true;
 	}
 }
 
@@ -115,7 +141,7 @@ void Game::Render()
 
 	if (Enemy::enemy_count > 0)
 	{
-		for (auto& cube : cubes)
+		for (auto& cube : walls)
 		{
 			if (!cube->IsDestroyed())
 			{
@@ -141,6 +167,10 @@ void Game::Render()
 			}
 		}
 		spawnpoint->Render(window.getRenderer());
+	}
+	else
+	{
+		winscreen->Render(window.getRenderer());
 	}
 
 	window.getRenderer().EndFrame();
@@ -171,7 +201,7 @@ void Game::LoadMap()
 		case '#': // Wall
 			DirectX::XMFLOAT3 cube_size { 1.0, 1.0f, 1.0f };
 			DirectX::XMFLOAT3 cube_pos  { x * SPACING, 0.0f, z * SPACING };
-			cubes.push_back(std::make_unique<Cube>(window.getRenderer(), cube_size, cube_pos));
+			walls.push_back(std::make_unique<Cube>(window.getRenderer(), cube_size, cube_pos));
 			break;
 		case 'E': // Enemy
 			DirectX::XMFLOAT2 enemy_size { 0.5f, 1.0f };
