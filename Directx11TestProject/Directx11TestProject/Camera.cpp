@@ -7,39 +7,6 @@ Camera::Camera(Renderer& renderer)
 
 void Camera::Update(Window& window, float deltatime)
 {
-	//float speed = 2.0f;
-	//if (window.keyboard.KeyIsPressed(Keycodes::W)) //FORWARDS TRANSLATION
-	//{
-	//	position_.z += speed * deltatime;
-	//}
-	//if (window.keyboard.KeyIsPressed(Keycodes::S)) //BACKWARDS TRANSLATION
-	//{
-	//	position_.z -= speed * deltatime;
-	//}
-	//if (window.keyboard.KeyIsPressed(Keycodes::W) && window.keyboard.KeyIsPressed(Keycodes::SHIFT)) //SPRINT
-	//{
-	//	float multiplier = 1.15f;
-	//	position_.z += speed * multiplier * deltatime;
-	//}
-
-	//if (window.keyboard.KeyIsPressed(Keycodes::A)) //LEFT ROTATION
-	//{
-	//	rotation_ -= speed * deltatime;
-	//}
-	//if (window.keyboard.KeyIsPressed(Keycodes::D)) //RIGHT ROTATION
-	//{
-	//	rotation_ += speed * deltatime;
-	//}
-
-
-	//float forwards = static_cast<float>(window.keyboard.KeyIsPressed('W'));
-	//float backwards = static_cast<float>(window.keyboard.KeyIsPressed('S'));
-
-	if (window.keyboard.KeyIsPressed(Keycodes::W)) //FORWARDS TRANSLATION
-	{
-
-	}
-
 	float forwardsBackwards = static_cast<float>(window.keyboard.KeyIsPressed('W')) - static_cast<float>(window.keyboard.KeyIsPressed('S'));
 	float leftRight = static_cast<float>(window.keyboard.KeyIsPressed('A')) - static_cast<float>(window.keyboard.KeyIsPressed('D'));
 
@@ -82,6 +49,7 @@ void Camera::SetView(XMFLOAT3 pos, float rot)
 
 bool Camera::CollidesWith(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size)
 {
+	//abs returns the absolute value
 	//check the X axis
 	if (abs(pos.x - position_.x) < size.x + 1.0f)
 	{
@@ -100,6 +68,7 @@ bool Camera::CollidesWith(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size)
 
 bool Camera::CollidesWith(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT2 size)
 {
+	//abs returns the absolute value
 	//check the X axis
 	if (abs(pos.x - position_.x) < size.x + 1.0f)
 	{

@@ -21,7 +21,7 @@ public:
 
 private:
 	void KeyboardInputs(float& dt);
-	void CreateBullet(float& dt);
+	void CreateBullet();
 	void PrintToFile();
 	void Update();
 	void Render();

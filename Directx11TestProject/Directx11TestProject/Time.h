@@ -4,12 +4,12 @@ class Time
 {
 public:
 	Time();
-	void Tick();
-	float DeltaTime();
-	float TimeElapsed();
+	void Update();
+	float DT();
+	float Elapsed();
 
 private:
 	std::chrono::steady_clock::time_point now;
 	std::chrono::steady_clock::time_point last;
-	std::chrono::steady_clock::time_point starting;
+	std::chrono::steady_clock::time_point startTime;
 };

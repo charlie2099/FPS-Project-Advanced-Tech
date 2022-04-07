@@ -25,7 +25,7 @@ void Game::KeyboardInputs(float& dt)
 {
 	if (window.keyboard.KeyIsPressed(Keycodes::SPACE))
 	{
-		CreateBullet(dt);
+		CreateBullet();
 	}
 
 	if (window.keyboard.KeyIsPressed('M'))
@@ -36,8 +36,8 @@ void Game::KeyboardInputs(float& dt)
 
 void Game::Update()
 {
-	auto dt = time.DeltaTime() * 1.0f;
-	time.Tick();
+	auto dt = time.DT() * 1.0f;
+	time.Update();
 
 	XMFLOAT3 prevCamPos = camera->GetPosition();
 
@@ -91,26 +91,12 @@ void Game::Update()
 	// WALL and PLAYER COLLISION
 	for (size_t i = 0; i < walls.size(); i++)
 	{
-		// fmax returns larger of two floating point arguments
-	    // fmin returns smaller of two floating point arguments
-	    // 1.0 = size offset of wall
-		auto cubeSize = 1.0F;
-		auto xPos = std::fmaxf(-walls[i]->GetPos().x - cubeSize, std::fminf(camera->GetPosition().x, -walls[i]->GetPos().x + cubeSize));
-		auto zPos = std::fmaxf(-walls[i]->GetPos().z - cubeSize, std::fminf(prevCamPos.z, -walls[i]->GetPos().z + cubeSize));
-		auto distanceFromWall = std::sqrtf((xPos - camera->GetPosition().x) * (xPos - camera->GetPosition().x) + (zPos - prevCamPos.z) * (zPos - prevCamPos.z));
-		if (distanceFromWall < 0.75F) // distance to wall on x axis
+		DirectX::XMFLOAT3 wall_pos  { -walls[i]->GetPos().x, walls[i]->GetPos().y, -walls[i]->GetPos().z };
+		DirectX::XMFLOAT3 wall_size { walls[i]->GetSize().x-0.25f, walls[i]->GetSize().y, walls[i]->GetSize().z- 0.25f };
+		if (camera->CollidesWith(wall_pos, wall_size))
 		{
-			OutputDebugString("WALL X COLLISION DETECTED\n");
-			camera->SetView({ prevCamPos.x, camera->GetPosition().y, camera->GetPosition().z}, camera->GetRotation());
-		}
-
-		xPos = std::fmaxf(-walls[i]->GetPos().x - cubeSize, std::fminf(prevCamPos.x, -walls[i]->GetPos().x + cubeSize));
-		zPos = std::fmaxf(-walls[i]->GetPos().z - cubeSize, std::fminf(camera->GetPosition().z, -walls[i]->GetPos().z + cubeSize));
-		distanceFromWall = std::sqrtf((xPos - prevCamPos.x) * (xPos - prevCamPos.x) + (zPos - camera->GetPosition().z) * (zPos - camera->GetPosition().z));
-		if (distanceFromWall < 0.75F) // distance to wall on z axis
-		{
-			OutputDebugString("WALL Z COLLISION DETECTED\n");
-			camera->SetView({camera->GetPosition().x, camera->GetPosition().y, prevCamPos.z}, camera->GetRotation());
+			OutputDebugString("WALL COLLISION DETECTED\n");
+			camera->SetView({ prevCamPos.x, prevCamPos.y, prevCamPos.z }, camera->GetRotation());
 		}
 	}
 
@@ -245,9 +231,9 @@ void Game::PrintToFile()
 	std::cout.rdbuf(coutbuf); //reset to standard output again
 }
 
-void Game::CreateBullet(float& dt)
+void Game::CreateBullet()
 {
-	if (time.TimeElapsed() > time_passed)
+	if (time.Elapsed() > time_passed)
 	{
 		// if x amount of seconds passed, create new bullet
 		DirectX::XMFLOAT3 bullet_size{ 0.10f, 0.10f, 0.10f };
@@ -255,9 +241,9 @@ void Game::CreateBullet(float& dt)
 									   camera->GetPosition().y - 0.25f,
 									  -camera->GetPosition().z - cos(camera->GetRotation()) };
 		float bullet_rot = camera->GetRotation();
+
 		bullets.push_back(std::make_unique<Projectile>(window.getRenderer(), L"bullet.jpg", bullet_size, bullet_pos, bullet_rot));
 		current_bullet++;
-
 		time_passed += fire_rate;
 	}
 }
