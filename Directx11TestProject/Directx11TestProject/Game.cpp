@@ -92,7 +92,7 @@ void Game::Update()
 	for (size_t i = 0; i < walls.size(); i++)
 	{
 		DirectX::XMFLOAT3 wall_pos  { -walls[i]->GetPos().x, walls[i]->GetPos().y, -walls[i]->GetPos().z };
-		DirectX::XMFLOAT3 wall_size { walls[i]->GetSize().x-0.25f, walls[i]->GetSize().y, walls[i]->GetSize().z- 0.25f };
+		DirectX::XMFLOAT3 wall_size { walls[i]->GetSize().x-0.4f, walls[i]->GetSize().y, walls[i]->GetSize().z- 0.4f };
 		if (camera->CollidesWith(wall_pos, wall_size))
 		{
 			OutputDebugString("WALL COLLISION DETECTED\n");
